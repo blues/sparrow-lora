@@ -1,0 +1,42 @@
+/*-Specials-*/
+define symbol _intvec_start_ = 0x08000000;
+
+/*-Memory Regions-*/
+/***** FLASH INTERRUPT VECTORS RESERVED: 1 2048-BYTE PAGE *****/
+define symbol _ivec_region_ROM_start_ = 0x08000000;
+define symbol _ivec_region_ROM_end_   = 0x080007FF;
+/***** FLASH DFULOADER CODE RESERVED: 1 2048-BYTE PAGE *****/
+define symbol _dfuloader_region_ROM_start_  = 0x08000800;
+define symbol _dfuloader_region_ROM_end_    = 0x08000fFF;
+/***** FLASH *****/
+define symbol _code_region_ROM_start_ = 0x08001000;
+define symbol _code_region_ROM_end_   = 0x0803FFFF;
+/***** SRAM1 and SRAM2 are contiguous *****/
+define symbol _region_RAM_start_      = 0x20000000;
+define symbol _region_RAM_end_        = 0x2000FFFF;
+
+/*-Sizes-*/
+define symbol _size_cstack_ = 0x800;
+/**** End of ICF editor section. ###ICF###*/
+
+define memory mem with size = 4G;
+define region ROM_region      = mem:[from _code_region_ROM_start_ to _code_region_ROM_end_];
+define region RAM_region      = mem:[from _region_RAM_start_ to _region_RAM_end_];
+
+define block CSTACK    with alignment = 8, size = _size_cstack_  { };
+define block HEAP      with minimum size = 4K, expanding size, alignment = 8  { };
+
+initialize by copy { readwrite };
+do not initialize  { section .noinit };
+
+place at address mem:_ivec_region_ROM_start_ { readonly section .intvec };
+place at address mem:_dfuloader_region_ROM_start_ { readonly section .dfuloader };
+
+define block ROM_CONTENT with fixed order { readonly };
+
+place in ROM_region   { block ROM_CONTENT };
+place in RAM_region   { readwrite,
+                        block CSTACK, block HEAP };
+
+/* This keeps the ROM_CONTENT$$LIMIT variable around */
+keep {block ROM_CONTENT};

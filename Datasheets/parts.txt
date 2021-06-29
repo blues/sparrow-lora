@@ -1,0 +1,9 @@
+STM32WLE5CCU6 or maybe STM32WLE5CCU7
+https://octopart.com/search?q=STM32WLE5CCU6&currency=USD&specs=0
+https://octopart.com/search?q=STM32WLE5CCU7&currency=USD&specs=0
+
+Alternate:
+STM32WL55CCU6 or maybe STM32WL55CCU7
+https://octopart.com/search?q=STM32WL55CCU6&currency=USD&specs=0
+https://octopart.com/search?q=STM32WL55CCU7&currency=USD&specs=0
+
