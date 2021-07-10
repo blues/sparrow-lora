@@ -212,7 +212,7 @@ void ioInit(void)
         ioRFFrequency = 865000000;  // OFF OFF  ON OFF (IN865)
         break;
     case 4:
-        ioRFFrequency = 868000000;  //  ON  ON  ON  ON (EU868)
+        ioRFFrequency = 868000000;  //  ON OFF  ON OFF (EU868)
         break;
     case 5:
         ioRFFrequency = 864000000;  // OFF  ON  ON OFF (RU864)
