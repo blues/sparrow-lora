@@ -190,6 +190,12 @@ void MX_DBG_Disable()
     dbgDisableOutput = true;
 }
 
+// See if output is currently enabled
+bool MX_DBG_Enabled()
+{
+    return !dbgDisableOutput;
+}
+
 // Wake up debug
 void MX_DBG_Enable()
 {

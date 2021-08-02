@@ -11,6 +11,9 @@
 // Optionally Low Power mode
 #define LOW_POWER_DISABLE 0
 
+// Always enable LEDs, even on sensors with batteries that nobody is debugging
+#define LEDS_ALWAYS                                     false
+
 // Enable tracing
 #define DEBUGGER_ON                                     1
 #define DEBUGGER_ON_USART2                              0

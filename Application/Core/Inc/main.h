@@ -50,6 +50,7 @@ void MX_DBG_Resume(void);
 void MX_DBG(const char *msg, size_t len);
 void MX_DBG_Disable(void);
 void MX_DBG_Enable(void);
+bool MX_DBG_Enabled(void);
 bool MX_DBG_Active(void);
 bool MX_DBG_Available(void);
 uint8_t MX_DBG_Receive(bool *underrun, bool *overrun);

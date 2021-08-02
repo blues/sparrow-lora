@@ -83,6 +83,7 @@ bool ledIsReceiveInProgress(void);
 bool ledIsTransmitInProgress(void);
 void ledIndicateTransmitInProgress(bool on);
 void ledIndicateAck(int flashes);
+bool ledDisabled(void);
 #define BUTTON_UNCHANGED    0
 #define BUTTON_PRESSED      1
 #define BUTTON_HOLD_ABORTED 2

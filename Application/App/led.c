@@ -13,6 +13,42 @@ uint32_t ledStatePairBeganTime = 0;
 bool ledStateReceive = false;
 bool ledStateTransmit = false;
 
+// On sensor, enable/disabled for battery savings
+#define ledsEnabledMins 15
+uint32_t ledsEnabledMs = 0;
+
+// Return TRUE if the LEDs should be suppressed for power reasons
+bool ledDisabled()
+{
+
+#if !LED_ALWAYS
+
+    // Never suppress if this is a gateway role
+    if (appIsGateway) {
+        return false;
+    }
+
+    // Never suppress if we're in trace mode
+    if (MX_DBG_Enabled()) {
+        return false;
+    }
+
+    // Suppress if within the window
+    if (ledsEnabledMs == 0) {
+        ledsEnabledMs = HAL_GetTickMs();
+    }
+    uint32_t ledDisableAtMs = ledsEnabledMs + (ledsEnabledMins * 60 * 1000);
+    if (HAL_GetTickMs() >= ledDisableAtMs) {
+        return true;
+    }
+
+#endif
+
+    // Allow them to be turned on/off
+    return false;
+
+}
+
 // Initialize the LEDs
 void ledSet()
 {
@@ -95,7 +131,11 @@ bool ledIsReceiveInProgress()
 void ledIndicateReceiveInProgress(bool on)
 {
     ledStateReceive = on;
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    if (ledDisabled()) {
+        HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+    } else {
+        HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    }
 }
 
 // Is in progress?
@@ -108,7 +148,11 @@ bool ledIsTransmitInProgress()
 void ledIndicateTransmitInProgress(bool on)
 {
     ledStateTransmit = on;
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    if (ledDisabled()) {
+        HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+    } else {
+        HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    }
 }
 
 // Indicate OK
@@ -130,6 +174,9 @@ uint16_t ledButtonCheck()
     if (HAL_GPIO_ReadPin(BUTTON1_GPIO_Port, BUTTON1_Pin) == (BUTTON1_ACTIVE_HIGH ? GPIO_PIN_RESET : GPIO_PIN_SET)) {
         return BUTTON_UNCHANGED;
     }
+
+    // Enable LEDs for some period of time
+    ledsEnabledMs = HAL_GetTickMs();
 
     // Wait until released
     bool redWasOn = HAL_GPIO_ReadPin(LED_RED_GPIO_Port, LED_RED_Pin) != GPIO_PIN_RESET;

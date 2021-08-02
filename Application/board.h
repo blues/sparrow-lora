@@ -21,7 +21,7 @@
 #define PB6     4                   // USART1_TX (D1)
 #define PB7     5                   // USART1_RX (D0)
 #define PB8     6                   // FE_CTRL3
-#define PA0     7                   // BUTTON1
+#define PA0     7                   // LED_RED
 #define PA1     8                   // LED_BLUE
 #define PA2     9                   // LPUART1_TX
 #define PA3     10                  // LPUART1_RX
@@ -37,7 +37,7 @@
 #define PA11    34                  // I2C2_SDA (D14)
 #define PA12    35                  // I2C2_SCL (D15)
 #define PA13    36                  // SWDIO
-#define PC13    38                  // LED_RED
+#define PC13    38                  // BUTTON1
 #define PA14    42                  // SWCLK
 #define PA15    43                  // A3
 
@@ -201,8 +201,8 @@
 #define LED_BLUE_GPIO_Port              GPIOA
 #define LED_GREEN_Pin                   GPIO_PIN_12         // PB12
 #define LED_GREEN_GPIO_Port             GPIOB
-#define LED_RED_Pin                     GPIO_PIN_13         // PC13
-#define LED_RED_GPIO_Port               GPIOC
+#define LED_RED_Pin                     GPIO_PIN_0          // PA0
+#define LED_RED_GPIO_Port               GPIOA
 #else
 #define LED_BLUE_Pin                    GPIO_PIN_15
 #define LED_BLUE_GPIO_Port              GPIOB
@@ -212,10 +212,17 @@
 #define LED_RED_GPIO_Port               GPIOB
 #endif
 
+#if (CURRENT_BOARD != BOARD_NUCLEO)
+#define BUTTON1_ACTIVE_HIGH             false
+#define BUTTON1_Pin                     GPIO_PIN_13         // PC13
+#define BUTTON1_GPIO_Port               GPIOC
+#define BUTTON1_EXTI_IRQn               EXTI15_10_IRQn
+#else
 #define BUTTON1_ACTIVE_HIGH             false
 #define BUTTON1_Pin                     GPIO_PIN_0          // PA0
 #define BUTTON1_GPIO_Port               GPIOA
 #define BUTTON1_EXTI_IRQn               EXTI0_IRQn
+#endif
 
 #define BUTTONx_IT_PRIORITY             15
 

@@ -129,7 +129,7 @@ typedef struct __attribute__((__packed__))
 {
     uint16_t Signature;             // Valid message indicator
     uint16_t Millivolts;            // Sender's battery voltage
-    int8_t RSSI;                    // Sender's perspective of receiver's TP 
+    int8_t RSSI;                    // Sender's perspective of receiver's TP
     int8_t SNR;                     // Sender's perspective of receiver's TP
     int8_t TXP;                     // Sender's transmit power level
     int8_t LTP;                     // Lowest transmit power level attempted
