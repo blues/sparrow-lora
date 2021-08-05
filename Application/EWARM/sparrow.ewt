@@ -1731,6 +1731,9 @@
         <file>
             <name>$PROJ_DIR$\..\..\note-c\n_str.c</name>
         </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\note-c\n_ua.c</name>
+        </file>
     </group>
     <group>
         <name>Utilities</name>

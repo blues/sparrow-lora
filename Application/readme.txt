@@ -15,6 +15,7 @@ COMMON INSTRUCTIONS FOR BOTH GATEWAY AND SENSOR
 
 - During software development, if the appropriate options are enabled in config_sys.h, the developer may connect a serial terminal to the RX/TX pins at 9600 bps. This trace console can be enabled by holding down the buttton when the product is being reset or powered-on, else the trace output will be suppressed,
 
+
 GATEWAY INSTRUCTIONS
 
 - If you factory-reset the gateway, it will lose all pairings with sensors and the sensors will need to be re-paired.

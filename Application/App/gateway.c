@@ -130,82 +130,24 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
         J *body = JDetachItemFromObject(rsp, "body");
         NoteDeleteResponse(rsp);
 
-        // Enumerate fields in the body
+        // Enumerate fields in the environment body
         J *field = NULL;
-        bool updateConfig = false;
         JObjectForEach(field, body) {
             char *value = JStringValue(field);
             const char *name = JGetItemName(field);
-
-            // See if any local gateway env vars need updating
             gatewayUpdateEnvVar(name, value);
 
-            // Attempt to convert the name from hex to decimal
-            bool validHex = true;
-            uint8_t addrbuf[ADDRESS_LEN];
-            int addrlen = 0;
-            const char *p = name;
-            while (*p != '\0' && *(p+1) != '\0') {
-                char ch1 = *p++;
-                char ch2 = *p++;
-                uint8_t value = 0;
-                if (ch1 >= '0' && ch1 <= '9') {
-                    value |= (ch1 - '0') << 4;
-                } else if (ch1 >= 'a' && ch1 <= 'f') {
-                    value |= ((ch1 - 'a') + 10) << 4;
-                } else if (ch1 >= 'A' && ch1 <= 'F') {
-                    value |= ((ch1 - 'A') + 10) << 4;
-                } else {
-                    validHex = false;
-                    break;
-                }
-                if (ch2 >= '0' && ch2 <= '9') {
-                    value |= (ch2 - '0');
-                } else if (ch2 >= 'a' && ch2 <= 'f') {
-                    value |= ((ch2 - 'a') + 10);
-                } else if (ch2 >= 'A' && ch2 <= 'F') {
-                    value |= ((ch2 - 'A') + 10);
-                } else {
-                    validHex = false;
-                    break;
-                }
-                if (addrlen >= ADDRESS_LEN) {
-                    validHex = false;
-                    break;
-                }
-                addrlen++;
-                addrbuf[ADDRESS_LEN-addrlen] = value;
-            }
-
-            // If valid hex and the length is at least 2 bytes, set the name
-            if (validHex && addrlen >= 2) {
-                if (flashConfigUpdatePeerName(&addrbuf[ADDRESS_LEN-addrlen], addrlen, value)) {
-                    trace(name);
-                    trace(" updated to '");
-                    trace(value);
-                    trace("'");
-                    traceNL();
-                    updateConfig = true;
-                }
-            }
         }
 
-        // Done with body
+        // Done with body, and done refreshing env vars as a batch
         JDelete(body);
 
-        // Update the config if something changed
-        if (updateConfig) {
-            flashConfigUpdate();
-        }
-
-        // Done refrshing env vars
-        break;
     }
 
     // Update the last reset time
     if (last_var_gateway_sensordb_reset_counts != 0
-            && var_gateway_sensordb_reset_counts != 0
-            && last_var_gateway_sensordb_reset_counts != var_gateway_sensordb_reset_counts) {
+        && var_gateway_sensordb_reset_counts != 0
+        && last_var_gateway_sensordb_reset_counts != var_gateway_sensordb_reset_counts) {
         time_var_gateway_sensordb_reset_counts = NoteTimeST();
     }
     last_var_gateway_sensordb_reset_counts = var_gateway_sensordb_reset_counts;
@@ -217,7 +159,113 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
     if (dbLastUpdateTime == 0 || now >= dbLastUpdateTime+(var_gateway_sensordb_update_mins*60)) {
         dbLastUpdateTime = now;
 
-        // Loop over all sensors, updating them
+        // Load the entire set of configuration notes, to minimize latency.  We need
+        // to keep latency to a minimum because for every second we spend in here
+        // it's a second we don't have a receive outstanding.
+        J *req = NoteNewRequest("note.changes");
+        JAddStringToObject(req, "file", CONFIGDB);
+        J *rsp = NoteRequestResponse(req);
+        if (rsp != NULL) {
+
+            // Get the results
+            J *notes = JDetachItemFromObject(rsp, "notes");
+
+            // We no longer need the response
+            NoteDeleteResponse(rsp);
+
+            // Enumerate notes within the results
+            J *note = NULL;
+            bool updateConfig = false;
+            JObjectForEach(note, notes) {
+
+                // Get the sensor ID (in hex)
+                const char *sensorIDHex = JGetItemName(note);
+
+                // Get the sensor location (encoded in OLC format)
+                const char *bodyName = "";
+                const char *bodyLoc = "";
+                J *body = JGetObject(note, "body");
+                if (body != NULL) {
+                    bodyName = JGetString(body, "name");
+                    bodyLoc = JGetString(body, "loc");
+                }
+
+                // Get the sensor name, and create a composite with the location
+                char sensorName[256];
+                strlcpy(sensorName, bodyName, sizeof(sensorName));
+                if (bodyLoc[0] != '\0') {
+                    strlcat(sensorName, " [", sizeof(sensorName));
+                    strlcat(sensorName, bodyLoc, sizeof(sensorName));
+                    strlcat(sensorName, "]", sizeof(sensorName));
+                }
+
+                // Convert the sensor ID from hex to binary
+                bool validHex = true;
+                uint8_t addrbuf[ADDRESS_LEN];
+                int addrlen = 0;
+                const char *p = sensorIDHex;
+                while (*p != '\0' && *(p+1) != '\0') {
+                    char ch1 = *p++;
+                    char ch2 = *p++;
+                    uint8_t value = 0;
+                    if (ch1 >= '0' && ch1 <= '9') {
+                        value |= (ch1 - '0') << 4;
+                    } else if (ch1 >= 'a' && ch1 <= 'f') {
+                        value |= ((ch1 - 'a') + 10) << 4;
+                    } else if (ch1 >= 'A' && ch1 <= 'F') {
+                        value |= ((ch1 - 'A') + 10) << 4;
+                    } else {
+                        validHex = false;
+                        break;
+                    }
+                    if (ch2 >= '0' && ch2 <= '9') {
+                        value |= (ch2 - '0');
+                    } else if (ch2 >= 'a' && ch2 <= 'f') {
+                        value |= ((ch2 - 'a') + 10);
+                    } else if (ch2 >= 'A' && ch2 <= 'F') {
+                        value |= ((ch2 - 'A') + 10);
+                    } else {
+                        validHex = false;
+                        break;
+                    }
+                    if (addrlen >= ADDRESS_LEN) {
+                        validHex = false;
+                        break;
+                    }
+                    addrlen++;
+                    addrbuf[ADDRESS_LEN-addrlen] = value;
+                }
+
+                // If valid hex and the length is at least 2 bytes, set the name
+                if (validHex && addrlen >= 2) {
+                    if (flashConfigUpdatePeerName(&addrbuf[ADDRESS_LEN-addrlen], addrlen, sensorName)) {
+                        trace("config: ");
+                        trace(sensorIDHex);
+                        trace(" name updated to '");
+                        trace(sensorName);
+                        trace("'");
+                        traceNL();
+                        updateConfig = true;
+                    } else {
+                        trace("config: ");
+                        trace(sensorIDHex);
+                        trace(" remains ");
+                        trace(sensorName);
+                        traceNL();
+                    }
+                }
+            }
+
+            // Done with all configured notes
+            JDelete(notes);
+
+            // Update the config if something changed
+            if (updateConfig) {
+                flashConfigUpdate();
+            }
+        }
+
+        // Now, loop over all sensors, updating them
         uint32_t notesUpdated = 0;
         for (int i=0; i<cachedSensors; i++) {
 
@@ -281,8 +329,8 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
 
             // Update error/success counts, or reset them
             if (var_gateway_sensordb_reset_counts != 0
-                    && time_var_gateway_sensordb_reset_counts != 0
-                    && JGetInt(body, SENSORDB_FIELD_WHEN) < time_var_gateway_sensordb_reset_counts) {
+                && time_var_gateway_sensordb_reset_counts != 0
+                && JGetInt(body, SENSORDB_FIELD_WHEN) < time_var_gateway_sensordb_reset_counts) {
                 JDeleteItemFromObject(body, SENSORDB_FIELD_RECEIVED);
                 JAddNumberToObject(body, SENSORDB_FIELD_RECEIVED, 0);
                 JDeleteItemFromObject(body, SENSORDB_FIELD_LOST);

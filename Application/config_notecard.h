@@ -9,6 +9,9 @@
 #define NOTECARD_OUTBOUND_PERIOD_MINS       (15)
 #define NOTECARD_INBOUND_PERIOD_MINS        (60*24)
 
+// Configuration database
+#define CONFIGDB                            "config.db"
+
 // Sensor database
 #define SENSORDB                            "sensors.db"
 #define SENSORDB_FIELD_NAME                 "name"
