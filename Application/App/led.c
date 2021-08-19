@@ -28,6 +28,11 @@ bool ledDisabled()
         return false;
     }
 
+    // Exit if not yet paired
+    if (ledIsPairInProgress() || ledIsPairMandatory()) {
+        return false;
+    }
+
     // Never suppress if we're in trace mode
     if (MX_DBG_Enabled()) {
         return false;
