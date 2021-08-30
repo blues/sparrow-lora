@@ -289,18 +289,18 @@ bool commonCharCmd(char ch)
 {
     if (ch == '=') {
         uint32_t localTimeSecs = NoteTimeST();
-        uint32_t localTicks = HAL_GetTickMs();
+        int64_t localTimeMs = TIMER_IF_GetTimeMs();
         if (appIsGateway) {
             J *rsp = NoteRequestResponse(NoteNewRequest("card.time"));
             if (rsp != NULL) {
                 JTIME cardTimeSecs = JGetInt(rsp, "time");
                 int diffLocalCard = (int) ((int64_t) localTimeSecs - (int64_t) cardTimeSecs);
                 int diffLocalBoot = (int) ((int64_t) localTimeSecs - (int64_t) gatewayBootTime);
-                traceValue5Ln("ticks:", localTicks, " time:", localTimeSecs, " card:", cardTimeSecs, " diff:", diffLocalCard, " bootSecs:", diffLocalBoot, "");
+                traceValue5Ln("ms:", (uint32_t) localTimeMs, " time:", localTimeSecs, " card:", cardTimeSecs, " diff:", diffLocalCard, " bootSecs:", diffLocalBoot, "");
                 NoteDeleteResponse(rsp);
             }
         } else {
-            traceValue2Ln("ticks:", localTicks, " time:", localTimeSecs, "");
+            traceValue2Ln("ms:", localTimeMs, " time:", (uint32_t) localTimeSecs, "");
         }
         return true;
     }

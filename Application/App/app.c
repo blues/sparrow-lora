@@ -58,7 +58,7 @@ uint8_t *messageToSendData;
 uint32_t messageToSendDataLen;
 bool messageToSendDataDealloc;
 uint32_t messageToSendAcknowledgedLen;
-uint32_t sentMessageMs;
+int64_t sentMessageMs;
 uint16_t sentMessageCarrierLen;
 wireMessageCarrier sentMessageCarrier;
 wireMessage sentMessage;
@@ -540,7 +540,7 @@ void lbtTalk()
     }
     Radio.SetChannel(ioRFFrequency);
     HAL_Delay(Radio.GetWakeupTime() + TCXO_WORKAROUND_TIME_MARGIN);
-    sentMessageMs = HAL_GetTickMs();
+    sentMessageMs = TIMER_IF_GetTimeMs();
     Radio.Send((uint8_t *)&sentMessageCarrier, sentMessageCarrierLen);
     appSetCoreState(LOWPOWER);
 }
@@ -655,7 +655,7 @@ bool sensorResendToGateway()
 // See if there's a timeout on send
 bool sendTimeout()
 {
-    if ((HAL_GetTickMs() - sentMessageMs) > 10000) {
+    if ((TIMER_IF_GetTimeMs() - sentMessageMs) > 10000) {
         return true;
     }
     return false;

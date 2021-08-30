@@ -110,7 +110,7 @@ void noteDelay(uint32_t ms)
 // Arduino-like millis() function
 long unsigned int noteMillis()
 {
-    return HAL_GetTickMs();
+    return (long unsigned int) TIMER_IF_GetTimeMs();
 }
 
 // I2C reset procedure, called before any I/O and called again upon I/O error

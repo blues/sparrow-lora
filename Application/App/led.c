@@ -15,7 +15,7 @@ bool ledStateTransmit = false;
 
 // On sensor, enable/disabled for battery savings
 #define ledsEnabledMins 15
-uint32_t ledsEnabledMs = 0;
+int64_t ledsEnabledMs = 0;
 
 // Return TRUE if the LEDs should be suppressed for power reasons
 bool ledDisabled()
@@ -40,10 +40,10 @@ bool ledDisabled()
 
     // Suppress if within the window
     if (ledsEnabledMs == 0) {
-        ledsEnabledMs = HAL_GetTickMs();
+        ledsEnabledMs = TIMER_IF_GetTimeMs();
     }
     uint32_t ledDisableAtMs = ledsEnabledMs + (ledsEnabledMins * 60 * 1000);
-    if (HAL_GetTickMs() >= ledDisableAtMs) {
+    if (TIMER_IF_GetTimeMs() >= ledDisableAtMs) {
         return true;
     }
 
@@ -181,7 +181,7 @@ uint16_t ledButtonCheck()
     }
 
     // Enable LEDs for some period of time after the button has been pressed
-    ledsEnabledMs = HAL_GetTickMs();
+    ledsEnabledMs = TIMER_IF_GetTimeMs();
 
     // Wait until released
     bool redWasOn = HAL_GPIO_ReadPin(LED_RED_GPIO_Port, LED_RED_Pin) != GPIO_PIN_RESET;

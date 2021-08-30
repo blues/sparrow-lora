@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "timer_if.h"
 #include "config_sys.h"
 #include "config_radio.h"
 #include "config_notecard.h"

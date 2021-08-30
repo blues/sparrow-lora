@@ -73,16 +73,22 @@ uint32_t TIMER_IF_Convert_ms2Tick(uint32_t timeMilliSec);
 /**
   * converts time in ticks to time in ms
   * Input: tick time in timer ticks
-  * Returnstime in timer milliseconds
+  * Returns time in timer milliseconds
   */
 uint32_t TIMER_IF_Convert_Tick2ms(uint32_t tick);
 
 /**
   * Get rtc time
-  * Out: subSeconds in ticks
-  * Returnstime seconds
+  * Out: subSeconds in milliseconds
+  * Returns time seconds
   */
-uint32_t TIMER_IF_GetTime(uint16_t *subSeconds);
+uint32_t TIMER_IF_GetTime(uint16_t *milliseconds);
+
+/**
+  * Get rtc time in milliseconds
+  * Returns time milliseconds
+  */
+int64_t TIMER_IF_GetTimeMs(void);
 
 /**
   * write seconds in backUp register

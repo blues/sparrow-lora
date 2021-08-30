@@ -36,7 +36,7 @@ void MX_AppMain(void)
     ioInit();
 
     // Remember the time when we were booted
-    appBootMs = HAL_GetTickMs();
+    appBootMs = TIMER_IF_GetTimeMs();
 
     // Conditionally disable debugging
     if (!buttonHeldAtBoot && !MX_DBG_Active()) {

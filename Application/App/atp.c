@@ -115,7 +115,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
     // is an extended outage wherein all the sensors' levels incrementally climb to the top.
     bool resetATPState = false;
     static int64_t prevMs = 0;
-    int64_t elapsedSinceBootMs = HAL_GetTickMs() - appBootMs;
+    int64_t elapsedSinceBootMs = TIMER_IF_GetTimeMs() - appBootMs;
     if (currentLevel == (RBO_LEVELS-1)) {
         int64_t thresholdMs;
         int64_t ms1Day = 1000LL * 60LL * 60LL * 24LL;
@@ -152,8 +152,8 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
     // power level.  (The rule of thumb should be that the longer the gateway is offline,
     // the longer it will take to get the sensors to settle back down to a good power level.)
     if (currentLevel > 0
-        && packetsSent[currentLevel] > NUM_PACKETS_MINIMUM_FOR_SUCCESS_CALC
-        && failResets[currentLevel-1] < ALLOWED_FAIL_RESETS) {
+            && packetsSent[currentLevel] > NUM_PACKETS_MINIMUM_FOR_SUCCESS_CALC
+            && failResets[currentLevel-1] < ALLOWED_FAIL_RESETS) {
         if (((packetsLost[currentLevel]*100)/packetsSent[currentLevel]) < RECONSIDER_DECREASE_IF_FAIL_PCT_LESS_THAN) {
             if (packetsLost[currentLevel-1] > DONT_DECREASE_POWER_IF_PRIOR_LOSS_EXCEEDS) {
                 packetsSent[currentLevel-1] = 0;

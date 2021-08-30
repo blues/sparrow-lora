@@ -256,6 +256,15 @@ uint32_t TIMER_IF_GetTime(uint16_t *mSeconds)
 
 }
 
+// Get the time in milliseconds
+int64_t TIMER_IF_GetTimeMs()
+{
+    uint16_t msec;
+    int64_t result = TIMER_IF_GetTime(&msec);
+    result = (result * 1000LL) + (msec % 1000);
+    return result;
+}
+
 // Write the backup register with seconds
 void TIMER_IF_BkUp_Write_Seconds(uint32_t Seconds)
 {
@@ -316,12 +325,6 @@ uint32_t HAL_GetTick(void)
 {
     // TIMER_IF can be based onother counter the SysTick e.g. RTC
     return TIMER_IF_GetTimerValue();
-}
-
-// Provide a tick value in milliseconds
-uint32_t HAL_GetTickMs(void)
-{
-    return TIMER_IF_Convert_Tick2ms(TIMER_IF_GetTimerValue());
 }
 
 // This function provides delay (in ms)

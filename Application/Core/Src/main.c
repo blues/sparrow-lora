@@ -111,8 +111,8 @@ void SystemClock_Config(void)
 
     // Configure the SYSCLKSource, HCLK, PCLK1 and PCLK2 clocks dividers
     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK3|RCC_CLOCKTYPE_HCLK
-        |RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1
-        |RCC_CLOCKTYPE_PCLK2;
+                                  |RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1
+                                  |RCC_CLOCKTYPE_PCLK2;
     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
@@ -204,7 +204,8 @@ void MX_ADC_DeInit(void)
 }
 
 // Return ADC_COUNT words of values
-bool MX_ADC_Values(uint16_t *wordValues, double *voltageValues, double *vref) {
+bool MX_ADC_Values(uint16_t *wordValues, double *voltageValues, double *vref)
+{
     bool success = true;
 
     // Perform ADC Conversion, aborting if there is a conversion error
@@ -235,8 +236,9 @@ bool MX_ADC_Values(uint16_t *wordValues, double *voltageValues, double *vref) {
     //     - FULL_SCALE  is the maximum digital value of the ADC output
     uint16_t adc_int_vref = (uint16_t)READ_REG(*VREFINT_CAL_ADDR);
     double VDDA = (((double)VREFINT_CAL_VREF * (double)adc_int_vref) / (double)adcValues[0]) / 1000;
-    if (vref != NULL)
+    if (vref != NULL) {
         *vref = VDDA;
+    }
 
     // Calculate results, knowing that the adcValues are skewed by one because VREFINT is adcValues[0]
     for (int rankIndex=0; rankIndex<ADC_COUNT; rankIndex++) {
@@ -256,7 +258,8 @@ bool MX_ADC_Values(uint16_t *wordValues, double *voltageValues, double *vref) {
 
 // This function calibrates the voltage across its known range of slope and target
 //  2018-08-05 5.5v was measured as 5.39862984, and 2.5v was measured at 2.28016664
-double calibrateVoltage(double v) {
+double calibrateVoltage(double v)
+{
     double measuredAt2p5 = 2.28016663992311;
     double measuredAt5p5 = 5.3986298386415;
     double unadjustedSwing = measuredAt5p5 - measuredAt2p5;
@@ -267,7 +270,8 @@ double calibrateVoltage(double v) {
 }
 
 // Get a calibrated voltage level using the ADC's A0 line
-double MX_ADC_A0_Voltage() {
+double MX_ADC_A0_Voltage()
+{
     double voltage = 0.0;
     double voltageValues[ADC_COUNT];
     if (MX_ADC_Values(NULL, voltageValues, NULL)) {
@@ -322,25 +326,34 @@ void MX_I2C2_DeInit(void)
 }
 
 // I2C1 DMA completion events
-void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c) {
-    if (hi2c == &hi2c2)
+void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (hi2c == &hi2c2) {
         i2c2IOCompletions++;
+    }
 }
-void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c) {
-    if (hi2c == &hi2c2)
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (hi2c == &hi2c2) {
         i2c2IOCompletions++;
+    }
 }
-void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c) {
-    if (hi2c == &hi2c2)
+void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (hi2c == &hi2c2) {
         i2c2IOCompletions++;
+    }
 }
-void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
-    if (hi2c == &hi2c2)
+void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (hi2c == &hi2c2) {
         i2c2IOCompletions++;
+    }
 }
 
 // Receive from a register, and return true for success or false for failure
-bool MY_I2C2_ReadRegister(uint16_t i2cAddress, uint8_t Reg, void *data, uint16_t maxdatalen, uint32_t timeoutMs) {
+bool MY_I2C2_ReadRegister(uint16_t i2cAddress, uint8_t Reg, void *data, uint16_t maxdatalen, uint32_t timeoutMs)
+{
     uint32_t ioCount = i2c2IOCompletions;
     uint32_t status = HAL_I2C_Mem_Read_DMA(&hi2c2, ((uint16_t)i2cAddress) << 1, (uint16_t)Reg, I2C_MEMADD_SIZE_8BIT, data, maxdatalen);
     if (status != HAL_OK) {
@@ -360,7 +373,8 @@ bool MY_I2C2_ReadRegister(uint16_t i2cAddress, uint8_t Reg, void *data, uint16_t
 }
 
 // Write a register, and return true for success or false for failure
-bool MY_I2C2_WriteRegister(uint16_t i2cAddress, uint8_t Reg, void *data, uint16_t datalen, uint32_t timeoutMs) {
+bool MY_I2C2_WriteRegister(uint16_t i2cAddress, uint8_t Reg, void *data, uint16_t datalen, uint32_t timeoutMs)
+{
     uint32_t ioCount = i2c2IOCompletions;
     uint32_t status = HAL_I2C_Mem_Write_DMA(&hi2c2, ((uint16_t)i2cAddress) << 1, (uint16_t)Reg, I2C_MEMADD_SIZE_8BIT, data, datalen);
     if (status != HAL_OK) {
@@ -380,7 +394,8 @@ bool MY_I2C2_WriteRegister(uint16_t i2cAddress, uint8_t Reg, void *data, uint16_
 }
 
 // Transmit, and return true for success or false for failure
-bool MY_I2C2_Transmit(uint16_t i2cAddress, void *data, uint16_t datalen, uint32_t timeoutMs) {
+bool MY_I2C2_Transmit(uint16_t i2cAddress, void *data, uint16_t datalen, uint32_t timeoutMs)
+{
     uint32_t ioCount = i2c2IOCompletions;
     uint32_t status = HAL_I2C_Master_Transmit_DMA(&hi2c2, ((uint16_t)i2cAddress) << 1, data, datalen);
     if (status != HAL_OK) {
@@ -400,7 +415,8 @@ bool MY_I2C2_Transmit(uint16_t i2cAddress, void *data, uint16_t datalen, uint32_
 }
 
 // Receive, and return true for success or false for failure
-bool MY_I2C2_Receive(uint16_t i2cAddress, void *data, uint16_t maxdatalen, uint32_t timeoutMs) {
+bool MY_I2C2_Receive(uint16_t i2cAddress, void *data, uint16_t maxdatalen, uint32_t timeoutMs)
+{
     uint32_t ioCount = i2c2IOCompletions;
     uint32_t status = HAL_I2C_Master_Receive_DMA(&hi2c2, ((uint16_t)i2cAddress) << 1, data, maxdatalen);
     if (status != HAL_OK) {
@@ -585,11 +601,13 @@ void MX_TIM17_DelayUs(uint32_t us)
     uint32_t prev = 0;
     while (true) {
         uint32_t counter = __HAL_TIM_GET_COUNTER(&htim17);
-        if (counter < prev)
+        if (counter < prev) {
             base += 0x00010000;
+        }
         prev = counter;
-        if (counter+base >= ticks)
+        if (counter+base >= ticks) {
             break;
+        }
     }
     __HAL_TIM_DISABLE(&htim17);
 }

@@ -43,7 +43,6 @@ void MX_RNG_DeInit(void);
 void MX_AES_Init(void);
 void MX_AES_DeInit(void);
 void MX_RTC_Init(void);
-uint32_t HAL_GetTickMs(void);
 void MX_DBG_Init(void);
 void MX_DBG_Suspend(void);
 void MX_DBG_Resume(void);

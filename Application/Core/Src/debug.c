@@ -164,7 +164,7 @@ void dbgRestartReceive(UART_HandleTypeDef *huart)
 }
 void dbgReceivedByteISR(UART_HandleTypeDef *huart)
 {
-  
+
     // Ingest the byte
     uint32_t nextIndex = dbgReceiveFillIndex + 1;
     if (nextIndex >= sizeof(dbgReceiveBuffer)) {
