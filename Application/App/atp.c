@@ -109,6 +109,40 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
     bool shouldTryDecreasingTxPower = false;
     int8_t decreasePowerLevelByDb = 1;
 
+    // At certain intervals, if we're at the top power level, reset all parameters and
+    // try ATP from scratch.  This is to correct for the fact that during the first several
+    // days of a system's operation people tend to be messing with it, and sometimes there
+    // is an extended outage wherein all the sensors' levels incrementally climb to the top.
+    bool resetATPState = false;
+    static int64_t prevMs = 0;
+    int64_t elapsedSinceBootMs = HAL_GetTickMs() - appBootMs;
+    if (currentLevel == (RBO_LEVELS-1)) {
+        int64_t thresholdMs;
+        int64_t ms1Day = 1000LL * 60LL * 60LL * 24LL;
+
+        thresholdMs = 3 * ms1Day;
+        if (prevMs < thresholdMs && elapsedSinceBootMs > thresholdMs) {
+            resetATPState = true;
+        }
+
+        thresholdMs = 7 * ms1Day;
+        if (prevMs < thresholdMs && elapsedSinceBootMs > thresholdMs) {
+            resetATPState = true;
+        }
+
+    }
+    prevMs = elapsedSinceBootMs;
+
+    if (resetATPState) {
+        currentLevel = initialLevel;
+        lowestLevel = initialLevel;
+        pastSamples = 0;
+        memset(packetsSent, 0, sizeof(packetsSent));
+        memset(packetsLost, 0, sizeof(packetsLost));
+        memset(failResets, 0, sizeof(failResets));
+        traceValueLn("ATP: state reset to ", currentLevel, "db so that we may try again");
+    }
+
     // If we've sent many packets at this level and have had great success, clear out the
     // packet loss of the prior level so that we give it reconsideration.  The case that this
     // is trying to cover is this:  If the gateway goes offline for an extended period of time,
@@ -118,8 +152,8 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
     // power level.  (The rule of thumb should be that the longer the gateway is offline,
     // the longer it will take to get the sensors to settle back down to a good power level.)
     if (currentLevel > 0
-            && packetsSent[currentLevel] > NUM_PACKETS_MINIMUM_FOR_SUCCESS_CALC
-            && failResets[currentLevel-1] < ALLOWED_FAIL_RESETS) {
+        && packetsSent[currentLevel] > NUM_PACKETS_MINIMUM_FOR_SUCCESS_CALC
+        && failResets[currentLevel-1] < ALLOWED_FAIL_RESETS) {
         if (((packetsLost[currentLevel]*100)/packetsSent[currentLevel]) < RECONSIDER_DECREASE_IF_FAIL_PCT_LESS_THAN) {
             if (packetsLost[currentLevel-1] > DONT_DECREASE_POWER_IF_PRIOR_LOSS_EXCEEDS) {
                 packetsSent[currentLevel-1] = 0;
@@ -298,15 +332,19 @@ void atpGatewayMessageLost()
     // by increasing power.
 #if ATP_ENABLED
     uint32_t lost = packetsLost[currentLevel];
-    int8_t newLevel = currentLevel + INCREASE_POWER_INCREMENT;
-    if (newLevel >= RBO_LEVELS) {
-        newLevel = RBO_LEVELS-1;
-    }
-    if (currentLevel != newLevel) {
-        currentLevel = newLevel;
-        pastSamples = 0;
-        atpSetTxConfig();
-        traceValue2Ln("ATP: increased power to ", currentLevel+RBO_MIN, " dBm because ", lost, " lost");
+    if (lost == 1) {
+        traceValueLn("ATP: first packet lost at ", currentLevel+RBO_MIN, " dBm");
+    } else {
+        int8_t newLevel = currentLevel + INCREASE_POWER_INCREMENT;
+        if (newLevel >= RBO_LEVELS) {
+            newLevel = RBO_LEVELS-1;
+        }
+        if (currentLevel != newLevel) {
+            currentLevel = newLevel;
+            pastSamples = 0;
+            atpSetTxConfig();
+            traceValue2Ln("ATP: increased power to ", currentLevel+RBO_MIN, " dBm because ", lost, " lost");
+        }
     }
 #endif
 

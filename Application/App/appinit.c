@@ -9,6 +9,7 @@
 
 // App Role
 bool appIsGateway = false;
+int64_t appBootMs = 0;
 uint32_t gatewayBootTime = 0;
 bool buttonHeldAtBoot = false;
 
@@ -33,6 +34,9 @@ void MX_AppMain(void)
 
     // Initialize GPIOs
     ioInit();
+
+    // Remember the time when we were booted
+    appBootMs = HAL_GetTickMs();
 
     // Conditionally disable debugging
     if (!buttonHeldAtBoot && !MX_DBG_Active()) {

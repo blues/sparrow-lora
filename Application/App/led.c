@@ -180,7 +180,7 @@ uint16_t ledButtonCheck()
         return BUTTON_UNCHANGED;
     }
 
-    // Enable LEDs for some period of time
+    // Enable LEDs for some period of time after the button has been pressed
     ledsEnabledMs = HAL_GetTickMs();
 
     // Wait until released

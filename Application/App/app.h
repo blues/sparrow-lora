@@ -25,6 +25,7 @@ typedef enum {
     TX_TIMEOUT,
     TW_OPEN,
 } States_t;
+extern int64_t appBootMs;
 extern bool appIsGateway;
 extern uint32_t gatewayBootTime;
 extern char ourAddressText[ADDRESS_LEN*3];
