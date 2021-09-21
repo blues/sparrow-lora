@@ -12,7 +12,7 @@
 
 #define BOARD_NUCLEO    0           // NUCLEO-WL55JC1
 #define BOARD_V1        1
-#define CURRENT_BOARD   BOARD_NUCLEO
+#define CURRENT_BOARD   BOARD_V1
 
 // All pins on the STM32WLE5 UFQFPN48 package
 #define PB3     1                   // RFSEL_0
