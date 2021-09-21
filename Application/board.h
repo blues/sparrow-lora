@@ -191,9 +191,9 @@
 #define PYQ_DIRECT_LINK_EXTI_IRQn       EXTI9_5_IRQn
 #define PYQ_DIRECT_LINK_IT_PRIORITY     15
 
-// Bosch BME280 temperature/humidity/pressure sensor
-#define BME_POWER_Pin                   GPIO_PIN_5          // PA5
-#define BME_POWER_GPIO_Port             GPIOA
+// I2C Power Pin - powering peripherals on a switched i2c bus
+#define I2C_POWER_Pin                   GPIO_PIN_5          // PA5
+#define I2C_POWER_GPIO_Port             GPIOA
 
 // LEDs
 #if (CURRENT_BOARD != BOARD_NUCLEO)
