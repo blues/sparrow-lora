@@ -62,8 +62,21 @@ void sensorTimerStart()
 
     // Schedule the timer
     if (thisSleepSecs > 1) {
-        traceValue2Ln("sched: sleeping ", thisSleepSecs, "s (next transmit window in ", appNextTransmitWindowDueSecs(), "s)");
+        uint32_t transmitWindowDueSecs = appNextTransmitWindowDueSecs();
+        if (transmitWindowDueSecs == 0) {
+            traceValueLn("sched: sleeping ", thisSleepSecs, "s");
+        } else {
+            traceValue2Ln("sched: sleeping ", thisSleepSecs, "s (next transmit window in ", transmitWindowDueSecs, "s)");
+        }
     }
+
+    // Put the radio to sleep if we're waiting for a while.  We choose 5 seconds because it's less than the amount
+    // of time we'll wait if sleeping waiting for a transmit window.
+    if (thisSleepSecs > 5 && radioDeepSleep()) {
+        traceLn("sched: radio put into deep sleep mode");
+    }
+
+    // Go to sleep
     UTIL_TIMER_Create(&sensorSleepTimer, 0xFFFFFFFFU, UTIL_TIMER_ONESHOT, sensorTimerEvent, NULL);
     UTIL_TIMER_SetPeriod(&sensorSleepTimer, thisSleepSecs*1000);
     UTIL_TIMER_Start(&sensorSleepTimer);

@@ -44,9 +44,13 @@ int32_t RBI_DeInit(void)
     HAL_GPIO_WritePin(FE_CTRL3_GPIO_Port, FE_CTRL3_Pin, GPIO_PIN_RESET);
 
     // DeInit the Radio Switch pin
+    // 2021-09-22 We do NOT want to deinit the gpio's, else the amplifiers
+    // would possibly turn on (because of the floating FE_CTRL pins).
+#if 0
     HAL_GPIO_DeInit(FE_CTRL1_GPIO_Port, FE_CTRL1_Pin);
     HAL_GPIO_DeInit(FE_CTRL2_GPIO_Port, FE_CTRL2_Pin);
     HAL_GPIO_DeInit(FE_CTRL3_GPIO_Port, FE_CTRL3_Pin);
+#endif
 
     return 0;
 

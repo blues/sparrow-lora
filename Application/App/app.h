@@ -110,6 +110,13 @@ bool flashWrite(uint8_t *flashDest, void *ramSource, uint32_t bytes);
 
 // radioinit.c
 void radioInit(void);
+void radioDeInit(void);
+bool radioDeepSleep(void);
+void radioDeepWake(void);
+void radioSetChannel(uint32_t frequency);
+uint32_t radioWakeupRequiredMs(void);
+void radioRx(uint32_t timeoutMs);
+void radioTx(uint8_t *buffer, uint8_t size);
 
 // sensor.c
 void sensorTimerCancel(void);

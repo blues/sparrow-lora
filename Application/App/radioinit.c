@@ -10,6 +10,8 @@
 bool wireReceiveSignalValid = false;
 int8_t wireReceiveRSSI = 0;
 int8_t wireReceiveSNR = 0;
+bool radioIsDeepSleep = false;
+bool radioIOPending = false;
 
 /* Radio events function pointer */
 static RadioEvents_t RadioEvents;
@@ -23,6 +25,9 @@ static void OnRxError(void);
 void radioInit()
 {
 
+    // Ensure that our scheduler knows that we're awake
+    radioIsDeepSleep = false;
+
     uint16_t sizeWM = sizeof(wireMessage);
     uint16_t sizeWMC = sizeof(wireMessageCarrier);
     if (sizeWM > 254 || sizeWMC > 254) {
@@ -35,6 +40,7 @@ void radioInit()
     RadioEvents.RxTimeout = OnRxTimeout;
     RadioEvents.RxError = OnRxError;
 
+    radioIOPending = false;
     Radio.Init(&RadioEvents);
 
 #if USE_MODEM_LORA
@@ -62,9 +68,40 @@ void radioInit()
 
 }
 
+// De-initialize the radio
+void radioDeInit()
+{
+    Radio.DeInit();
+    radioIsDeepSleep = true;
+}
+
+// Place the radio in deep-sleep mode if no I/O is pending
+bool radioDeepSleep()
+{
+    if (radioIsDeepSleep) {
+        return false;
+    }
+    if (radioIOPending) {
+        return false;
+    }
+    Radio.DeepSleep();
+    radioIsDeepSleep = true;
+    return true;
+}
+
+// Wake the radio from deep sleep if we're sleeping
+void radioDeepWake()
+{
+    if (radioIsDeepSleep) {
+        radioInit();
+        HAL_Delay(500);
+    }
+}
+
 // Transmit Timeout ISR
 static void OnTxTimeout(void)
 {
+    radioIOPending = false;
     Radio.Sleep();
     ledIndicateTransmitInProgress(false);
     appSetCoreState(TX_TIMEOUT);
@@ -74,6 +111,7 @@ static void OnTxTimeout(void)
 static void OnRxTimeout(void)
 {
     wireReceivedLen = 0;
+    radioIOPending = false;
     Radio.Sleep();
     ledIndicateReceiveInProgress(false);
     appSetCoreState(RX_TIMEOUT);
@@ -83,6 +121,7 @@ static void OnRxTimeout(void)
 static void OnRxError(void)
 {
     wireReceivedLen = 0;
+    radioIOPending = false;
     Radio.Sleep();
     ledIndicateReceiveInProgress(false);
     appSetCoreState(RX_ERROR);
@@ -91,6 +130,7 @@ static void OnRxError(void)
 // Transmit Completed ISR
 static void OnTxDone(void)
 {
+    radioIOPending = false;
     Radio.Sleep();
     ledIndicateTransmitInProgress(false);
     appSetCoreState(TX);
@@ -107,6 +147,7 @@ static void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
         memcpy(&wireReceivedCarrier, payload, size);
     }
 
+    radioIOPending = false;
     Radio.Sleep();
 
     wireReceiveRSSI = rssi;
@@ -116,4 +157,32 @@ static void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
     ledIndicateReceiveInProgress(false);
     appSetCoreState(RX);
 
+}
+
+// Set the channel for transmit or receive
+void radioSetChannel(uint32_t frequency)
+{
+    Radio.SetChannel(frequency);
+}
+
+// Get the amount of time necessary to come out of sleep
+uint32_t radioWakeupRequiredMs()
+{
+    return (Radio.GetWakeupTime() + TCXO_WORKAROUND_TIME_MARGIN);
+}
+
+// Start a receive
+void radioRx(uint32_t timeoutMs)
+{
+    radioDeepWake();
+    Radio.Rx(timeoutMs);
+    radioIOPending = true;
+}
+
+// Transmit
+void radioTx(uint8_t *buffer, uint8_t size)
+{
+    radioDeepWake();
+    Radio.Send(buffer, size);
+    radioIOPending = true;
 }

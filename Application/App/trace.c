@@ -4,10 +4,12 @@
 
 #include "app.h"
 #include "main.h"
+#include "stm32wlxx_ll_gpio.h"
 
 // Forwards
 bool commonCmd(char *cmd);
 bool commonCharCmd(char ch);
+void probePin(GPIO_TypeDef *GPIOx, char *pinprefix);
 
 // Log a string "raw", returning the number of bytes sent.  Note that
 // this method's signature is compatible with the Notecard's debug tracing
@@ -256,7 +258,10 @@ void traceInput(void)
     // For now, just echo the input
     while (MX_DBG_Available()) {
         char ch = MX_DBG_Receive(NULL, NULL);
-        if (ch == '\r' || ch == '\n') {
+        if (ch == '\r') {
+            continue;
+        }
+        if (ch == '\n') {
             if (cmdChars != 0) {
                 cmd[cmdChars] = '\0';
                 if (!commonCmd(cmd)) {
@@ -307,9 +312,67 @@ bool commonCharCmd(char ch)
     return false;
 }
 
+// Probe GPIO port to see what state it's in
+void probePin(GPIO_TypeDef *GPIOx, char *pinprefix)
+{
+#if (LL_GPIO_PIN_0 != 1)
+#error huh?
+#endif
+    for (int pini=0; pini<16; pini++) {
+        int pin = 1 << pini;
+        uint32_t mode = LL_GPIO_GetPinMode(GPIOx, pin);
+        const char *modestr = "unknown";
+        bool analog = false;
+        switch (mode) {
+        case LL_GPIO_MODE_INPUT:
+            switch (LL_GPIO_GetPinPull(GPIOx, pin)) {
+            case LL_GPIO_PULL_NO:
+                modestr = "input-nopull";
+                break;
+            case LL_GPIO_PULL_UP:
+                modestr = "input-pullup";
+                break;
+            case LL_GPIO_PULL_DOWN:
+                modestr = "input-pulldown";
+                break;
+            }
+            break;
+        case LL_GPIO_MODE_OUTPUT:
+            switch (LL_GPIO_GetPinOutputType(GPIOx, pin)) {
+            case LL_GPIO_OUTPUT_PUSHPULL:
+                modestr = "output-pp";
+                break;
+            case LL_GPIO_OUTPUT_OPENDRAIN:
+                modestr = "output-od";
+                break;
+            }
+            break;
+        case LL_GPIO_MODE_ALTERNATE:
+            modestr = "alternate";
+            break;
+        case LL_GPIO_MODE_ANALOG:
+            modestr = "analog";
+            analog = true;
+            break;
+        }
+        const char *set = "";
+        if (!analog && GPIO_PIN_RESET != HAL_GPIO_ReadPin(GPIOx, pin)) {
+            set = " HIGH";
+        }
+        trace(pinprefix);
+        trace32(pini);
+        trace(": ");
+        trace(modestr);
+        trace(set);
+        traceNL();
+    }
+}
+
 // Execute console command
 bool commonCmd(char *cmd)
 {
+
+    // Turn trace on/off
     if (strcmp(cmd, "trace") == 0 || strcmp(cmd, "t") == 0) {
         trace("TRACE ON");
         traceNL();
@@ -317,12 +380,28 @@ bool commonCmd(char *cmd)
         MX_DBG_Enable();
         return true;
     }
+
+    // Restart the module
     if (strcmp(cmd, "restart") == 0) {
         trace("restarting...");
         traceNL();
         HAL_Delay(1000);
         NVIC_SystemReset();
     }
+
+    // When debugging power issues, show state of all pins
+    if (strcmp(cmd, "probe") == 0) {
+        probePin(GPIOA, "PA");
+        probePin(GPIOB, "PB");
+        probePin(GPIOC, "PC");
+        probePin(GPIOH, "PH");
+        char buf[128];
+        MY_ActivePeripherals(buf, sizeof(buf));
+        trace(buf);
+        traceNL();
+        return true;
+    }
+
     return false;
 }
 

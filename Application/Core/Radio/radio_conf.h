@@ -52,6 +52,7 @@
 // Function mapping
 // SUBGHZ interface init to radio Middleware
 #define RADIO_INIT                              MX_SUBGHZ_Init
+#define RADIO_DEINIT                            MX_SUBGHZ_DeInit
 
 // Delay interface to radio Middleware
 #define RADIO_DELAY_MS                          HAL_Delay

@@ -28,8 +28,23 @@ SPI_HandleTypeDef hspi1;
 DMA_HandleTypeDef hdma_spi1_rx;
 DMA_HandleTypeDef hdma_spi1_tx;
 TIM_HandleTypeDef htim17;
-I2C_HandleTypeDef hi2c2;
 uint32_t i2c2IOCompletions = 0;
+
+// Peripheral mask, so we can easily tell what is enabled and what is not
+#define PERIPHERAL_RNG      0x00000001
+#define PERIPHERAL_RTC      0x00000002
+#define PERIPHERAL_SUBGHZ   0x00000004
+#define PERIPHERAL_ADC      0x00000008
+#define PERIPHERAL_ADCDMA   0x00000010
+#define PERIPHERAL_LPUART1  0x00000020
+#define PERIPHERAL_USART1   0x00000040
+#define PERIPHERAL_USART2   0x00000080
+#define PERIPHERAL_CRYP     0x00000100
+#define PERIPHERAL_I2C2     0x00000200
+#define PERIPHERAL_SPI1     0x00000400
+#define PERIPHERAL_SPI1DMA  0x00000800
+#define PERIPHERAL_TIM17    0x00001000
+uint32_t peripherals = 0;
 
 // RTC
 #define BASEYEAR 2000   // Must end in 00 because of the chip's leap year computations
@@ -52,14 +67,36 @@ extern void *_estack;
 extern uint32_t _Min_Stack_Size;
 #endif
 
+// See reference manual RM0453.  The size is the last entry's address in Table 89 + sizeof(uint32_t).
+// (Don't be confused into using the entry number rather than the address, because there are negative
+// entry numbers. The highest address is the only accurate way of determining the actual table size.)
+#if defined(STM32WL55xx) || defined(STM32WLE5xx)
+#define VECTOR_TABLE_SIZE_BYTES (0x0134+sizeof(uint32_t))
+#else
+#error "Please look up NVIC table size for this processor in reference manual."
+#endif
+#if defined ( __ICCARM__ ) /* IAR Compiler */
+#pragma data_alignment=512
+#elif defined ( __CC_ARM ) /* ARM Compiler */
+__align(512)
+#elif defined ( __GNUC__ ) /* GCC Compiler */
+    __attribute__ ((aligned (512)))
+#endif
+    static uint8_t vector_t[VECTOR_TABLE_SIZE_BYTES];
+
 // Forwards
 void SystemClock_Config(void);
 static void MX_TIM17_Init(void);
 double calibrateVoltage(double v);
+size_t strlcat(char *dst, const char *src, size_t siz);
 
 // Main entry point
 int main(void)
 {
+
+    // Copy the vectors
+    memcpy(vector_t, (uint8_t *) FLASH_BASE, sizeof(vector_t));
+    SCB->VTOR = (uint32_t) vector_t;
 
     // Reset of all peripherals, Initializes the Flash interface and the Systick.
     HAL_Init();
@@ -111,8 +148,8 @@ void SystemClock_Config(void)
 
     // Configure the SYSCLKSource, HCLK, PCLK1 and PCLK2 clocks dividers
     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK3|RCC_CLOCKTYPE_HCLK
-                                  |RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1
-                                  |RCC_CLOCKTYPE_PCLK2;
+        |RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1
+        |RCC_CLOCKTYPE_PCLK2;
     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
@@ -194,11 +231,14 @@ void MX_ADC_Init(void)
         Error_Handler();
     }
 
+    peripherals |= PERIPHERAL_ADC;
+
 }
 
 // Deinitialize ADC
 void MX_ADC_DeInit(void)
 {
+    peripherals &= ~PERIPHERAL_ADC;
     HAL_NVIC_DisableIRQ(ADC_DMA_IRQn);
     HAL_ADC_DeInit(&hadc);
 }
@@ -315,11 +355,15 @@ void MX_I2C2_Init(void)
         Error_Handler();
     }
 
+    // Enabled
+    peripherals |= PERIPHERAL_I2C2;
+
 }
 
 // DeInit I2C2
 void MX_I2C2_DeInit(void)
 {
+    peripherals &= ~PERIPHERAL_I2C2;
     HAL_NVIC_DisableIRQ(I2C2_RX_DMA_IRQn);
     HAL_NVIC_DisableIRQ(I2C2_TX_DMA_IRQn);
     HAL_I2C_DeInit(&hi2c2);
@@ -464,11 +508,14 @@ void MX_SPI1_Init(void)
         Error_Handler();
     }
 
+    peripherals |= PERIPHERAL_SPI1;
+
 }
 
 // SPI1 Deinitialization
 void MX_SPI1_DeInit(void)
 {
+    peripherals &= ~PERIPHERAL_SPI1;
     HAL_NVIC_DisableIRQ(SPI1_RX_DMA_IRQn);
     HAL_NVIC_DisableIRQ(SPI1_TX_DMA_IRQn);
     HAL_SPI_DeInit(&hspi1);
@@ -482,7 +529,15 @@ void MX_SUBGHZ_Init(void)
     if (HAL_SUBGHZ_Init(&hsubghz) != HAL_OK) {
         Error_Handler();
     }
+    peripherals |= PERIPHERAL_SUBGHZ;
 
+}
+
+// SUBGHZ de-init function
+void MX_SUBGHZ_DeInit(void)
+{
+    peripherals &= ~PERIPHERAL_SUBGHZ;
+    HAL_SUBGHZ_DeInit(&hsubghz);
 }
 
 // Encrypt using AES as configured
@@ -646,6 +701,9 @@ void MX_RTC_Init(void)
         Error_Handler();
     }
 
+    // Initialized
+    peripherals |= PERIPHERAL_RTC;
+
 }
 
 // USART1 init function
@@ -685,6 +743,8 @@ void MX_USART1_UART_Init(void)
         Error_Handler();
     }
 
+    peripherals |= PERIPHERAL_USART1;
+
 }
 
 // Transmit to USART1
@@ -708,6 +768,9 @@ void MX_USART1_UART_Transmit(uint8_t *buf, uint32_t len)
 // USART1 Deinitialization
 void MX_USART1_UART_DeInit(void)
 {
+
+    // Deinitialized
+    peripherals &= ~PERIPHERAL_USART1;
 
     // Stop any pending DMA, if any
     HAL_UART_DMAStop(&huart1);
@@ -767,6 +830,9 @@ void MX_USART2_UART_Init(void)
         Error_Handler();
     }
 
+    // Enabled
+    peripherals |= PERIPHERAL_USART2;
+
 }
 
 // USART2 suspend function
@@ -814,6 +880,9 @@ void MX_USART2_UART_Transmit(uint8_t *buf, uint32_t len)
 // USART2 Deinitialization
 void MX_USART2_UART_DeInit(void)
 {
+
+    // Deinitialized
+    peripherals &= ~PERIPHERAL_USART2;
 
     // Stop any pending DMA, if any
     HAL_UART_DMAStop(&huart2);
@@ -863,6 +932,8 @@ void MX_LPUART1_UART_Init(void)
     if (HAL_UARTEx_DisableFifoMode(&hlpuart1) != HAL_OK) {
         Error_Handler();
     }
+
+    peripherals |= PERIPHERAL_LPUART1;
 
 }
 
@@ -918,6 +989,7 @@ void MX_LPUART1_UART_Transmit(uint8_t *buf, uint32_t len)
 // LPUART1 De-Initialization Function
 void MX_LPUART1_UART_DeInit(void)
 {
+    peripherals &= ~PERIPHERAL_LPUART1;
     HAL_UART_DeInit(&hlpuart1);
 }
 
@@ -947,4 +1019,50 @@ uint32_t MX_Heap_Size(uint8_t **base)
         *base = heap;
     }
     return heapSize;
+}
+
+// Get the currently active peripherals
+void MY_ActivePeripherals(char *buf, uint32_t buflen)
+{
+    *buf = '\0';
+    if ((peripherals & PERIPHERAL_RNG) != 0) {
+        strlcat(buf, "RNG ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_RTC) != 0) {
+        strlcat(buf, "RTC ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_SUBGHZ) != 0) {
+        strlcat(buf, "SUBGHZ ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_ADC) != 0) {
+        strlcat(buf, "ADC ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_ADCDMA) != 0) {
+        strlcat(buf, "ADCDMA ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_LPUART1) != 0) {
+        strlcat(buf, "LPUART1 ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_USART1) != 0) {
+        strlcat(buf, "USART1 ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_USART2) != 0) {
+        strlcat(buf, "USART2 ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_CRYP) != 0) {
+        strlcat(buf, "CRYP ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_I2C2) != 0) {
+        strlcat(buf, "I2C2 ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_SPI1) != 0) {
+        strlcat(buf, "SPI1 ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_SPI1DMA) != 0) {
+        strlcat(buf, "SPI1DMA ", buflen);
+    }
+    if ((peripherals & PERIPHERAL_TIM17) != 0) {
+        strlcat(buf, "TIM17 ", buflen);
+    }
+
 }

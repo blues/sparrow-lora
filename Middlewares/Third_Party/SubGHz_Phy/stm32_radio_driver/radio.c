@@ -100,6 +100,13 @@ static uint8_t RadioGetFskBandwidthRegValue( uint32_t bandwidth );
 static void RadioInit( RadioEvents_t *events );
 
 /*!
+ * \brief DeInitializes the radio
+ *
+ * \param None
+ */
+static void RadioDeInit( void );
+
+/*!
  * Return current radio status
  *
  * \param status Radio status.[RF_IDLE, RF_RX_RUNNING, RF_TX_RUNNING]
@@ -345,6 +352,11 @@ static void RadioSend( uint8_t *buffer, uint8_t size );
 static void RadioSleep( void );
 
 /*!
+ * \brief Sets the radio in deep sleep mode
+ */
+static void RadioDeepSleep( void );
+
+/*!
  * \brief Sets the radio in standby mode
  */
 static void RadioStandby( void );
@@ -560,6 +572,8 @@ const struct Radio_s Radio =
     RadioTxCw,
     RadioSetRxGenericConfig,
     RadioSetTxGenericConfig,
+    RadioDeInit,
+    RadioDeepSleep,
 };
 
 
@@ -897,6 +911,7 @@ static uint8_t RadioGetFskBandwidthRegValue( uint32_t bandwidth )
 
 static void RadioInit( RadioEvents_t *events )
 {
+    
     RadioEvents = events;
 
     SubgRf.RxContinuous = false;
@@ -921,6 +936,15 @@ static void RadioInit( RadioEvents_t *events )
     TimerInit( &RxTimeoutTimer, RadioOnRxTimeoutIrq );
     TimerStop( &TxTimeoutTimer );
     TimerStop( &RxTimeoutTimer );
+}
+
+static void RadioDeInit()
+{
+    TimerInit( &TxTimeoutTimer, RadioOnTxTimeoutIrq );
+    TimerInit( &RxTimeoutTimer, RadioOnRxTimeoutIrq );
+    TimerStop( &TxTimeoutTimer );
+    TimerStop( &RxTimeoutTimer );
+    SUBGRF_DeInit( );
 }
 
 static RadioState_t RadioGetStatus( void )
@@ -1580,6 +1604,15 @@ static void RadioSleep( void )
     SleepParams_t params = { 0 };
 
     params.Fields.WarmStart = 1;
+    SUBGRF_SetSleep( params );
+
+    RADIO_DELAY_MS( 2 );
+}
+
+static void RadioDeepSleep( void )
+{
+    SleepParams_t params = { 0 };
+
     SUBGRF_SetSleep( params );
 
     RADIO_DELAY_MS( 2 );

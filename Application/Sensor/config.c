@@ -5,10 +5,11 @@
 #include "sensor.h"
 
 // Enable/disable configured sensors
-#define USE_PING_DEMO               true
-#define USE_TASK_SCHEDULER_DEMO     false
 #define USE_BME                     false
 #define USE_PYQ                     false
+#define USE_PING_DEMO               true
+#define USE_TASK_SCHEDULER_TEST     false
+#define USE_SLEEP_CURRENT_TEST      false
 
 // Convenient ways of converting human-readable units to secons
 #define SECS(x)    (x)
@@ -51,7 +52,7 @@ sensorConfig allSensors[] = {
 #if USE_PING_DEMO
     {
         .name = "ping",
-        .activationPeriodSecs = MINS(1),
+        .activationPeriodSecs = MINS(5),
         .pollIntervalSecs = 15,
         .initFn = NULL,
         .activateFn = NULL,
@@ -62,7 +63,7 @@ sensorConfig allSensors[] = {
 #endif
 
     // The null task's purpose is simply to demonstrate the task scheduler
-#if USE_TASK_SCHEDULER_DEMO
+#if USE_TASK_SCHEDULER_TEST
     {
         .name = "null30",
         .activationPeriodSecs = 30,
@@ -86,6 +87,21 @@ sensorConfig allSensors[] = {
     {
         .name = "null120",
         .activationPeriodSecs = 120,
+        .pollIntervalSecs = 5,
+        .initFn = NULL,
+        .activateFn = NULL,
+        .interruptFn = NULL,
+        .pollFn = nullPoll,
+        .responseFn = NULL,
+    },
+#endif
+
+    // The sleep current task's purpose is to sleep for a long time so current
+    // drawn by a board that is neither transmitting or receiving can be measured.
+#if USE_SLEEP_CURRENT_TEST
+    {
+        .name = "sleep",
+        .activationPeriodSecs = 86400,
         .pollIntervalSecs = 5,
         .initFn = NULL,
         .activateFn = NULL,

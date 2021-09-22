@@ -31,6 +31,7 @@ void MX_LPUART1_UART_Transmit(uint8_t *buf, uint32_t len);
 void MX_LPUART1_UART_DeInit(void);
 void MX_I2C2_Init(void);
 void MX_I2C2_DeInit(void);
+void MY_ActivePeripherals(char *buf, uint32_t buflen);
 bool MY_I2C2_ReadRegister(uint16_t i2cAddress, uint8_t Reg, void *data, uint16_t maxdatalen, uint32_t timeoutMs);
 bool MY_I2C2_WriteRegister(uint16_t i2cAddress, uint8_t Reg, void *data, uint16_t datalen, uint32_t timeoutMs);
 bool MY_I2C2_Transmit(uint16_t i2cAddress, void *data, uint16_t datalen, uint32_t timeoutMs);
@@ -38,6 +39,7 @@ bool MY_I2C2_Receive(uint16_t i2cAddress, void *data, uint16_t maxdatalen, uint3
 void MX_SPI1_Init(void);
 void MX_SPI1_DeInit(void);
 void MX_SUBGHZ_Init(void);
+void MX_SUBGHZ_DeInit(void);
 void MX_RNG_Init(void);
 void MX_RNG_DeInit(void);
 void MX_AES_Init(void);

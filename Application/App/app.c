@@ -5,7 +5,7 @@
 #include "stm32_timer.h"
 #include "stm32_seq.h"
 #include "utilities_def.h"
-#include "radio.h"
+//#include "radio.h"
 #include "main.h"
 #include "app.h"
 
@@ -516,12 +516,12 @@ bool lbtListenBeforeTalk()
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
     ledIndicateTransmitInProgress(true);
-    Radio.SetChannel(ioRFFrequency);
+    radioSetChannel(ioRFFrequency);
     ListenPhaseBeforeTalk = true;
     if (TWListenBeforeTalkMs < TW_LBT_PERIOD_MS) {
         TWListenBeforeTalkMs = TW_LBT_PERIOD_MS;
     }
-    Radio.Rx(TWListenBeforeTalkMs);
+    radioRx(TWListenBeforeTalkMs);
     appSetCoreState(LOWPOWER);
 
     return true;
@@ -538,10 +538,10 @@ void lbtTalk()
     if (!appIsGateway) {
         atpGatewayMessageSent();
     }
-    Radio.SetChannel(ioRFFrequency);
-    HAL_Delay(Radio.GetWakeupTime() + TCXO_WORKAROUND_TIME_MARGIN);
+    radioSetChannel(ioRFFrequency);
+    HAL_Delay(radioWakeupRequiredMs());
     sentMessageMs = TIMER_IF_GetTimeMs();
-    Radio.Send((uint8_t *)&sentMessageCarrier, sentMessageCarrierLen);
+    radioTx((uint8_t *)&sentMessageCarrier, sentMessageCarrierLen);
     appSetCoreState(LOWPOWER);
 }
 
@@ -736,10 +736,10 @@ void gatewayWaitForSensorMessage()
     memset(&wireReceivedCarrier, 0, sizeof(wireReceivedCarrier));
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
-    Radio.SetChannel(ioRFFrequency);
+    radioSetChannel(ioRFFrequency);
     wireReceiveTimeoutMs = SOLICITED_COMMS_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
-    Radio.Rx(wireReceiveTimeoutMs);
+    radioRx(wireReceiveTimeoutMs);
     traceLn("waiting for message from a specific sensor");
     appSetCoreState(LOWPOWER);
 }
@@ -750,10 +750,10 @@ void gatewayWaitForAnySensorMessage()
     memset(&wireReceivedCarrier, 0, sizeof(wireReceivedCarrier));
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
-    Radio.SetChannel(ioRFFrequency);
+    radioSetChannel(ioRFFrequency);
     wireReceiveTimeoutMs = UNSOLICITED_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
-    Radio.Rx(wireReceiveTimeoutMs);
+    radioRx(wireReceiveTimeoutMs);
     showReceivedTime("rx", 0, 0);
     traceNL();
     appSetCoreState(LOWPOWER);
@@ -765,10 +765,10 @@ void sensorWaitForGatewayMessage()
     memset(&wireReceivedCarrier, 0, sizeof(wireReceivedCarrier));
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
-    Radio.SetChannel(ioRFFrequency);
+    radioSetChannel(ioRFFrequency);
     wireReceiveTimeoutMs = SOLICITED_COMMS_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
-    Radio.Rx(wireReceiveTimeoutMs);
+    radioRx(wireReceiveTimeoutMs);
     traceLn("waiting for message from gateway");
     appSetCoreState(LOWPOWER);
 }
@@ -779,10 +779,10 @@ void sensorWaitForGatewayResponse()
     memset(&wireReceivedCarrier, 0, sizeof(wireReceivedCarrier));
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
-    Radio.SetChannel(ioRFFrequency);
+    radioSetChannel(ioRFFrequency);
     wireReceiveTimeoutMs = SOLICITED_PROCESSING_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
-    Radio.Rx(wireReceiveTimeoutMs);
+    radioRx(wireReceiveTimeoutMs);
     traceLn("waiting for response from gateway");
     appSetCoreState(LOWPOWER);
 }
@@ -793,9 +793,9 @@ void restartReceive(uint32_t timeoutMs)
     memset(&wireReceivedCarrier, 0, sizeof(wireReceivedCarrier));
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
-    Radio.SetChannel(ioRFFrequency);
+    radioSetChannel(ioRFFrequency);
     ListenPhaseBeforeTalk = false;
-    Radio.Rx(timeoutMs);
+    radioRx(timeoutMs);
     showReceivedTime("restarting rx", 0, 0);
     traceNL();
     appSetCoreState(LOWPOWER);

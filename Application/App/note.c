@@ -55,10 +55,16 @@ bool noteInit()
         NoteSetFnMutex(NULL, NULL, NULL,NULL);
         NoteSetFnDisabled();
 
-        // Power-off I2C
+        // Power-off I2C and deinitialize the pin
         MX_I2C2_DeInit();
         HAL_GPIO_WritePin(I2C_POWER_GPIO_Port, I2C_POWER_Pin, GPIO_PIN_RESET);
-        
+        GPIO_InitTypeDef init = {0};
+        init.Mode = GPIO_MODE_ANALOG;
+        init.Pull = GPIO_NOPULL;
+        init.Speed = GPIO_SPEED_FREQ_LOW;
+        init.Pin = I2C_POWER_Pin;
+        HAL_GPIO_Init(I2C_POWER_GPIO_Port, &init);
+
         return false;
     }
 

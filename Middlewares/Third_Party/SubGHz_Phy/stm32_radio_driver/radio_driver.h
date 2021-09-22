@@ -775,6 +775,7 @@ typedef void ( *DioIrqHandler )( RadioIrqMasks_t radioIrq );
  * \brief Initializes the bus for SUBG_RF driver communication
  */
 void SUBGRF_Init( DioIrqHandler dioIrq );
+void SUBGRF_DeInit(void);
 
  /*!
  * \brief  Gets the current Operation Mode of the Radio

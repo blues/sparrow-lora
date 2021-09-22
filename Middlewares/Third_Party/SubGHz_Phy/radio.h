@@ -442,6 +442,15 @@ struct Radio_s
      * \return 0 when no parameters error, -1 otherwise
      */
     int32_t (*RadioSetTxGenericConfig)( GenericModems_t modem, TxConfigGeneric_t* config, int8_t power, uint32_t timeout );
+    /*!
+     * \brief De-initializes the radio
+     *
+     */
+    void    ( *DeInit )( void );
+    /*!
+     * \brief Sets the radio in deep sleep mode
+     */
+    void    ( *DeepSleep )( void );
 };
 
 /*!

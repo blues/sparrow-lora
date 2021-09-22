@@ -153,6 +153,18 @@ void SUBGRF_Init( DioIrqHandler dioIrq )
     OperatingMode = MODE_STDBY_RC;
 }
 
+// 2021-09-22 Ray - amazingly nobody seems to have done a DeInit,
+// so it's up to us.
+void SUBGRF_DeInit( )
+{
+
+    SleepParams_t params = { 0 };
+    SUBGRF_SetSleep( params );
+    RADIO_DEINIT();
+    RBI_DeInit();
+
+}
+
 RadioOperatingModes_t SUBGRF_GetOperatingMode( void )
 {
     return OperatingMode;

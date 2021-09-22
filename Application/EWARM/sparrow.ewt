@@ -1525,9 +1525,15 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Core\Src\stm32_lpm_if.c</name>
+                <configuration>
+                    <name>sparrow</name>
+                </configuration>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Core\Src\stm32wlxx_hal_msp.c</name>
+                <configuration>
+                    <name>sparrow</name>
+                </configuration>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Core\Src\stm32wlxx_it.c</name>
