@@ -74,9 +74,12 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
         hdma_adc.Init.MemInc = DMA_MINC_ENABLE;
         hdma_adc.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
         hdma_adc.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
-        hdma_adc.Init.Mode = DMA_NORMAL;
-        hdma_adc.Init.Priority = DMA_PRIORITY_LOW;
+        hdma_adc.Init.Mode = DMA_CIRCULAR;
+        hdma_adc.Init.Priority = DMA_PRIORITY_HIGH;
         if (HAL_DMA_Init(&hdma_adc) != HAL_OK) {
+            Error_Handler();
+        }
+        if (HAL_DMA_ConfigChannelAttributes(&hdma_adc, DMA_CHANNEL_NPRIV) != HAL_OK) {
             Error_Handler();
         }
         __HAL_LINKDMA(hadc, DMA_Handle, hdma_adc);

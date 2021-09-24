@@ -48,11 +48,11 @@ sensorConfig allSensors[] = {
     },
 #endif
 
-    // The ping task, when enabled, sends out test messages repeatedly ASAP
+    // The ping task, when enabled, sends out test messages on a periodic basis
 #if USE_PING_DEMO
     {
         .name = "ping",
-        .activationPeriodSecs = MINS(5),
+        .activationPeriodSecs = MINS(15),
         .pollIntervalSecs = 15,
         .initFn = NULL,
         .activateFn = NULL,

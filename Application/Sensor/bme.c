@@ -52,9 +52,9 @@ bool bmeInit(int sensorID)
     init.Mode = GPIO_MODE_OUTPUT_PP;
     init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_HIGH;
-    init.Pin = I2C_POWER_Pin;
-    HAL_GPIO_Init(I2C_POWER_GPIO_Port, &init);
-    HAL_GPIO_WritePin(I2C_POWER_GPIO_Port, I2C_POWER_Pin, GPIO_PIN_RESET);
+    init.Pin = BME_POWER_Pin;
+    HAL_GPIO_Init(BME_POWER_GPIO_Port, &init);
+    HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_RESET);
 
     return true;
     
@@ -163,11 +163,11 @@ static bool addNote()
 {
     
     // Measure the sensor values
-    HAL_GPIO_WritePin(I2C_POWER_GPIO_Port, I2C_POWER_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_SET);
     MX_I2C2_Init();
     bool success = bmeUpdate();
     MX_I2C2_DeInit();
-    HAL_GPIO_WritePin(I2C_POWER_GPIO_Port, I2C_POWER_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_RESET);
     if (!success) {
         traceLn("bme: update failed");
         return false;

@@ -292,6 +292,8 @@ void traceInput(void)
 // Execute console command that is a single character
 bool commonCharCmd(char ch)
 {
+
+    // Display time
     if (ch == '=') {
         uint32_t localTimeSecs = NoteTimeST();
         int64_t localTimeMs = TIMER_IF_GetTimeMs();
@@ -309,6 +311,15 @@ bool commonCharCmd(char ch)
         }
         return true;
     }
+
+    // Display voltage
+#if (CURRENT_BOARD != BOARD_NUCLEO)
+    if (ch == '+') {
+        traceValueLn("bat: ", (uint32_t) (MX_ADC_A0_Voltage() * 1000.0), " millivolts");
+        return true;
+    }
+#endif
+
     return false;
 }
 

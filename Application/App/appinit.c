@@ -162,9 +162,18 @@ int tristate(uint16_t pin, GPIO_TypeDef *port)
 // Initialize app hardware I/O
 void ioInit(void)
 {
+    GPIO_InitTypeDef  gpio_init_structure = {0};
 
-    // Compute the RF frequency based on the region switch settings
+    // Compute the RF frequency based on the region switch settings.  Note that
+    // we power these pins with LED_RED so that they aren't a constant current
+    // draw on the system.
 #if (CURRENT_BOARD!=BOARD_NUCLEO)
+    gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
+    gpio_init_structure.Pull = GPIO_NOPULL;
+    gpio_init_structure.Speed = GPIO_SPEED_FREQ_LOW;
+    gpio_init_structure.Pin = LED_RED_Pin;
+    HAL_GPIO_Init(LED_RED_GPIO_Port, &gpio_init_structure);
+    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
     int gpio0 = tristate(RFSEL_0_Pin, RFSEL_0_GPIO_Port);
     int gpio1 = tristate(RFSEL_1_Pin, RFSEL_1_GPIO_Port);
     int value;
@@ -237,7 +246,6 @@ void ioInit(void)
 #endif
 
     // Init LEDs
-    GPIO_InitTypeDef  gpio_init_structure = {0};
     gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_init_structure.Pull = GPIO_NOPULL;
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_LOW;

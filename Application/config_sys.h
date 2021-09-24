@@ -8,22 +8,30 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-// Optionally Low Power mode
-#define LOW_POWER_DISABLE 0
+// Enables trace output and input on an attached serial terminal.  Note that
+// if using LPUART1 this costs xxx nA, and using USART2 it's crazy expensive.
+// Do NOT ship battery powered products with this enabled.
+#define DEBUGGER_ON                                     true
 
-// Always enable LEDs, even on sensors with batteries that nobody is debugging
+// Normally, on sensors, the LEDs will shut off after some period of time after
+// boot in order to save energy.  Sometimes disabling this feature is useful
+// when debugging.  Obviously if in an enclosure where LEDs are not visible
+// this should be set to false.
 #define LEDS_ALWAYS                                     false
 
 // Enable tracing
-#define DEBUGGER_ON                                     1
-#define DEBUGGER_ON_USART2                              0
-#define DEBUGGER_ON_LPUART1                             1
+#define DEBUGGER_ON_USART2                              false
+#define DEBUGGER_ON_LPUART1                             true
 
 // Special GPIO trace methods when working on radio code
-#define DEBUGGER_RADIO_DBG_GPIO                         0
+#define DEBUGGER_RADIO_DBG_GPIO                         false
+
+// Disable entering STOP2 low-power mode (should never be necessary, even when debugging)
+#define LOW_POWER_DISABLE                               false
 
 // Trace methods (which are designed this way so they don't require the large printf library)
 size_t trace(const char *message);
+#define DEBUG_VARIABLE(X) ((void)(X))
 #if DEBUGGER_ON
 void traceN(const char *message, uint32_t length);
 void traceNL(void);
@@ -46,6 +54,8 @@ bool traceInputAvailable(void);
 #define traceNL()
 #define trace32(value)
 #define traceLn(message)
+#define trace2Ln(m1, m2)
+#define  trace3Ln(m1, m2, m3)
 #define traceValueLn(m1, n1, m2)
 #define traceValue2Ln(m1, n1, m2, n2, m3)
 #define traceValue3Ln(m1, n1, m2, n2, m3, n3, m4)
@@ -54,6 +64,6 @@ bool traceInputAvailable(void);
 #define traceBufferLn(m1, buffer, length)
 #define traceClearID(void)
 #define traceSetID(state, address, requestID)
-#define traceInput() (0)
+#define traceInput() 
 #define traceInputAvailable() (0)
 #endif

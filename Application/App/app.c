@@ -245,6 +245,7 @@ void sendMessageToPeer(bool useTW, uint8_t *toAddress)
     }
 
     const char *m1 = "sending (";
+    DEBUG_VARIABLE(m1);
     if ((messageToSendFlags & MESSAGE_FLAG_ACK)) {
         m1 = "sending ACK (";
     } else if ((messageToSendFlags & MESSAGE_FLAG_BEACON)) {
@@ -1554,6 +1555,10 @@ void showReceivedTime(char *msg, uint32_t beginSecs, uint32_t endSecs)
     uint32_t sensorSlotNumber = beginSecs / slotSecs;
     uint32_t sensorSlotBeginTime = thisWindowBeginTime + beginSecs;
     uint32_t sensorSlotEndTime = thisWindowBeginTime + endSecs;
+    DEBUG_VARIABLE(nextWindowBeginTime);
+    DEBUG_VARIABLE(thisSlotOffset);
+    DEBUG_VARIABLE(nextSlotBeginTime);
+    DEBUG_VARIABLE(sensorSlotEndTime);
     trace(msg);
     if (appIsGateway && NoteTimeValidST() && thisWindowBeginTime > gatewayBootTime) {
         trace(" window:");

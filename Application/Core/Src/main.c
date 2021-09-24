@@ -30,6 +30,17 @@ DMA_HandleTypeDef hdma_spi1_tx;
 TIM_HandleTypeDef htim17;
 uint32_t i2c2IOCompletions = 0;
 
+// ADC buffer
+#if defined ( __ICCARM__ ) /* IAR Compiler */
+#pragma data_alignment=8
+#elif defined ( __CC_ARM ) /* ARM Compiler */
+__align(8)
+#elif defined ( __GNUC__ ) /* GCC Compiler */
+__attribute__ ((aligned (8)))
+#endif
+    uint16_t adcValues[ADC_TOTAL] = {0};
+bool adcDMACompleted = false;
+
 // Peripheral mask, so we can easily tell what is enabled and what is not
 #define PERIPHERAL_RNG      0x00000001
 #define PERIPHERAL_RTC      0x00000002
@@ -203,33 +214,63 @@ void MX_DMA_Init(void)
 void MX_ADC_Init(void)
 {
 
-    // Enable DMA interrupts
-    HAL_NVIC_SetPriority(ADC_DMA_IRQn, 2, 0);
-    HAL_NVIC_EnableIRQ(ADC_DMA_IRQn);
-
     // Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
     hadc.Instance = ADC;
+
     hadc.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV8;
-    hadc.Init.Resolution = ADC_RESOLUTION_12B;      // MX_ADC_Values() below relies upon this
+    hadc.Init.Resolution = ADC_RESOLUTION_12B;
     hadc.Init.DataAlign = ADC_DATAALIGN_RIGHT;
     hadc.Init.ScanConvMode = ADC_SCAN_ENABLE;
     hadc.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
     hadc.Init.LowPowerAutoWait = DISABLE;
     hadc.Init.LowPowerAutoPowerOff = DISABLE;
     hadc.Init.ContinuousConvMode = DISABLE;
-    hadc.Init.NbrOfConversion = 1;
+    hadc.Init.NbrOfConversion = ADC_TOTAL;
     hadc.Init.DiscontinuousConvMode = ENABLE;
     hadc.Init.ExternalTrigConv = ADC_SOFTWARE_START;
     hadc.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
     hadc.Init.DMAContinuousRequests = DISABLE;
-    hadc.Init.Overrun = ADC_OVR_DATA_PRESERVED;
-    hadc.Init.SamplingTimeCommon1 = ADC_SAMPLETIME_1CYCLE_5;
-    hadc.Init.SamplingTimeCommon2 = ADC_SAMPLETIME_1CYCLE_5;
+    hadc.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN;
+    hadc.Init.SamplingTimeCommon1 = ADC_SAMPLETIME_39CYCLES_5;
+    hadc.Init.SamplingTimeCommon2 = ADC_SAMPLETIME_160CYCLES_5;
     hadc.Init.OversamplingMode = DISABLE;
     hadc.Init.TriggerFrequencyMode = ADC_TRIGGER_FREQ_HIGH;
     if (HAL_ADC_Init(&hadc) != HAL_OK) {
         Error_Handler();
     }
+
+    // Configure Regular Channels and the VREFINT Channel
+    ADC_ChannelConfTypeDef sConfig;
+    memset(&sConfig, 0, sizeof(sConfig));
+
+    sConfig.Channel = VREFINT_ADC_Channel;
+    sConfig.Rank = VREFINT_ADC_Rank;
+    sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_1;
+    HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+    sConfig.Channel = A0_ADC_Channel;
+    sConfig.Rank = A0_ADC_Rank;
+    sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_2;
+    HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+    sConfig.Channel = A1_ADC_Channel;
+    sConfig.Rank = A1_ADC_Rank;
+    sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_2;
+    HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+    sConfig.Channel = A2_ADC_Channel;
+    sConfig.Rank = A2_ADC_Rank;
+    sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_2;
+    HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+    sConfig.Channel = A3_ADC_Channel;
+    sConfig.Rank = A3_ADC_Rank;
+    sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_2;
+    HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+    // Enable DMA interrupts
+    HAL_NVIC_SetPriority(ADC_DMA_IRQn, 2, 0);
+    HAL_NVIC_EnableIRQ(ADC_DMA_IRQn);
 
     peripherals |= PERIPHERAL_ADC;
 
@@ -243,51 +284,52 @@ void MX_ADC_DeInit(void)
     HAL_ADC_DeInit(&hadc);
 }
 
-// Return ADC_COUNT words of values
+// Return ADC_COUNT words of values assuming that they're all voltages
 bool MX_ADC_Values(uint16_t *wordValues, double *voltageValues, double *vref)
 {
-    bool success = true;
+
+    // Init ADC
+    MX_ADC_Init();
+
+    // Calibrate
+    HAL_ADCEx_Calibration_Start(&hadc);
+
+    // Start DMA
+    adcDMACompleted = false;
+    memset(adcValues, 0xff, sizeof(adcValues));
+    HAL_ADC_Start_DMA(&hadc, (uint32_t *) adcValues, ADC_TOTAL);
 
     // Perform ADC Conversion, aborting if there is a conversion error
     // because we will lose track of the sequencer position
-    uint16_t adcValues[ADC_TOTAL] = {0};
-    for (int rankIndex=0; rankIndex<ADC_TOTAL; rankIndex++) {         // +1 so we get VREFINT
+    for (int i=0; i<250 && !adcDMACompleted; i++) {
         HAL_ADC_Start(&hadc);
-        if (HAL_ADC_PollForConversion(&hadc, 100) != HAL_OK) {
-            success = false;
-            break;
-        }
-        adcValues[rankIndex] = HAL_ADC_GetValue(&hadc);
+        HAL_Delay(10);
     }
 
     // Stop ADC
     HAL_ADC_Stop(&hadc);
 
+    // Deinit ADC
+    MX_ADC_DeInit();
+
     // Exit if error
-    if (!success) {
-        return false;
+    if (!adcDMACompleted) {
     }
 
-    // Calculate the voltage of the VDDA by knowing our internal reference (which is in millivolts)
-    //    VDDA = 3.0 V x VREFINT_CAL / VREFINT_DATA
-    //    V_CHANNEL = ADC1_DATA * (VDDA / FULL_SCALE)
-    //     - VREFINT_CAL is the VREFINT calibration value
-    //     - VREFINT_DATA is the actual VREFINT output value converted by ADC
-    //     - FULL_SCALE  is the maximum digital value of the ADC output
-    uint16_t adc_int_vref = (uint16_t)READ_REG(*VREFINT_CAL_ADDR);
-    double VDDA = (((double)VREFINT_CAL_VREF * (double)adc_int_vref) / (double)adcValues[0]) / 1000;
+    // Calculate vrefint voltage, knowing that vrefint is the first
+    uint16_t VrefInt_mVolt = __LL_ADC_CALC_VREFANALOG_VOLTAGE(adcValues[0], LL_ADC_RESOLUTION_12B);
     if (vref != NULL) {
-        *vref = VDDA;
+        *vref = ((double) VrefInt_mVolt) / 1000;
     }
 
-    // Calculate results, knowing that the adcValues are skewed by one because VREFINT is adcValues[0]
-    for (int rankIndex=0; rankIndex<ADC_COUNT; rankIndex++) {
+    // Calculate return array of voltages, skipping the first which is vrefint
+    for (int rankIndex=1; rankIndex<ADC_COUNT; rankIndex++) {
         if (wordValues != NULL) {
-            wordValues[rankIndex] = adcValues[rankIndex+1] << 4;    // 12-bit to 16-bit scale
+            wordValues[rankIndex-1] = adcValues[rankIndex] << 4;    // 12-bit to 16-bit scale
         }
         if (voltageValues != NULL) {
-            const int adc_scale_12bit = 4096;                       // 2^12 for 12-bit resolution
-            voltageValues[rankIndex] = (double)adcValues[rankIndex+1] * (VDDA / adc_scale_12bit);
+            double v = __LL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, adcValues[rankIndex], LL_ADC_RESOLUTION_12B);
+            voltageValues[rankIndex-1] = ((double) v) / 1000;
         }
     }
 
@@ -296,29 +338,61 @@ bool MX_ADC_Values(uint16_t *wordValues, double *voltageValues, double *vref)
 
 }
 
+// Conversion complete callback in non blocking mode
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+    adcDMACompleted = true;
+}
+
+// Conversion DMA half-transfer callback in non blocking mode
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
+{
+}
+
+// ADC error callback in non blocking mode
+void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *hadc)
+{
+}
+
 // This function calibrates the voltage across its known range of slope and target
 //  2018-08-05 5.5v was measured as 5.39862984, and 2.5v was measured at 2.28016664
 double calibrateVoltage(double v)
 {
-    double measuredAt2p5 = 2.28016663992311;
-    double measuredAt5p5 = 5.3986298386415;
-    double unadjustedSwing = measuredAt5p5 - measuredAt2p5;
-    double minOffset = 2.5 - measuredAt2p5;
-    double adjustedSwing = (measuredAt5p5 + minOffset) - 5.5;
-    double calibrated = (v + minOffset) - (((v - measuredAt2p5) / unadjustedSwing) * adjustedSwing);
-    return calibrated;
+#if (CURRENT_BOARD != BOARD_NUCLEO)
+    v = v * BATMON_ADJUSTMENT;
+#endif
+    return v;
 }
 
 // Get a calibrated voltage level using the ADC's A0 line
+// Note that the BAT MON is powered by the red LED for current savings.
 double MX_ADC_A0_Voltage()
 {
+
+#if (CURRENT_BOARD == BOARD_NUCLEO)
+
+    return 0.0;
+
+#else
+
+    bool ledWasEnabled = HAL_GPIO_ReadPin(LED_RED_GPIO_Port, LED_RED_Pin);
+    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+
+    // Measure the voltage
     double voltage = 0.0;
     double voltageValues[ADC_COUNT];
     if (MX_ADC_Values(NULL, voltageValues, NULL)) {
-        double uncalibratedBatteryVoltage = (voltageValues[0] * A0_DIV_K);  // voltageValues[0] == A0
-        voltage = calibrateVoltage(uncalibratedBatteryVoltage);
+        voltage = calibrateVoltage(voltageValues[0]);
     }
+
+    if (!ledWasEnabled) {
+        HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+    }
+
     return voltage;
+
+#endif
+
 }
 
 // Init I2C2

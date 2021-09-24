@@ -191,9 +191,9 @@
 #define PYQ_DIRECT_LINK_EXTI_IRQn       EXTI9_5_IRQn
 #define PYQ_DIRECT_LINK_IT_PRIORITY     15
 
-// I2C Power Pin - powering peripherals on a switched i2c bus
-#define I2C_POWER_Pin                   GPIO_PIN_5          // PA5
-#define I2C_POWER_GPIO_Port             GPIOA
+// BME Power Pin - powering peripherals on a switched i2c bus
+#define BME_POWER_Pin                   GPIO_PIN_5          // PA5
+#define BME_POWER_GPIO_Port             GPIOA
 
 // LEDs
 #if (CURRENT_BOARD != BOARD_NUCLEO)
@@ -284,10 +284,11 @@
 #define FLASH_TOTAL_BYTES       FLASH_SIZE
 #endif
 
-// A0 voltage divider
-#define A0_DIV_TOP_RESISTOR     (float)10       // 10M Ohm
-#define A0_DIV_BOT_RESISTOR     (float)4.3      // 4.3M Ohm
-#define A0_DIV_K                (double)((A0_DIV_TOP_RESISTOR + A0_DIV_BOT_RESISTOR) / A0_DIV_BOT_RESISTOR)
+// Value of analog reference voltage connected to supply Vdda (mV)
+#define VDDA_APPLI          (3300U)
+#if (CURRENT_BOARD != BOARD_NUCLEO)
+#define BATMON_ADJUSTMENT   3           // Multiplier for this version of battery monitor
+#endif
 
 // IO vars
 extern uint32_t ioRFFrequency;

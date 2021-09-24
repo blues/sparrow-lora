@@ -28,17 +28,6 @@ bool noteInit()
     NoteSetFnMutex(NULL, NULL, noteBeginTransaction, noteEndTransaction);
     NoteSetFnI2C(NOTE_I2C_ADDR_DEFAULT, NOTE_I2C_MAX_DEFAULT, noteI2CReset, noteI2CTransmit, noteI2CReceive);
 
-    // Power-on I2C to see if the device is there
-    GPIO_InitTypeDef init = {0};
-    init.Mode = GPIO_MODE_OUTPUT_PP;
-    init.Pull = GPIO_NOPULL;
-    init.Speed = GPIO_SPEED_FREQ_HIGH;
-    init.Pin = I2C_POWER_Pin;
-    HAL_GPIO_Init(I2C_POWER_GPIO_Port, &init);
-    HAL_GPIO_WritePin(I2C_POWER_GPIO_Port, I2C_POWER_Pin, GPIO_PIN_SET);
-    HAL_Delay(250);
-    MX_I2C2_Init();
-
     // Test to see if a notecard is present
     bool notecardFound = false;
     for (int i=0; i<3; i++) {
@@ -57,14 +46,6 @@ bool noteInit()
 
         // Power-off I2C and deinitialize the pin
         MX_I2C2_DeInit();
-        HAL_GPIO_WritePin(I2C_POWER_GPIO_Port, I2C_POWER_Pin, GPIO_PIN_RESET);
-        GPIO_InitTypeDef init = {0};
-        init.Mode = GPIO_MODE_ANALOG;
-        init.Pull = GPIO_NOPULL;
-        init.Speed = GPIO_SPEED_FREQ_LOW;
-        init.Pin = I2C_POWER_Pin;
-        HAL_GPIO_Init(I2C_POWER_GPIO_Port, &init);
-
         return false;
     }
 
