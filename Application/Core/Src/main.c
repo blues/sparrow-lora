@@ -359,7 +359,22 @@ void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *hadc)
 double calibrateVoltage(double v)
 {
 #if (CURRENT_BOARD != BOARD_NUCLEO)
-    v = v * BATMON_ADJUSTMENT;
+
+    // If the dev supplies 3.3v directly to the QUIIC connector, it will work but
+    // by bypassing the voltage regulator we can't read the voltage from the regulator's
+    // battery monitor.  However, we DO know the voltage because it must be 3.3v
+    // to have been supplied at the QUIIC connector.
+    if (v < 0.01) {
+
+        v = ((double) VDDA_APPLI) / 1000.0;
+
+    } else {
+
+        // The BAT MON pin of the RP605 requires a multiplier to compute actual voltage
+        v = v * BATMON_ADJUSTMENT;
+
+    }
+
 #endif
     return v;
 }

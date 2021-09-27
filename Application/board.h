@@ -287,7 +287,7 @@
 // Value of analog reference voltage connected to supply Vdda (mV)
 #define VDDA_APPLI          (3300U)
 #if (CURRENT_BOARD != BOARD_NUCLEO)
-#define BATMON_ADJUSTMENT   3           // Multiplier for this version of battery monitor
+#define BATMON_ADJUSTMENT   3           // Multiplier for RP605Z333B used by Sparrow
 #endif
 
 // IO vars
