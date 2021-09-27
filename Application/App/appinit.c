@@ -35,6 +35,17 @@ void MX_AppMain(void)
     // Initialize GPIOs
     ioInit();
 
+    // Determine and display our own device address
+    memset(ourAddress, 0, sizeof(ourAddress));
+    unpack32(&ourAddress[0], HAL_GetUIDw0());
+    unpack32(&ourAddress[4], HAL_GetUIDw1());
+    unpack32(&ourAddress[8], HAL_GetUIDw2());
+    utilAddressToText(ourAddress, ourAddressText, sizeof(ourAddressText));
+    trace("{\"id\":\"");
+    trace(ourAddressText);
+    traceLn("\"}");
+    traceLn("");
+
     // Remember the time when we were booted
     appBootMs = TIMER_IF_GetTimeMs();
 
@@ -289,13 +300,6 @@ void unpack32(uint8_t *p, uint32_t value)
 // Register the app as a util task
 void registerApp(void)
 {
-
-    // Determine our own address
-    memset(ourAddress, 0, sizeof(ourAddress));
-    unpack32(&ourAddress[0], HAL_GetUIDw0());
-    unpack32(&ourAddress[4], HAL_GetUIDw1());
-    unpack32(&ourAddress[8], HAL_GetUIDw2());
-    utilAddressToText(ourAddress, ourAddressText, sizeof(ourAddressText));
 
     // Determine the gateway address
     if (appIsGateway) {
