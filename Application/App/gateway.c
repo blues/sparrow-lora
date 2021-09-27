@@ -146,8 +146,8 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
 
     // Update the last reset time
     if (last_var_gateway_sensordb_reset_counts != 0
-            && var_gateway_sensordb_reset_counts != 0
-            && last_var_gateway_sensordb_reset_counts != var_gateway_sensordb_reset_counts) {
+        && var_gateway_sensordb_reset_counts != 0
+        && last_var_gateway_sensordb_reset_counts != var_gateway_sensordb_reset_counts) {
         time_var_gateway_sensordb_reset_counts = NoteTimeST();
     }
     last_var_gateway_sensordb_reset_counts = var_gateway_sensordb_reset_counts;
@@ -159,109 +159,131 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
     if (dbLastUpdateTime == 0 || now >= dbLastUpdateTime+(var_gateway_sensordb_update_mins*60)) {
         dbLastUpdateTime = now;
 
+        // Update from the config DB at most when we do a full sync with the service
+        bool updateFromConfigDatabase = false;
+        J *rsp = NoteRequestResponse(NoteNewRequest("hub.sync.status"));
+        if (rsp != NULL) {
+            if (!NoteResponseError(rsp)) {
+                static JTIME lastSyncTime = 0;
+                JTIME syncTime = JGetInt(rsp, "time");
+                if (lastSyncTime == 0 || syncTime != lastSyncTime) {
+                    lastSyncTime = syncTime;
+                    updateFromConfigDatabase = true;
+                }
+            }
+            NoteDeleteResponse(rsp);
+        }
+
         // Load the entire set of configuration notes, to minimize latency.  We need
         // to keep latency to a minimum because for every second we spend in here
         // it's a second we don't have a receive outstanding.
-        J *req = NoteNewRequest("note.changes");
-        JAddStringToObject(req, "file", CONFIGDB);
-        J *rsp = NoteRequestResponse(req);
-        if (rsp != NULL) {
+        if (updateFromConfigDatabase) {
+            J *req = NoteNewRequest("note.changes");
+            JAddStringToObject(req, "file", CONFIGDB);
+            NoteSuspendTransactionDebug();
+            J *rsp = NoteRequestResponse(req);
+            NoteResumeTransactionDebug();
+            if (rsp != NULL) {
 
-            // Get the results
-            J *notes = JDetachItemFromObject(rsp, "notes");
+                // Get the results
+                J *notes = JDetachItemFromObject(rsp, "notes");
 
-            // We no longer need the response
-            NoteDeleteResponse(rsp);
+                // We no longer need the response
+                NoteDeleteResponse(rsp);
 
-            // Enumerate notes within the results
-            J *note = NULL;
-            bool updateConfig = false;
-            JObjectForEach(note, notes) {
+                // Enumerate notes within the results
+                J *note = NULL;
+                bool updateConfig = false;
+                JObjectForEach(note, notes) {
 
-                // Get the sensor ID (in hex)
-                const char *sensorIDHex = JGetItemName(note);
+                    // Get the sensor ID (in hex)
+                    const char *sensorIDHex = JGetItemName(note);
 
-                // Get the sensor location (encoded in OLC format)
-                const char *bodyName = "";
-                const char *bodyLoc = "";
-                J *body = JGetObject(note, "body");
-                if (body != NULL) {
-                    bodyName = JGetString(body, "name");
-                    bodyLoc = JGetString(body, "loc");
+                    // Get the sensor location (encoded in OLC format)
+                    const char *bodyName = "";
+                    const char *bodyLoc = "";
+                    J *body = JGetObject(note, "body");
+                    if (body != NULL) {
+                        bodyName = JGetString(body, "name");
+                        bodyLoc = JGetString(body, "loc");
+                    }
+
+                    // Get the sensor name, and create a composite with the location
+                    char sensorName[256];
+                    strlcpy(sensorName, bodyName, sizeof(sensorName));
+                    if (bodyLoc[0] != '\0') {
+                        strlcat(sensorName, " [", sizeof(sensorName));
+                        strlcat(sensorName, bodyLoc, sizeof(sensorName));
+                        strlcat(sensorName, "]", sizeof(sensorName));
+                    }
+
+                    // Convert the sensor ID from hex to binary
+                    bool validHex = true;
+                    uint8_t addrbuf[ADDRESS_LEN];
+                    int addrlen = 0;
+                    const char *p = sensorIDHex;
+                    while (*p != '\0' && *(p+1) != '\0') {
+                        char ch1 = *p++;
+                        char ch2 = *p++;
+                        uint8_t value = 0;
+                        if (ch1 >= '0' && ch1 <= '9') {
+                            value |= (ch1 - '0') << 4;
+                        } else if (ch1 >= 'a' && ch1 <= 'f') {
+                            value |= ((ch1 - 'a') + 10) << 4;
+                        } else if (ch1 >= 'A' && ch1 <= 'F') {
+                            value |= ((ch1 - 'A') + 10) << 4;
+                        } else {
+                            validHex = false;
+                            break;
+                        }
+                        if (ch2 >= '0' && ch2 <= '9') {
+                            value |= (ch2 - '0');
+                        } else if (ch2 >= 'a' && ch2 <= 'f') {
+                            value |= ((ch2 - 'a') + 10);
+                        } else if (ch2 >= 'A' && ch2 <= 'F') {
+                            value |= ((ch2 - 'A') + 10);
+                        } else {
+                            validHex = false;
+                            break;
+                        }
+                        if (addrlen >= ADDRESS_LEN) {
+                            validHex = false;
+                            break;
+                        }
+                        addrlen++;
+                        addrbuf[ADDRESS_LEN-addrlen] = value;
+                    }
+
+                    // If valid hex and the length is at least 2 bytes, set the name
+                    if (validHex && addrlen >= 2) {
+                        if (flashConfigUpdatePeerName(&addrbuf[ADDRESS_LEN-addrlen], addrlen, sensorName)) {
+                            trace("config: ");
+                            trace(sensorIDHex);
+                            trace(" name updated to '");
+                            trace(sensorName);
+                            trace("'");
+                            traceNL();
+                            updateConfig = true;
+                        } else {
+#if 0
+                            trace("config: ");
+                            trace(sensorIDHex);
+                            trace(" remains ");
+                            trace(sensorName);
+                            traceNL();
+#endif
+                        }
+                    }
+
                 }
 
-                // Get the sensor name, and create a composite with the location
-                char sensorName[256];
-                strlcpy(sensorName, bodyName, sizeof(sensorName));
-                if (bodyLoc[0] != '\0') {
-                    strlcat(sensorName, " [", sizeof(sensorName));
-                    strlcat(sensorName, bodyLoc, sizeof(sensorName));
-                    strlcat(sensorName, "]", sizeof(sensorName));
+                // Done with all configured notes
+                JDelete(notes);
+
+                // Update the config if something changed
+                if (updateConfig) {
+                    flashConfigUpdate();
                 }
-
-                // Convert the sensor ID from hex to binary
-                bool validHex = true;
-                uint8_t addrbuf[ADDRESS_LEN];
-                int addrlen = 0;
-                const char *p = sensorIDHex;
-                while (*p != '\0' && *(p+1) != '\0') {
-                    char ch1 = *p++;
-                    char ch2 = *p++;
-                    uint8_t value = 0;
-                    if (ch1 >= '0' && ch1 <= '9') {
-                        value |= (ch1 - '0') << 4;
-                    } else if (ch1 >= 'a' && ch1 <= 'f') {
-                        value |= ((ch1 - 'a') + 10) << 4;
-                    } else if (ch1 >= 'A' && ch1 <= 'F') {
-                        value |= ((ch1 - 'A') + 10) << 4;
-                    } else {
-                        validHex = false;
-                        break;
-                    }
-                    if (ch2 >= '0' && ch2 <= '9') {
-                        value |= (ch2 - '0');
-                    } else if (ch2 >= 'a' && ch2 <= 'f') {
-                        value |= ((ch2 - 'a') + 10);
-                    } else if (ch2 >= 'A' && ch2 <= 'F') {
-                        value |= ((ch2 - 'A') + 10);
-                    } else {
-                        validHex = false;
-                        break;
-                    }
-                    if (addrlen >= ADDRESS_LEN) {
-                        validHex = false;
-                        break;
-                    }
-                    addrlen++;
-                    addrbuf[ADDRESS_LEN-addrlen] = value;
-                }
-
-                // If valid hex and the length is at least 2 bytes, set the name
-                if (validHex && addrlen >= 2) {
-                    if (flashConfigUpdatePeerName(&addrbuf[ADDRESS_LEN-addrlen], addrlen, sensorName)) {
-                        trace("config: ");
-                        trace(sensorIDHex);
-                        trace(" name updated to '");
-                        trace(sensorName);
-                        trace("'");
-                        traceNL();
-                        updateConfig = true;
-                    } else {
-                        trace("config: ");
-                        trace(sensorIDHex);
-                        trace(" remains ");
-                        trace(sensorName);
-                        traceNL();
-                    }
-                }
-            }
-
-            // Done with all configured notes
-            JDelete(notes);
-
-            // Update the config if something changed
-            if (updateConfig) {
-                flashConfigUpdate();
             }
         }
 
@@ -293,7 +315,9 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
             utilAddressToText(sensorAddress, noteID, sizeof(noteID));
             JAddStringToObject(req, "note", noteID);
             JAddStringToObject(req, "file", SENSORDB);
+            NoteSuspendTransactionDebug();
             J *rsp = NoteRequestResponse(req);
+            NoteResumeTransactionDebug();
             if (rsp == NULL) {
                 continue;
             }
@@ -329,8 +353,8 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
 
             // Update error/success counts, or reset them
             if (var_gateway_sensordb_reset_counts != 0
-                    && time_var_gateway_sensordb_reset_counts != 0
-                    && JGetInt(body, SENSORDB_FIELD_WHEN) < time_var_gateway_sensordb_reset_counts) {
+                && time_var_gateway_sensordb_reset_counts != 0
+                && JGetInt(body, SENSORDB_FIELD_WHEN) < time_var_gateway_sensordb_reset_counts) {
                 JDeleteItemFromObject(body, SENSORDB_FIELD_RECEIVED);
                 JAddNumberToObject(body, SENSORDB_FIELD_RECEIVED, 0);
                 JDeleteItemFromObject(body, SENSORDB_FIELD_LOST);
@@ -402,11 +426,6 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
             trace(noteID);
             traceNL();
 
-        }
-
-        // If we've updated any notes, sync them immediately
-        if (notesUpdated > 0) {
-            NoteRequest(NoteNewRequest("hub.sync"));
         }
 
     }

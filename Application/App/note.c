@@ -29,16 +29,7 @@ bool noteInit()
     NoteSetFnI2C(NOTE_I2C_ADDR_DEFAULT, NOTE_I2C_MAX_DEFAULT, noteI2CReset, noteI2CTransmit, noteI2CReceive);
 
     // Test to see if a notecard is present
-    bool notecardFound = false;
-    for (int i=0; i<3; i++) {
-        char ver[4];
-        if (NoteGetVersion(ver, sizeof(ver))) {
-            notecardFound = true;
-            break;
-        }
-        HAL_Delay(1000);
-    }
-    if (!notecardFound) {
+    if (!NoteReset()) {
 
         // Remove hooks and disable
         NoteSetFnMutex(NULL, NULL, NULL,NULL);
@@ -47,6 +38,7 @@ bool noteInit()
         // Power-off I2C and deinitialize the pin
         MX_I2C2_DeInit();
         return false;
+
     }
 
     // Set the debug output function

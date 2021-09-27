@@ -298,7 +298,9 @@ bool commonCharCmd(char ch)
         uint32_t localTimeSecs = NoteTimeST();
         int64_t localTimeMs = TIMER_IF_GetTimeMs();
         if (appIsGateway) {
+            NoteSuspendTransactionDebug();
             J *rsp = NoteRequestResponse(NoteNewRequest("card.time"));
+            NoteResumeTransactionDebug();
             if (rsp != NULL) {
                 JTIME cardTimeSecs = JGetInt(rsp, "time");
                 int diffLocalCard = (int) ((int64_t) localTimeSecs - (int64_t) cardTimeSecs);

@@ -1703,11 +1703,11 @@ void twRefresh()
     twLastActiveSensors = activeSensors;
 
     // Force the database to be updated
+    traceValueLn("**** active sensors changed to ", activeSensors, " ****\n");
     forceSensorRefresh = true;
 
     // Update active sensors and modulus, assigning a modulus offset to keep us from
     // interfering with other local gateways
-    traceValueLn("CHANGING ACTIVE SENSORS (", activeSensors, ")");
     TWModulusSecs = activeSensors * twMinimumModulusSecs();
     MX_RNG_Init();
     TWModulusOffsetSecs = MX_RNG_Get() % 123;
