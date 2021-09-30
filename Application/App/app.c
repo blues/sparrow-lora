@@ -5,7 +5,6 @@
 #include "stm32_timer.h"
 #include "stm32_seq.h"
 #include "utilities_def.h"
-//#include "radio.h"
 #include "main.h"
 #include "app.h"
 
@@ -24,6 +23,7 @@ uint8_t wildcardAddress[ADDRESS_LEN] = {0};
 uint8_t invalidAddress[ADDRESS_LEN] = {0};
 uint8_t ourAddress[ADDRESS_LEN];
 char ourAddressText[ADDRESS_LEN*3];
+uint8_t lastReceivedSensorAddress[ADDRESS_LEN] = {0};
 uint8_t gatewayAddress[ADDRESS_LEN] = {0};
 uint8_t beaconKey[AES_KEY_BYTES];
 uint8_t invalidKey[AES_KEY_BYTES] = {0};
@@ -251,7 +251,7 @@ void sendMessageToPeer(bool useTW, uint8_t *toAddress)
     } else if ((messageToSendFlags & MESSAGE_FLAG_BEACON)) {
         m1 = "sending BEACON (";
     }
-    traceValue2Ln(m1, sentMessage.Len, "/", messageToSendDataLen, ")");
+    traceValue3Ln(m1, sentMessage.Len, "/", messageToSendDataLen, ") at txp:", atpPowerLevel(), "");
 
     // Compute message length of actual message
     uint16_t wireMessageLen = sizeof(sentMessage);
@@ -337,6 +337,17 @@ void sendMessageToPeer(bool useTW, uint8_t *toAddress)
     // Wait
     appSetCoreState(LOWPOWER);
 
+}
+
+// Get stats relating to last wire message received, both from our perspective and the remote perspective
+void appReceivedMessageStats(int8_t *gtxdb, int8_t *grssi, int8_t *grsnr, int8_t *stxdb, int8_t *srssi, int8_t *srsnr)
+{
+    *stxdb = wireReceived.TXP;
+    *srssi = wireReceived.RSSI;
+    *srsnr = wireReceived.SNR;
+    *gtxdb = wireTransmitDb;
+    *grssi = wireReceiveRSSI;
+    *grsnr = wireReceiveSNR;
 }
 
 // Send a beacon for sensor pairing
@@ -841,6 +852,7 @@ void appSensorProcess()
         sensorPoll();
     }
     if (TraceEventOccurred) {
+        TraceEventOccurred = false;
         traceInput();
     }
 
@@ -1225,6 +1237,7 @@ void appGatewayProcess()
         appProcessButton();
     }
     if (TraceEventOccurred) {
+        TraceEventOccurred = false;
         traceInput();
         gatewayHousekeeping(forceSensorRefresh, cachedSensors);
     }
@@ -1257,6 +1270,12 @@ void appGatewayProcess()
         }
         traceSetID("fm", wireReceivedCarrier.Sender, wireReceived.RequestID);
 
+        // If this request is from a different sensor than last time, clear stats
+        if (memcmp(lastReceivedSensorAddress, wireReceivedCarrier.Sender, sizeof(wireReceivedCarrier.Sender)) != 0) {
+            memcpy(lastReceivedSensorAddress, wireReceivedCarrier.Sender, sizeof(lastReceivedSensorAddress));
+            radioSetTxPowerUnknown();
+        }
+
         // Find the sensor that is sending to us, and bubble it down to the 0th entry of the cache
         requestState foundRequest;
         int found = -1;
@@ -1286,6 +1305,7 @@ void appGatewayProcess()
         requestState *request = &requestCache[0];
         request->lastReceivedTime = NoteTimeST();
         traceSetID("fm", request->sensorAddress, request->currentRequestID);
+        traceValue3Ln("rcv txp:", wireReceived.TXP, " rssi:", wireReceived.RSSI, " snr:", wireReceived.SNR, "");
 
         // Remember the radio stats
         if (wireReceiveSignalValid && (wireReceiveRSSI != 0 || wireReceiveSNR != 0)) {

@@ -43,6 +43,45 @@ J *authRequest(uint8_t *sensorAddress, char *sensorName, char *sensorLocationOLC
         return rsp;
     }
 
+    // If requested, add radio signal strength info which
+    // is used during surveys.
+    if (JGetBool(req, "radio")) {
+        JDeleteItemFromObject(req, "radio");
+        char buf[24];
+        static char newMessage[256];
+        newMessage[0] = '\0';
+        char *text = JGetString(req, "text");
+        if (text != NULL) {
+            strlcat(newMessage, text, sizeof(newMessage));
+            strlcat(newMessage, " (", sizeof(newMessage));
+        }
+        int8_t gtxdb, grssi, grsnr, stxdb, srssi, srsnr;
+        appReceivedMessageStats(&gtxdb, &grssi, &grsnr, &stxdb, &srssi, &srsnr);
+        strlcat(newMessage, "gtxdb:", sizeof(newMessage));
+        JItoA(gtxdb, buf);
+        strlcat(newMessage, buf, sizeof(newMessage));
+        strlcat(newMessage, " grssi:", sizeof(newMessage));
+        JItoA(grssi, buf);
+        strlcat(newMessage, buf, sizeof(newMessage));
+        strlcat(newMessage, " grsnr:", sizeof(newMessage));
+        JItoA(grsnr, buf);
+        strlcat(newMessage, buf, sizeof(newMessage));
+        strlcat(newMessage, " stxdb:", sizeof(newMessage));
+        JItoA(stxdb, buf);
+        strlcat(newMessage, buf, sizeof(newMessage));
+        strlcat(newMessage, " srssi:", sizeof(newMessage));
+        JItoA(srssi, buf);
+        strlcat(newMessage, buf, sizeof(newMessage));
+        strlcat(newMessage, " srsnr:", sizeof(newMessage));
+        JItoA(srsnr, buf);
+        strlcat(newMessage, buf, sizeof(newMessage));
+        if (text != NULL) {
+            strlcat(newMessage, ")", sizeof(newMessage));
+        }
+        JDeleteItemFromObject(req, "text");
+        JAddStringToObject(req, "text", newMessage);
+    }
+
     // In order to save bandwidth over the air, look for a
     // "file" parameter that begins with the "*" character,
     // and if so subtitute the sensor's ID.  This is just an

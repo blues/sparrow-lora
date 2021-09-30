@@ -73,8 +73,17 @@ bool gatewayProcessSensorRequest(uint8_t *sensorAddress, uint8_t *reqJSON, uint3
 
 }
 
+// Return true if the env vars are loaded
+bool gatewayEnvVarsLoaded()
+{
+    if (envLastUpdateTime != 0) {
+        return true;
+    }
+    return gatewayHousekeeping(false, 0);
+}
+
 // Do periodic housekeeping related to the gateway
-void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
+bool gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
 {
     uint32_t now = NoteTimeST();
 
@@ -87,7 +96,8 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
     }
 
     // See if we need to refresh the environment
-    while (envLastUpdateTime == 0 || now >= envLastUpdateTime+(var_gateway_env_update_mins*60)) {
+    int mins = var_gateway_env_update_mins ? var_gateway_env_update_mins : DEFAULT_GATEWAY_ENV_UPDATE_MINS;
+    while (envLastUpdateTime == 0 || now >= envLastUpdateTime+(mins*60)) {
         envLastUpdateTime = now;
 
         // See if a firmware update is waiting for us.  If we return from this method with true, it
@@ -102,9 +112,11 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
         J *rsp = NoteRequestResponse(NoteNewRequest("env.modified"));
         if (rsp == NULL) {
             refreshEnvVars = true;
+            envLastUpdateTime = 0;
         } else {
             if (NoteResponseError(rsp)) {
                 refreshEnvVars = true;
+                envLastUpdateTime = 0;
             } else {
                 uint32_t modifiedTime = (uint32_t) JGetNumber(rsp, "time");
                 if (envLastModifiedTime != modifiedTime) {
@@ -123,6 +135,7 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
         // here, it's a second we don't have a receive outstanding.
         rsp = NoteRequestResponse(NoteNewRequest("env.get"));
         if (rsp == NULL) {
+            envLastUpdateTime = 0;
             break;
         }
 
@@ -156,7 +169,8 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
     if (sensorsChanged) {
         dbLastUpdateTime = 0;
     }
-    if (dbLastUpdateTime == 0 || now >= dbLastUpdateTime+(var_gateway_sensordb_update_mins*60)) {
+    mins = var_gateway_sensordb_update_mins ? var_gateway_sensordb_update_mins : DEFAULT_GATEWAY_SENSORDB_UPDATE_MINS;
+    if (dbLastUpdateTime == 0 || now >= dbLastUpdateTime+(mins*60)) {
         dbLastUpdateTime = now;
 
         // Update from the config DB at most when we do a full sync with the service
@@ -429,6 +443,9 @@ void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
         }
 
     }
+
+    // Return a flag as to whether or not env vars have been loaded
+    return (envLastUpdateTime != 0);
 
 }
 

@@ -8,6 +8,11 @@
 #include "app.h"
 #include "note.h"
 
+// If TRUE, we're in survey mode in which the button is used to send
+// pings that include RSSI/SNR transmitted at full power, and all
+// scheduled activities are disabled.
+#define SURVEY_MODE                 false
+
 // Forward reference to sensor configuration definition, because circular.
 struct sensorConfig_c;
 

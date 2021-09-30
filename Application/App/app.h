@@ -42,6 +42,7 @@ extern uint32_t wireReceiveTimeoutMs;
 extern bool wireReceiveSignalValid;
 extern int8_t wireReceiveRSSI;
 extern int8_t wireReceiveSNR;
+extern int8_t wireTransmitDb;
 
 // appinit.c
 const char *appFirmwareVersion(void);
@@ -72,6 +73,7 @@ void appSendLoRaPacketSizeTestPing(void);
 bool appProcessButton(void);
 uint32_t appTransmitWindowWaitMaxSecs(void);
 uint32_t appNextTransmitWindowDueSecs(void);
+void appReceivedMessageStats(int8_t *gtxdb, int8_t *grssi, int8_t *grsnr, int8_t *stxdb, int8_t *srssi, int8_t *srsnr);
 
 // led.c
 void ledSet(void);
@@ -117,6 +119,8 @@ void radioSetChannel(uint32_t frequency);
 uint32_t radioWakeupRequiredMs(void);
 void radioRx(uint32_t timeoutMs);
 void radioTx(uint8_t *buffer, uint8_t size);
+void radioSetTxPower(int8_t powerLevel);
+void radioSetTxPowerUnknown(void);
 
 // sensor.c
 void sensorTimerCancel(void);
@@ -129,9 +133,10 @@ void sensorCmd(char *cmd);
 // gateway.c
 bool gatewayProcessSensorRequest(uint8_t *sensorAddress, uint8_t *req, uint32_t reqLen, uint8_t **rsp, uint32_t *rspLen);
 void gatewayInterrupt(uint16_t interruptType);
-void gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors);
+bool gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors);
 void gatewayHousekeepingDefer(void);
 void gatewaySetEnvVarDefaults(void);
+bool gatewayEnvVarsLoaded(void);
 void gatewayCmd(char *cmd);
 
 // note.c
@@ -175,8 +180,8 @@ bool noteFirmwareUpdateIfAvailable(void);
 // atp.c
 int8_t atpPowerLevel(void);
 int8_t atpLowestPowerLevel(void);
+void atpMaximizePowerLevel(void);
 void atpMatchPowerLevel(int level);
 void atpGatewayMessageReceived(int8_t rssi, int8_t snr, int8_t rssiGateway, int8_t snrGateway);
 void atpGatewayMessageLost(void);
 void atpGatewayMessageSent(void);
-void atpSetTxConfig(void);

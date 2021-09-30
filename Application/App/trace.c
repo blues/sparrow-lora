@@ -255,13 +255,21 @@ void traceInput(void)
     static char cmd[80];
     static uint32_t cmdChars = 0;
 
+    // Start by assuming \n is term char, but accept any of \r or \r\n or \n
+    static char cmdTerm = '\n';
+    static char cmdSkip = 0;
+
     // For now, just echo the input
     while (MX_DBG_Available()) {
         char ch = MX_DBG_Receive(NULL, NULL);
         if (ch == '\r') {
+            cmdTerm = '\r';
+            cmdSkip = '\n';
+        }
+        if (ch == cmdSkip) {
             continue;
         }
-        if (ch == '\n') {
+        if (ch == cmdTerm) {
             if (cmdChars != 0) {
                 cmd[cmdChars] = '\0';
                 if (!commonCmd(cmd)) {

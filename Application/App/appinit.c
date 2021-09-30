@@ -79,7 +79,7 @@ void MX_AppMain(void)
     // upon the fact thst the gateway knows what time it is.
     if (appIsGateway) {
         ledReset();
-        while (!NoteTimeValidST()) {
+        while ( !NoteTimeValidST() || !gatewayEnvVarsLoaded() ) {
             if (ledButtonCheck() == BUTTON_HELD) {
                 flashConfigFactoryReset();
             }
@@ -112,6 +112,12 @@ void MX_AppMain(void)
 void MX_AppISR(uint16_t GPIO_Pin)
 {
 
+    // If the debug terminal pressed a button, wake up
+    if (GPIO_Pin == 0) { 
+        appTraceWakeup();
+        return;
+    }
+
     // Do special processing of button pin, because we
     // do checking for HOLD and other things.  Once
     // we determine that it's not a hold, we will
@@ -120,11 +126,6 @@ void MX_AppISR(uint16_t GPIO_Pin)
     if ((GPIO_Pin & BUTTON1_Pin) != 0) {
         GPIO_Pin &= ~BUTTON1_Pin;
         appButtonWakeup();
-    }
-
-    // If this is a trace event, wake up
-    if (GPIO_Pin == 0) {
-        appTraceWakeup();
     }
 
     // Dispatch the interrupts to all sensors

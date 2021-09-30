@@ -1498,6 +1498,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\App\trace.c</name>
+                <configuration>
+                    <name>sparrow</name>
+                </configuration>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\App\util.c</name>

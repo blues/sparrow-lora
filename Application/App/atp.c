@@ -32,7 +32,7 @@
 
 // Everything in this source file deals with power levels in terms
 // of index into the array of possible power levels, not in terms
-// of dBm level which is mapped just before the call to radio.SetTxConfig();
+// of dBm level which is mapped just before the call to radioSetTxPower();
 #define initialLevel ((RBO_LEVELS - 1) - (RBO_MAX - RBO_INITIAL))
 static int8_t currentLevel = initialLevel;
 static int8_t lowestLevel = initialLevel;
@@ -233,7 +233,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
     if (currentLevel < (RBO_LEVELS-1) && (mustIncreaseTxPower || shouldIncreaseTxPower)) {
         currentLevel++;
         pastSamples = 0;
-        atpSetTxConfig();
+        radioSetTxPower(atpPowerLevel());
         traceValueLn("ATP: increased power to ", currentLevel+RBO_MIN, " dBm");
     } else if (currentLevel > 0 && !mustNotDecreaseTxPower && shouldTryDecreasingTxPower) {
         currentLevel -= decreasePowerLevelByDb;
@@ -241,7 +241,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
             lowestLevel = currentLevel;
         }
         pastSamples = 0;
-        atpSetTxConfig();
+        radioSetTxPower(atpPowerLevel());
         traceValue3Ln("ATP: decreased power to ", currentLevel+RBO_MIN, " dBm (", packetsLost[currentLevel], "/", packetsSent[currentLevel], " lost at this level)");
     } else {
 
@@ -342,7 +342,7 @@ void atpGatewayMessageLost()
         if (currentLevel != newLevel) {
             currentLevel = newLevel;
             pastSamples = 0;
-            atpSetTxConfig();
+            radioSetTxPower(atpPowerLevel());
             traceValue2Ln("ATP: increased power to ", currentLevel+RBO_MIN, " dBm because ", lost, " lost");
         }
     }
@@ -378,17 +378,35 @@ int8_t atpLowestPowerLevel()
 void atpMatchPowerLevel(int level)
 {
 
+    // Match power level, or transmit at full power, depending upon preference
+#if 1
+
+    // Transmit at full power
+    currentLevel = RBO_LEVELS - 1;
+
+#else
+
     // Transmit at a slightly higher power level than what was received,
     // just to ensure that it's able to see our response.
-    level += 2;
-
-    // Set the level
+    level += 5;
     if (level >= RBO_MIN && level <= RBO_MAX) {
         currentLevel = (level - RBO_MIN);
     } else {
         currentLevel = RBO_LEVELS - 1;
     }
 
+#endif
+
+    // Set the radio config at that level
+    radioSetTxPower(atpPowerLevel());
+
+}
+
+// Set the power level to the maximum, for cases where we have no idea where
+// we are and we just want to make sure a message gets out
+void atpMaximizePowerLevel()
+{
+    currentLevel = RBO_LEVELS - 1;
 }
 
 // Get the current power level
@@ -399,22 +417,4 @@ int8_t atpPowerLevel()
 #else
     return currentLevel + RBO_MIN;
 #endif
-}
-
-// Set the transmit config based upon currently-adapted power level
-void atpSetTxConfig()
-{
-    Radio.SetTxConfig(MODEM_LORA,
-                      atpPowerLevel(),              // output power in dBm
-                      0,                            // unused for LoRa
-                      LORA_BANDWIDTH,
-                      LORA_SPREADING_FACTOR,
-                      LORA_CODINGRATE,
-                      LORA_PREAMBLE_LENGTH,
-                      LORA_FIX_LENGTH_PAYLOAD_ON,
-                      true,                         // CRC on/off
-                      0,                            // Frequency hopping off/on
-                      0,                            // # of symbols between hops
-                      LORA_IQ_INVERSION_ON,         // Invert IQ signal
-                      TX_TIMEOUT_VALUE);            // Timeout on radio.Send()
 }

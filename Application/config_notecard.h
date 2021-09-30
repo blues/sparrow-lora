@@ -6,6 +6,7 @@
 
 #define NOTECARD_PRODUCT_UID                "net.ozzie.ray:sparrow"
 #define NOTECARD_CONNECTION_MODE            "continuous"
+#define NOTECARD_CONTINUOUS_SYNC            true        // Allows gateway to respond immediately to env changes
 #define NOTECARD_OUTBOUND_PERIOD_MINS       (15)
 #define NOTECARD_INBOUND_PERIOD_MINS        (60*24)
 
@@ -55,7 +56,7 @@ extern uint32_t var_gateway_pairing_timeout_mins;
 #define DEFAULT_PAIRING_BEACON_GATEWAY_TIMEOUT_MINS     (60)
 extern uint32_t var_gateway_sensordb_update_mins;
 #define VAR_GATEWAY_SENSORDB_UPDATE_MINS                "sensordb_update_mins"
-#define DEFAULT_GATEWAY_SENSORDB_UPDATE_MINS            (60*24)
+#define DEFAULT_GATEWAY_SENSORDB_UPDATE_MINS            (60)
 extern uint32_t var_gateway_sensordb_reset_counts;
 #define VAR_GATEWAY_SENSORDB_RESET_COUNTS               "sensordb_reset_counts"
 #define DEFAULT_GATEWAY_SENSORDB_RESET_COUNTS           0

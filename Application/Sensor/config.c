@@ -5,11 +5,15 @@
 #include "sensor.h"
 
 // Enable/disable configured sensors
+#if SURVEY_MODE
+#define USE_PING_TEST               true
+#else
 #define USE_BME                     false
 #define USE_PYQ                     false
-#define USE_PING_DEMO               true
+#define USE_PING_TEST               true
 #define USE_TASK_SCHEDULER_TEST     false
 #define USE_SLEEP_CURRENT_TEST      false
+#endif
 
 // Convenient ways of converting human-readable units to secons
 #define SECS(x)    (x)
@@ -49,7 +53,7 @@ sensorConfig allSensors[] = {
 #endif
 
     // The ping task, when enabled, sends out test messages on a periodic basis
-#if USE_PING_DEMO
+#if USE_PING_TEST
     {
         .name = "ping",
         .activationPeriodSecs = MINS(15),

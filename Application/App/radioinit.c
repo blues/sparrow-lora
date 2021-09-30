@@ -10,6 +10,7 @@
 bool wireReceiveSignalValid = false;
 int8_t wireReceiveRSSI = 0;
 int8_t wireReceiveSNR = 0;
+int8_t wireTransmitDb = 0;
 bool radioIsDeepSleep = false;
 bool radioIOPending = false;
 
@@ -44,7 +45,7 @@ void radioInit()
     Radio.Init(&RadioEvents);
 
 #if USE_MODEM_LORA
-    atpSetTxConfig();
+    radioSetTxPower(atpPowerLevel());
     Radio.SetRxConfig(MODEM_LORA,
                       LORA_BANDWIDTH,
                       LORA_SPREADING_FACTOR,
@@ -65,6 +66,8 @@ void radioInit()
                       0, 0, false, true);
     Radio.SetMaxPayloadLength(MODEM_FSK, sizeof(wireMessageCarrier));
 #endif
+
+    wireTransmitDb = 0;
 
 }
 
@@ -185,4 +188,29 @@ void radioTx(uint8_t *buffer, uint8_t size)
     radioDeepWake();
     Radio.Send(buffer, size);
     radioIOPending = true;
+}
+
+// Set last known tx power to unknown
+void radioSetTxPowerUnknown()
+{
+    wireTransmitDb = 0;
+}
+
+// Set tx power
+void radioSetTxPower(int8_t powerLevel)
+{
+    wireTransmitDb = powerLevel;
+    Radio.SetTxConfig(MODEM_LORA,
+                      powerLevel,                   // output power in dBm
+                      0,                            // unused for LoRa
+                      LORA_BANDWIDTH,
+                      LORA_SPREADING_FACTOR,
+                      LORA_CODINGRATE,
+                      LORA_PREAMBLE_LENGTH,
+                      LORA_FIX_LENGTH_PAYLOAD_ON,
+                      true,                         // CRC on/off
+                      0,                            // Frequency hopping off/on
+                      0,                            // # of symbols between hops
+                      LORA_IQ_INVERSION_ON,         // Invert IQ signal
+                      TX_TIMEOUT_VALUE);            // Timeout on radio.Send()
 }

@@ -63,6 +63,7 @@ bool noteSetup()
             JAddStringToObject(req, "mode", NOTECARD_CONNECTION_MODE);
             JAddNumberToObject(req, "outbound", NOTECARD_OUTBOUND_PERIOD_MINS);
             JAddNumberToObject(req, "inbound", NOTECARD_INBOUND_PERIOD_MINS);
+            JAddBoolToObject(req, "sync", NOTECARD_CONTINUOUS_SYNC);
             JAddBoolToObject(req, "align", true);
             if (NoteRequest(req)) {
                 initialized = true;

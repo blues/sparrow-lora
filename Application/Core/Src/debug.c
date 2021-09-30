@@ -14,9 +14,9 @@
 #if (DEBUGGER_ON_USART2||DEBUGGER_ON_LPUART1)
 void dbgReceivedByteISR(UART_HandleTypeDef *huart);
 void dbgRestartReceive(UART_HandleTypeDef *huart);
-volatile bool dbgReceiveOverrun = false;
-volatile uint32_t dbgReceiveFillIndex = 0;
-volatile uint32_t dbgReceiveDrainIndex = 0;
+bool dbgReceiveOverrun = false;
+uint32_t dbgReceiveFillIndex = 0;
+uint32_t dbgReceiveDrainIndex = 0;
 uint8_t dbgReceiveBuffer[500];
 bool dbgDisableOutput = false;
 #endif
@@ -151,6 +151,8 @@ uint8_t MX_DBG_Receive(bool *underrun, bool *overrun)
 #if (DEBUGGER_ON_USART2||DEBUGGER_ON_LPUART1)
 void dbgRestartReceive(UART_HandleTypeDef *huart)
 {
+    // Use zero/nonzero as an indicator of a valid byte having been received
+    dbgReceiveBuffer[dbgReceiveFillIndex] = 0;
 #if DEBUGGER_ON_USART2
 #ifdef USE_USART2_RX_DMA
     HAL_UART_Receive_DMA(huart, &dbgReceiveBuffer[dbgReceiveFillIndex], 1);
@@ -177,8 +179,8 @@ void dbgReceivedByteISR(UART_HandleTypeDef *huart)
     }
     dbgRestartReceive(huart);
 
-    // Notify the app that an interrupt occurred
-    // of unknown origin
+    // Notify the app that an input interrupt occurred
+    // If we actually received a byte.
     MX_AppISR(0);
 
 }

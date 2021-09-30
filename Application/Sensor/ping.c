@@ -18,12 +18,16 @@
 #define SENSORDATA_NOTEFILE         "*#data.qo"
 
 // TRUE if we've successfully registered the template
+#if !SURVEY_MODE
 static bool templateRegistered = false;
+#endif
 
 // Forwards
+static bool sendHealthLogMessage(bool immediate);
+#if !SURVEY_MODE
 static void addNote(uint32_t count);
 static bool registerNotefileTemplate(void);
-static bool sendHealthLogMessage(bool immediate);
+#endif
 
 // Poller
 void pingPoll(int sensorID, int state)
@@ -36,6 +40,13 @@ void pingPoll(int sensorID, int state)
         // sensor sampling something and adding a note
         // to the notefile.
     case STATE_ACTIVATED:
+
+#if SURVEY_MODE
+
+        schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
+        break;
+
+#else
 
         // If the template isn't registered, do so
         if (!templateRegistered) {
@@ -52,10 +63,16 @@ void pingPoll(int sensorID, int state)
         traceLn("ping: note queued");
         break;
 
+#endif  // SURVEY_MODE
+
         // When a button is pressed, send a log message
         // and wait for confirmation response all the
-        // way from the notecard.
+        // way from the notecard. Make sure we do this
+        // at the maximum power level because frequently
+        // this button is used as a "test button" when
+        // walking around to test range.
     case STATE_BUTTON:
+        atpMaximizePowerLevel();
         ledIndicateAck(1);
         sendHealthLogMessage(true);
         schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
@@ -112,6 +129,9 @@ bool sendHealthLogMessage(bool immediate)
     strlcat(message, " says hello", sizeof(message));
     JAddStringToObject(req, "text", message);
 
+    // Notify the gateway that we wish to add RSSI/SNR info to the text
+    JAddBoolToObject(req, "radio", true);
+
     // Add an ID to the request, which will be echo'ed
     // back in the response by the notecard itself.  This
     // helps us to identify the asynchronous response
@@ -137,6 +157,7 @@ bool sendHealthLogMessage(bool immediate)
 }
 
 // Register the notefile template for our data
+#if !SURVEY_MODE
 static bool registerNotefileTemplate()
 {
 
@@ -176,8 +197,10 @@ static bool registerNotefileTemplate()
     return true;
 
 }
+#endif
 
 // Send the periodic ping
+#if !SURVEY_MODE
 static void addNote(uint32_t count)
 {
 
@@ -208,6 +231,7 @@ static void addNote(uint32_t count)
     noteSendToGatewayAsync(req, false);
 
 }
+#endif
 
 // Gateway Response handler
 void pingResponse(int sensorID, J *rsp)
@@ -236,10 +260,13 @@ void pingResponse(int sensorID, J *rsp)
         traceLn("ping: SUCCESSFUL response");
         break;
 
+#if !SURVEY_MODE
     case REQUESTID_TEMPLATE:
         templateRegistered = true;
         traceLn("ping: SUCCESSFUL template registration");
         break;
+#endif
+
     }
 
 }
