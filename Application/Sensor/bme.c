@@ -57,7 +57,7 @@ bool bmeInit(int sensorID)
     HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_RESET);
 
     return true;
-    
+
 }
 
 // Poller
@@ -158,10 +158,23 @@ void bmeResponse(int sensorID, J *rsp)
 
 }
 
+// Interrupt handler
+void bmeISR(int sensorID, uint16_t pins)
+{
+
+    // Set the state to button, and immediately schedule
+    if ((pins & BUTTON1_Pin) != 0) {
+        sensorIgnoreTimeWindow();
+        schedActivateNowFromISR(sensorID, true, STATE_ACTIVATED);
+        return;
+    }
+
+}
+
 // Send the sensor data
 static bool addNote()
 {
-    
+
     // Measure the sensor values
     HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_SET);
     MX_I2C2_Init();
@@ -172,7 +185,7 @@ static bool addNote()
         traceLn("bme: update failed");
         return false;
     }
-    
+
     // Create the request
     J *req = NoteNewRequest("note.add");
     if (req == NULL) {
@@ -207,7 +220,7 @@ static bool addNote()
     JAddItemToObject(req, "body", body);
     noteSendToGatewayAsync(req, false);
     return true;
-    
+
 }
 
 // Update the static temp/humidity/pressure values with the most accurate
@@ -215,7 +228,7 @@ static bool addNote()
 bool bmeUpdate()
 {
     bool success = false;
-    
+
     // Determine whether it's on primary or secondary address
     struct bme280_dev dev;
     dev.intf = BME280_I2C_INTF;
@@ -324,26 +337,30 @@ bool bme280_read(struct bme280_dev *dev, struct bme280_data *comp_data)
     settings_sel |= BME280_STANDBY_SEL;
     settings_sel |= BME280_FILTER_SEL;
     rslt = bme280_set_sensor_settings(settings_sel, dev);
-    if (rslt != BME280_INTF_RET_SUCCESS)
+    if (rslt != BME280_INTF_RET_SUCCESS) {
         return false;
+    }
     rslt = bme280_set_sensor_mode(BME280_NORMAL_MODE, dev);
-    if (rslt != BME280_INTF_RET_SUCCESS)
+    if (rslt != BME280_INTF_RET_SUCCESS) {
         return false;
+    }
 
     // Delay while the sensor completes a measurement
     dev->delay_us(70000, dev->intf_ptr);
     memset(comp_data, 0, sizeof(struct bme280_data));
     rslt = bme280_get_sensor_data(BME280_ALL, comp_data, dev);
-    if (rslt != BME280_INTF_RET_SUCCESS)
+    if (rslt != BME280_INTF_RET_SUCCESS) {
         return false;
+    }
 
     // If the data looks bad, don't accept it.  (Humidity does operate
     // at the extremes, but these do not and we've seen these failures
     // concurrently, where temp == -40 and press == 110000 && humid == 100%)
     if (comp_data->temperature == -40           // temperature_min
-        || comp_data->pressure == 30000.0       // pressure_min
-        || comp_data->pressure == 110000.0)     // pressure_max
+            || comp_data->pressure == 30000.0       // pressure_min
+            || comp_data->pressure == 110000.0) {   // pressure_max
         return false;
+    }
 
     return true;
 }

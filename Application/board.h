@@ -183,13 +183,13 @@
 #define RFSEL_1_Pin                     GPIO_PIN_5          // PB5
 #define RFSEL_1_GPIO_Port               GPIOB
 
-// Excelitas PYQ 1548/7660 Motion Detector
-#define PYQ_SERIAL_IN_Pin               GPIO_PIN_6          // PA6
-#define PYQ_SERIAL_IN_Port              GPIOA
-#define PYQ_DIRECT_LINK_Pin             GPIO_PIN_7          // PA7
-#define PYQ_DIRECT_LINK_Port            GPIOA
-#define PYQ_DIRECT_LINK_EXTI_IRQn       EXTI9_5_IRQn
-#define PYQ_DIRECT_LINK_IT_PRIORITY     15
+// Excelitas PIR Motion Detector
+#define PIR_SERIAL_IN_Pin               GPIO_PIN_6          // PA6
+#define PIR_SERIAL_IN_Port              GPIOA
+#define PIR_DIRECT_LINK_Pin             GPIO_PIN_7          // PA7
+#define PIR_DIRECT_LINK_Port            GPIOA
+#define PIR_DIRECT_LINK_EXTI_IRQn       EXTI9_5_IRQn
+#define PIR_DIRECT_LINK_IT_PRIORITY     15
 
 // BME Power Pin - powering peripherals on a switched i2c bus
 #define BME_POWER_Pin                   GPIO_PIN_5          // PA5

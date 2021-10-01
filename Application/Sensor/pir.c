@@ -29,24 +29,24 @@ static bool registerNotefileTemplate(void);
 static void resetInterrupt(void);
 
 // Sensor One-Time Init
-bool pyqInit(int sensorID)
+bool pirInit(int sensorID)
 {
 
-    // Initialize GPIOs as per PYQ1548 data sheet 2.6 and 2.7
+    // Initialize GPIOs as per data sheet 2.6 and 2.7
     GPIO_InitTypeDef init = {0};
     init.Mode = GPIO_MODE_OUTPUT_PP;
     init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_LOW;
-    init.Pin = PYQ_SERIAL_IN_Pin;
-    HAL_GPIO_Init(PYQ_SERIAL_IN_Port, &init);
-    HAL_GPIO_WritePin(PYQ_SERIAL_IN_Port, PYQ_SERIAL_IN_Pin, GPIO_PIN_RESET);
+    init.Pin = PIR_SERIAL_IN_Pin;
+    HAL_GPIO_Init(PIR_SERIAL_IN_Port, &init);
+    HAL_GPIO_WritePin(PIR_SERIAL_IN_Port, PIR_SERIAL_IN_Pin, GPIO_PIN_RESET);
     init.Mode = GPIO_MODE_INPUT;
     init.Pull = GPIO_PULLDOWN;
     init.Speed = GPIO_SPEED_FREQ_HIGH;
-    init.Pin = PYQ_DIRECT_LINK_Pin;
-    HAL_GPIO_Init(PYQ_DIRECT_LINK_Port, &init);
-    HAL_NVIC_SetPriority(PYQ_DIRECT_LINK_EXTI_IRQn, PYQ_DIRECT_LINK_IT_PRIORITY, 0x00);
-    HAL_NVIC_EnableIRQ(PYQ_DIRECT_LINK_EXTI_IRQn);
+    init.Pin = PIR_DIRECT_LINK_Pin;
+    HAL_GPIO_Init(PIR_DIRECT_LINK_Port, &init);
+    HAL_NVIC_SetPriority(PIR_DIRECT_LINK_EXTI_IRQn, PIR_DIRECT_LINK_IT_PRIORITY, 0x00);
+    HAL_NVIC_EnableIRQ(PIR_DIRECT_LINK_EXTI_IRQn);
 
     // Prepare to configure the module
     uint32_t configurationRegister = 0;
@@ -142,15 +142,15 @@ bool pyqInit(int sensorID)
     // Send the register according to 2.6 timing
     HAL_DelayUs(750);       // tSLT must be at least 580uS to prepare for accepting config
     for (int i=24; i>=0; --i) {
-        HAL_GPIO_WritePin(PYQ_SERIAL_IN_Port, PYQ_SERIAL_IN_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(PIR_SERIAL_IN_Port, PIR_SERIAL_IN_Pin, GPIO_PIN_RESET);
         HAL_DelayUs(5);     // tSL can be very short
-        HAL_GPIO_WritePin(PYQ_SERIAL_IN_Port, PYQ_SERIAL_IN_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(PIR_SERIAL_IN_Port, PIR_SERIAL_IN_Pin, GPIO_PIN_SET);
         HAL_DelayUs(1);     // between tSL and tSHD
-        HAL_GPIO_WritePin(PYQ_SERIAL_IN_Port, PYQ_SERIAL_IN_Pin,
+        HAL_GPIO_WritePin(PIR_SERIAL_IN_Port, PIR_SERIAL_IN_Pin,
                           (configurationRegister & (1<<i)) != 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
         HAL_DelayUs(100);   // tSHD must be at least 72uS
     }
-    HAL_GPIO_WritePin(PYQ_SERIAL_IN_Port, PYQ_SERIAL_IN_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(PIR_SERIAL_IN_Port, PIR_SERIAL_IN_Pin, GPIO_PIN_RESET);
     HAL_DelayUs(750);       // tSLT must be at least 580uS for latching
 
     // Reset the interrupt
@@ -168,25 +168,25 @@ void resetInterrupt()
     init.Mode = GPIO_MODE_OUTPUT_PP;
     init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_LOW;
-    init.Pin = PYQ_DIRECT_LINK_Pin;
-    HAL_GPIO_Init(PYQ_DIRECT_LINK_Port, &init);
-    HAL_GPIO_WritePin(PYQ_DIRECT_LINK_Port, PYQ_DIRECT_LINK_Pin, GPIO_PIN_RESET);
+    init.Pin = PIR_DIRECT_LINK_Pin;
+    HAL_GPIO_Init(PIR_DIRECT_LINK_Port, &init);
+    HAL_GPIO_WritePin(PIR_DIRECT_LINK_Port, PIR_DIRECT_LINK_Pin, GPIO_PIN_RESET);
     HAL_DelayUs(250);                   // Must be held low for at least 35uS
     // Note that the datasheet suggests that this should be NOPULL, but I have
-    // tested PULLDOWN and the PYQ's active state is strong enough that it works.
-    // This is important so that if the PYQ is not mounted on the board we
+    // tested PULLDOWN and the PIR's active state is strong enough that it works.
+    // This is important so that if the PIR is not mounted on the board we
     // don't have an open input that is generating random interrupts with noise.
     init.Mode = GPIO_MODE_IT_RISING;
     init.Pull = GPIO_PULLDOWN;
     init.Speed = GPIO_SPEED_FREQ_HIGH;
-    init.Pin = PYQ_DIRECT_LINK_Pin;
-    HAL_GPIO_Init(PYQ_DIRECT_LINK_Port, &init);
-    HAL_NVIC_SetPriority(PYQ_DIRECT_LINK_EXTI_IRQn, PYQ_DIRECT_LINK_IT_PRIORITY, 0x00);
-    HAL_NVIC_EnableIRQ(PYQ_DIRECT_LINK_EXTI_IRQn);
+    init.Pin = PIR_DIRECT_LINK_Pin;
+    HAL_GPIO_Init(PIR_DIRECT_LINK_Port, &init);
+    HAL_NVIC_SetPriority(PIR_DIRECT_LINK_EXTI_IRQn, PIR_DIRECT_LINK_IT_PRIORITY, 0x00);
+    HAL_NVIC_EnableIRQ(PIR_DIRECT_LINK_EXTI_IRQn);
 }
 
 // Poller
-void pyqPoll(int sensorID, int state)
+void pirPoll(int sensorID, int state)
 {
 
     // Switch based upon state
@@ -196,21 +196,21 @@ void pyqPoll(int sensorID, int state)
         if (!templateRegistered) {
             registerNotefileTemplate();
             schedSetCompletionState(sensorID, STATE_ACTIVATED, STATE_MOTION_CHECK);
-            traceLn("pyq: template registration request");
+            traceLn("pir: template registration request");
             break;
         }
 
-        // fallthrough to do a motion check
+    // fallthrough to do a motion check
 
     case STATE_MOTION_CHECK:
         if (motionEvents == 0) {
-            schedSetState(sensorID, STATE_DEACTIVATED, "pyq: completed");
+            schedSetState(sensorID, STATE_DEACTIVATED, "pir: completed");
             break;
         }
-        traceValueLn("pyq: ", motionEvents, " motion events sensed");
+        traceValueLn("pir: ", motionEvents, " motion events sensed");
         addNote();
         schedSetCompletionState(sensorID, STATE_MOTION_CHECK, STATE_MOTION_CHECK);
-        traceLn("pyq: note queued");
+        traceLn("pir: note queued");
         break;
 
     }
@@ -258,12 +258,12 @@ static bool registerNotefileTemplate()
 }
 
 // Gateway Response handler
-void pyqResponse(int sensorID, J *rsp)
+void pirResponse(int sensorID, J *rsp)
 {
 
     // If this is a response timeout, indicate as such
     if (rsp == NULL) {
-        traceLn("pyq: response timeout");
+        traceLn("pir: response timeout");
         return;
     }
 
@@ -281,7 +281,7 @@ void pyqResponse(int sensorID, J *rsp)
 
     case REQUESTID_TEMPLATE:
         templateRegistered = true;
-        traceLn("pyq: SUCCESSFUL template registration");
+        traceLn("pir: SUCCESSFUL template registration");
         break;
     }
 
@@ -319,11 +319,11 @@ static void addNote()
 }
 
 // Interrupt handler
-void pyqISR(int sensorID, uint16_t pins)
+void pirISR(int sensorID, uint16_t pins)
 {
 
     // Set the state to 'motion' and immediately schedule
-    if ((pins & PYQ_DIRECT_LINK_Pin) != 0) {
+    if ((pins & PIR_DIRECT_LINK_Pin) != 0) {
         motionEvents++;
         resetInterrupt();
         if (schedGetState(sensorID) == STATE_DEACTIVATED) {

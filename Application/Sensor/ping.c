@@ -36,9 +36,9 @@ void pingPoll(int sensorID, int state)
     // Switch based upon state
     switch (state) {
 
-        // Sensor was just activated, so simulate the
-        // sensor sampling something and adding a note
-        // to the notefile.
+    // Sensor was just activated, so simulate the
+    // sensor sampling something and adding a note
+    // to the notefile.
     case STATE_ACTIVATED:
 
 #if SURVEY_MODE
@@ -65,12 +65,12 @@ void pingPoll(int sensorID, int state)
 
 #endif  // SURVEY_MODE
 
-        // When a button is pressed, send a log message
-        // and wait for confirmation response all the
-        // way from the notecard. Make sure we do this
-        // at the maximum power level because frequently
-        // this button is used as a "test button" when
-        // walking around to test range.
+    // When a button is pressed, send a log message
+    // and wait for confirmation response all the
+    // way from the notecard. Make sure we do this
+    // at the maximum power level because frequently
+    // this button is used as a "test button" when
+    // walking around to test range.
     case STATE_BUTTON:
         atpMaximizePowerLevel();
         ledIndicateAck(1);

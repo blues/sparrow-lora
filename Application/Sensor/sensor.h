@@ -81,15 +81,16 @@ void pingResponse(int sensorID, J *rsp);
 bool nullActivate(int sensorID);
 void nullPoll(int sensorID, int state);
 
-// pyq.c
-bool pyqInit(int sensorID);
-void pyqISR(int sensorID, uint16_t pins);
-bool pyqActivate(int sensorID);
-void pyqPoll(int sensorID, int state);
-void pyqResponse(int sensorID, J *rsp);
+// pir.c
+bool pirInit(int sensorID);
+void pirISR(int sensorID, uint16_t pins);
+bool pirActivate(int sensorID);
+void pirPoll(int sensorID, int state);
+void pirResponse(int sensorID, J *rsp);
 
 // bme.c
 bool bmeInit(int sensorID);
 bool bmeActivate(int sensorID);
 void bmePoll(int sensorID, int state);
 void bmeResponse(int sensorID, J *rsp);
+void bmeISR(int sensorID, uint16_t pins);

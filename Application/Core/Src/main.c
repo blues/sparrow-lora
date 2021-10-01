@@ -38,7 +38,7 @@ __align(8)
 #elif defined ( __GNUC__ ) /* GCC Compiler */
 __attribute__ ((aligned (8)))
 #endif
-    uint16_t adcValues[ADC_TOTAL] = {0};
+uint16_t adcValues[ADC_TOTAL] = {0};
 bool adcDMACompleted = false;
 
 // Peripheral mask, so we can easily tell what is enabled and what is not
@@ -91,9 +91,9 @@ extern uint32_t _Min_Stack_Size;
 #elif defined ( __CC_ARM ) /* ARM Compiler */
 __align(512)
 #elif defined ( __GNUC__ ) /* GCC Compiler */
-    __attribute__ ((aligned (512)))
+__attribute__ ((aligned (512)))
 #endif
-    static uint8_t vector_t[VECTOR_TABLE_SIZE_BYTES];
+static uint8_t vector_t[VECTOR_TABLE_SIZE_BYTES];
 
 // Forwards
 void SystemClock_Config(void);
@@ -159,8 +159,8 @@ void SystemClock_Config(void)
 
     // Configure the SYSCLKSource, HCLK, PCLK1 and PCLK2 clocks dividers
     RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK3|RCC_CLOCKTYPE_HCLK
-        |RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1
-        |RCC_CLOCKTYPE_PCLK2;
+                                  |RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1
+                                  |RCC_CLOCKTYPE_PCLK2;
     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
     RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;

@@ -8,9 +8,9 @@
 #if SURVEY_MODE
 #define USE_PING_TEST               true
 #else
-#define USE_BME                     false
-#define USE_PYQ                     false
 #define USE_PING_TEST               true
+#define USE_BME                     false
+#define USE_PIR                     false
 #define USE_TASK_SCHEDULER_TEST     false
 #define USE_SLEEP_CURRENT_TEST      false
 #endif
@@ -32,23 +32,23 @@ sensorConfig allSensors[] = {
         .pollIntervalSecs = 15,
         .initFn = bmeInit,
         .activateFn = NULL,
-        .interruptFn = NULL,
+        .interruptFn = bmeISR,
         .pollFn = bmePoll,
         .responseFn = bmeResponse,
     },
 #endif
 
-    // Task serving the Excelitas PYQ 1548/7660 Motion Detector
-#if USE_PYQ
+    // Task serving the Excelitas Motion Detector
+#if USE_PIR
     {
-        .name = "pyq",
+        .name = "pir",
         .activationPeriodSecs = HRS(1),
         .pollIntervalSecs = 15,
-        .initFn = pyqInit,
+        .initFn = pirInit,
         .activateFn = NULL,
-        .interruptFn = pyqISR,
-        .pollFn = pyqPoll,
-        .responseFn = pyqResponse,
+        .interruptFn = pirISR,
+        .pollFn = pirPoll,
+        .responseFn = pirResponse,
     },
 #endif
 

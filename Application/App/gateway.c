@@ -159,8 +159,8 @@ bool gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
 
     // Update the last reset time
     if (last_var_gateway_sensordb_reset_counts != 0
-        && var_gateway_sensordb_reset_counts != 0
-        && last_var_gateway_sensordb_reset_counts != var_gateway_sensordb_reset_counts) {
+            && var_gateway_sensordb_reset_counts != 0
+            && last_var_gateway_sensordb_reset_counts != var_gateway_sensordb_reset_counts) {
         time_var_gateway_sensordb_reset_counts = NoteTimeST();
     }
     last_var_gateway_sensordb_reset_counts = var_gateway_sensordb_reset_counts;
@@ -367,8 +367,8 @@ bool gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
 
             // Update error/success counts, or reset them
             if (var_gateway_sensordb_reset_counts != 0
-                && time_var_gateway_sensordb_reset_counts != 0
-                && JGetInt(body, SENSORDB_FIELD_WHEN) < time_var_gateway_sensordb_reset_counts) {
+                    && time_var_gateway_sensordb_reset_counts != 0
+                    && JGetInt(body, SENSORDB_FIELD_WHEN) < time_var_gateway_sensordb_reset_counts) {
                 JDeleteItemFromObject(body, SENSORDB_FIELD_RECEIVED);
                 JAddNumberToObject(body, SENSORDB_FIELD_RECEIVED, 0);
                 JDeleteItemFromObject(body, SENSORDB_FIELD_LOST);

@@ -1593,7 +1593,10 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\Sensor\pyq.c</name>
+                <name>$PROJ_DIR$\..\Sensor\pir.c</name>
+                <configuration>
+                    <name>sparrow</name>
+                </configuration>
             </file>
         </group>
     </group>

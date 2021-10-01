@@ -269,9 +269,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Sensor/ping.c</locationURI>
 		</link>
 		<link>
-			<name>Application/Sensor/pyq.c</name>
+			<name>Application/Sensor/pir.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Sensor/pyq.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Sensor/pir.c</locationURI>
 		</link>
 		<link>
 			<name>Application/Sensor/sensor.h</name>

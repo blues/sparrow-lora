@@ -198,7 +198,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
             decreasePowerLevelByDb += 2 * ((averageRSSI - DECREASE_POWER_IF_SIGNAL_ABOVE) / 10);
             if (decreasePowerLevelByDb > currentLevel) {
                 decreasePowerLevelByDb = currentLevel;
-                traceValueLn("ATP: would decrease power but it's already bottomed-out at ", averageRSSI, "db");
+                traceValueLn("ATP: would decrease power but it's already bottomed-out at ", decreasePowerLevelByDb, "db");
             } else {
                 traceValue2Ln("ATP: should decrease power by ", decreasePowerLevelByDb, "db because avg rssi is ", averageRSSI, "db");
             }

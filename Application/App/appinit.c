@@ -113,7 +113,7 @@ void MX_AppISR(uint16_t GPIO_Pin)
 {
 
     // If the debug terminal pressed a button, wake up
-    if (GPIO_Pin == 0) { 
+    if (GPIO_Pin == 0) {
         appTraceWakeup();
         return;
     }
