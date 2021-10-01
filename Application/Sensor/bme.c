@@ -49,12 +49,19 @@ bool bmeInit(int sensorID)
 
     // Power off the sensor to ensure that current draw is low
     GPIO_InitTypeDef init = {0};
-    init.Mode = GPIO_MODE_OUTPUT_PP;
-    init.Pull = GPIO_NOPULL;
     init.Speed = GPIO_SPEED_FREQ_HIGH;
     init.Pin = BME_POWER_Pin;
+#if (CURRENT_BOARD == BOARD_V1)
+    init.Mode = GPIO_MODE_OUTPUT_PP;
+    init.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(BME_POWER_GPIO_Port, &init);
     HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_RESET);
+#else
+    init.Mode = GPIO_MODE_OUTPUT_OD;
+    init.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(BME_POWER_GPIO_Port, &init);
+    HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_SET);
+#endif
 
     return true;
 
@@ -176,11 +183,19 @@ static bool addNote()
 {
 
     // Measure the sensor values
+#if (CURRENT_BOARD == BOARD_V1)
     HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_SET);
+#else
+    HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_RESET);
+#endif
     MX_I2C2_Init();
     bool success = bmeUpdate();
     MX_I2C2_DeInit();
+#if (CURRENT_BOARD == BOARD_V1)
     HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_RESET);
+#else
+    HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_SET);
+#endif
     if (!success) {
         traceLn("bme: update failed");
         return false;

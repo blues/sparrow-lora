@@ -79,10 +79,13 @@ void MX_DBG(const char *message, size_t length)
 
     // On IAR only, output to debug console without the 7KB overhead of
     // printf("%.*s", (int) length, message)
+#if 0   // 2021-10-01 DISABLED because it is so slow that it messes up
+        // LoRa RX window timing, making the module look flaky during debug
 #if defined( __ICCARM__ )
     if (MX_DBG_Active()) {
         __dwrite(_LLIO_STDOUT, (const unsigned char *)message, length);
     }
+#endif
 #endif
 
 }
