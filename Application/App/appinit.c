@@ -13,9 +13,6 @@ int64_t appBootMs = 0;
 uint32_t gatewayBootTime = 0;
 bool buttonHeldAtBoot = false;
 
-// Pins and other I/O
-uint32_t ioRFFrequency;
-
 // Forwards
 void registerApp(void);
 void ioInit(void);
@@ -222,41 +219,43 @@ void ioInit(void)
     } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_HIGH) {
         value = 4;
     }
+    uint32_t freq = 915000000;
     switch (value) {
     default:
     case 0:
-        ioRFFrequency = 915000000;  // OFF OFF OFF OFF (US915 & AU915)
+        freq = 915000000;  // OFF OFF OFF OFF (US915 & AU915)
         break;
     case 1:
-        ioRFFrequency = 923000000;  //  ON OFF OFF OFF (AS923)
+        freq = 923000000;  //  ON OFF OFF OFF (AS923)
         break;
     case 2:
-        ioRFFrequency = 920000000;  // OFF  ON OFF OFF (KR920)
+        freq = 920000000;  // OFF  ON OFF OFF (KR920)
         break;
     case 3:
-        ioRFFrequency = 865000000;  // OFF OFF  ON OFF (IN865)
+        freq = 865000000;  // OFF OFF  ON OFF (IN865)
         break;
     case 4:
-        ioRFFrequency = 868000000;  //  ON OFF  ON OFF (EU868)
+        freq = 868000000;  //  ON OFF  ON OFF (EU868)
         break;
     case 5:
-        ioRFFrequency = 864000000;  // OFF  ON  ON OFF (RU864)
+        freq = 864000000;  // OFF  ON  ON OFF (RU864)
         break;
     case 6:
-        ioRFFrequency = 779000000;  // OFF OFF OFF  ON (CN779)
+        freq = 779000000;  // OFF OFF OFF  ON (CN779)
         break;
     case 7:
-        ioRFFrequency = 470000000;  //  ON OFF OFF  ON (CN470)
+        freq = 470000000;  //  ON OFF OFF  ON (CN470)
         break;
     case 8:
-        ioRFFrequency = 433000000;  // OFF  ON OFF  ON (EU433)
+        freq = 433000000;  // OFF  ON OFF  ON (EU433)
         break;
     }
+    radioSetRFFrequency(freq);
 #else
     // When using NUCLEO, use US region
-    ioRFFrequency = 915000000;
+    radioSetRFFrequency(915000000);
 #endif
-
+    
     // Init LEDs
     gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_init_structure.Pull = GPIO_NOPULL;

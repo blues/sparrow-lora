@@ -1548,6 +1548,9 @@
                 <name>$PROJ_DIR$\..\Core\Src\timer_if.c</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\..\Core\Src\usart_if.c</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\Core\Src\util_if.c</name>
             </file>
         </group>
@@ -1755,6 +1758,9 @@
     </group>
     <group>
         <name>Utilities</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\Utilities\trace\adv_trace\stm32_adv_trace.c</name>
+        </file>
         <file>
             <name>$PROJ_DIR$\..\..\Utilities\lpm\tiny_lpm\stm32_lpm.c</name>
         </file>

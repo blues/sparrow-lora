@@ -21,6 +21,28 @@ uint8_t dbgReceiveBuffer[500];
 bool dbgDisableOutput = false;
 #endif
 
+// Optional callbacks
+static void (*dbgRxCallback)(uint8_t *rxChar, uint16_t size, uint8_t error) = NULL;
+
+// Register a TX completion callback
+void MX_DBG_TxCpltCallback(void (*cb)(void *))
+{
+#if (DEBUGGER_ON_USART2||DEBUGGER_ON_LPUART1)
+#if DEBUGGER_ON_USART2
+    MX_UART_TxCpltCallback(&huart2, cb);
+#endif
+#if DEBUGGER_ON_LPUART1
+    MX_UART_TxCpltCallback(&hlpuart1, cb);
+#endif
+#endif
+}
+
+// Set the optional rx callback
+void MX_DBG_RxCallback(void (*cb)(uint8_t *rxChar, uint16_t size, uint8_t error))
+{
+    dbgRxCallback = cb;
+}
+
 // See if the debugger is active
 bool MX_DBG_Active()
 {
@@ -30,51 +52,22 @@ bool MX_DBG_Active()
 // Output a message to the console, a line at a time because
 // the STM32CubeIDE doesn't recognize \n as doing an implicit
 // carriage return.
-void MX_DBG(const char *message, size_t length)
+void MX_DBG(const char *message, size_t length, uint32_t timeout)
 {
 
-    // Filter out \r and transform \n into \r\n
-#if (DEBUGGER_ON_USART2||DEBUGGER_ON_LPUART1)
-    const char *p = message;
-    size_t chunkSize = 100;
-    size_t left = length;
-    while (!dbgDisableOutput && left) {
-        size_t len = left > chunkSize ? chunkSize : left;
-        const char *cr = (const char *) memchr(p, '\r', len);
-        const char *nl = (const char *) memchr(p, '\n', len);
-        if (cr != NULL && (nl == NULL || nl > cr)) {
-            len = (size_t) (cr - p);
-#if DEBUGGER_ON_USART2
-            MX_USART2_UART_Transmit((uint8_t *)p, len);
-#endif
-#if DEBUGGER_ON_LPUART1
-            MX_LPUART1_UART_Transmit((uint8_t *)p, len);
-#endif
-            len++;
-        } else {
-            if (nl == NULL) {
-#if DEBUGGER_ON_USART2
-                MX_USART2_UART_Transmit((uint8_t *)p, len);
-#endif
-#if DEBUGGER_ON_LPUART1
-                MX_LPUART1_UART_Transmit((uint8_t *)p, len);
-#endif
-            } else {
-                len = (size_t) (nl - p);
-#if DEBUGGER_ON_USART2
-                MX_USART2_UART_Transmit((uint8_t *)p, len);
-                MX_USART2_UART_Transmit((uint8_t *)"\r\n", 2);
-#endif
-#if DEBUGGER_ON_LPUART1
-                MX_LPUART1_UART_Transmit((uint8_t *)p, len);
-                MX_LPUART1_UART_Transmit((uint8_t *)"\r\n", 2);
-#endif
-                len++;
-            }
-        }
-        p += len;
-        left -= len;
+    // Exit if disabled
+    if (dbgDisableOutput) {
+        return;
     }
+
+    // Output on the appropriate port
+#if (DEBUGGER_ON_USART2||DEBUGGER_ON_LPUART1)
+#if DEBUGGER_ON_USART2
+    MX_USART2_UART_Transmit((uint8_t *)message, length, timeout);
+#endif
+#if DEBUGGER_ON_LPUART1
+    MX_LPUART1_UART_Transmit((uint8_t *)message, length, timeout);
+#endif
 #endif
 
     // On IAR only, output to debug console without the 7KB overhead of
@@ -182,9 +175,15 @@ void dbgReceivedByteISR(UART_HandleTypeDef *huart)
     }
     dbgRestartReceive(huart);
 
-    // Notify the app that an input interrupt occurred
-    // If we actually received a byte.
-    MX_AppISR(0);
+    // Notify someone
+    if (dbgRxCallback == NULL) {
+        MX_AppISR(0);
+    } else {
+        while (MX_DBG_Available()) {
+            uint8_t ch = MX_DBG_Receive(NULL, NULL);
+            dbgRxCallback(&ch, 1, 0);
+        }
+    }
 
 }
 #endif

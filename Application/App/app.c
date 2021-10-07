@@ -528,7 +528,7 @@ bool lbtListenBeforeTalk()
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
     ledIndicateTransmitInProgress(true);
-    radioSetChannel(ioRFFrequency);
+    radioSetChannel();
     ListenPhaseBeforeTalk = true;
     if (TWListenBeforeTalkMs < TW_LBT_PERIOD_MS) {
         TWListenBeforeTalkMs = TW_LBT_PERIOD_MS;
@@ -550,7 +550,7 @@ void lbtTalk()
     if (!appIsGateway) {
         atpGatewayMessageSent();
     }
-    radioSetChannel(ioRFFrequency);
+    radioSetChannel();
     HAL_Delay(radioWakeupRequiredMs());
     sentMessageMs = TIMER_IF_GetTimeMs();
     radioTx((uint8_t *)&sentMessageCarrier, sentMessageCarrierLen);
@@ -748,7 +748,7 @@ void gatewayWaitForSensorMessage()
     memset(&wireReceivedCarrier, 0, sizeof(wireReceivedCarrier));
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
-    radioSetChannel(ioRFFrequency);
+    radioSetChannel();
     wireReceiveTimeoutMs = SOLICITED_COMMS_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
     radioRx(wireReceiveTimeoutMs);
@@ -762,7 +762,7 @@ void gatewayWaitForAnySensorMessage()
     memset(&wireReceivedCarrier, 0, sizeof(wireReceivedCarrier));
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
-    radioSetChannel(ioRFFrequency);
+    radioSetChannel();
     wireReceiveTimeoutMs = UNSOLICITED_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
     radioRx(wireReceiveTimeoutMs);
@@ -777,7 +777,7 @@ void sensorWaitForGatewayMessage()
     memset(&wireReceivedCarrier, 0, sizeof(wireReceivedCarrier));
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
-    radioSetChannel(ioRFFrequency);
+    radioSetChannel();
     wireReceiveTimeoutMs = SOLICITED_COMMS_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
     radioRx(wireReceiveTimeoutMs);
@@ -791,7 +791,7 @@ void sensorWaitForGatewayResponse()
     memset(&wireReceivedCarrier, 0, sizeof(wireReceivedCarrier));
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
-    radioSetChannel(ioRFFrequency);
+    radioSetChannel();
     wireReceiveTimeoutMs = SOLICITED_PROCESSING_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
     radioRx(wireReceiveTimeoutMs);
@@ -805,7 +805,7 @@ void restartReceive(uint32_t timeoutMs)
     memset(&wireReceivedCarrier, 0, sizeof(wireReceivedCarrier));
     memset(&wireReceived, 0, sizeof(wireReceived));
     ledIndicateReceiveInProgress(true);
-    radioSetChannel(ioRFFrequency);
+    radioSetChannel();
     ListenPhaseBeforeTalk = false;
     radioRx(timeoutMs);
     showReceivedTime("restarting rx", 0, 0);

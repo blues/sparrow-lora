@@ -37,7 +37,7 @@ char traceID[40] = {0};
 void traceN(const char *message, uint32_t length)
 {
     if (message != NULL && message[0] != '\0') {
-        MX_DBG(message, length);
+        MX_DBG(message, length, 100);
     }
 }
 
@@ -46,7 +46,7 @@ void traceNL()
 {
 
     // Output a newline, relying upon lower layers to translate to \r\n
-    trace("\n");
+    trace("\r\n");
 
     // As a convenience, parse trace input every time we display a full line
     traceInput();
@@ -69,7 +69,7 @@ void traceLn(const char *message)
         trace(" ");
     }
     trace(message);
-    trace("\n");
+    trace("\r\n");
 }
 
 // Log two strings with a newline, with trace ID
@@ -81,7 +81,7 @@ void trace2Ln(const char *m1, const char *m2)
     }
     trace(m1);
     trace(m2);
-    trace("\n");
+    trace("\r\n");
 }
 
 // Log three strings with a newline, with trace ID
@@ -94,7 +94,7 @@ void trace3Ln(const char *m1, const char *m2, const char *m3)
     trace(m1);
     trace(m2);
     trace(m3);
-    trace("\n");
+    trace("\r\n");
 }
 
 // Trace a single value

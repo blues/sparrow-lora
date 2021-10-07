@@ -5,6 +5,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 #include "stm32wlxx_hal.h"
 #include "config_sys.h"
@@ -17,17 +18,17 @@ void MX_ADC_DeInit(void);
 bool MX_ADC_Values(uint16_t *wordValues, double *voltageValues, double *vref);
 double MX_ADC_A0_Voltage(void);
 void MX_USART1_UART_Init(void);
-void MX_USART1_UART_Transmit(uint8_t *buf, uint32_t len);
+void MX_USART1_UART_Transmit(uint8_t *buf, uint32_t len, uint32_t timeoutMs);
 void MX_USART1_UART_DeInit(void);
 void MX_USART2_UART_Init(void);
 void MX_USART2_UART_Suspend(void);
 void MX_USART2_UART_Resume(void);
-void MX_USART2_UART_Transmit(uint8_t *buf, uint32_t len);
+void MX_USART2_UART_Transmit(uint8_t *buf, uint32_t len, uint32_t timeoutMs);
 void MX_USART2_UART_DeInit(void);
 void MX_LPUART1_UART_Init(void);
 void MX_LPUART1_UART_Suspend(void);
 void MX_LPUART1_UART_Resume(void);
-void MX_LPUART1_UART_Transmit(uint8_t *buf, uint32_t len);
+void MX_LPUART1_UART_Transmit(uint8_t *buf, uint32_t len, uint32_t timeoutMs);
 void MX_LPUART1_UART_DeInit(void);
 void MX_I2C2_Init(void);
 void MX_I2C2_DeInit(void);
@@ -46,14 +47,18 @@ void MX_AES_Init(void);
 void MX_AES_DeInit(void);
 void MX_RTC_Init(void);
 void MX_DBG_Init(void);
+void MX_DBG_DeInit(void);
 void MX_DBG_Suspend(void);
 void MX_DBG_Resume(void);
-void MX_DBG(const char *msg, size_t len);
+void MX_DBG_RxCallback(void (*cb)(uint8_t *rxChar, uint16_t size, uint8_t error));
+void MX_DBG(const char *msg, size_t len, uint32_t timeout);
 void MX_DBG_Disable(void);
 void MX_DBG_Enable(void);
 bool MX_DBG_Enabled(void);
 bool MX_DBG_Active(void);
 bool MX_DBG_Available(void);
+void MX_DBG_TxCpltCallback(void (*cb)(void *));
+void MX_UART_TxCpltCallback(UART_HandleTypeDef *huart, void (*cb)(void *));
 uint8_t MX_DBG_Receive(bool *underrun, bool *overrun);
 void MX_TIM17_DelayUs(uint32_t us);
 #define HAL_DelayUs(us) MX_TIM17_DelayUs(us)

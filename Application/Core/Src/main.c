@@ -29,6 +29,9 @@ DMA_HandleTypeDef hdma_spi1_rx;
 DMA_HandleTypeDef hdma_spi1_tx;
 TIM_HandleTypeDef htim17;
 uint32_t i2c2IOCompletions = 0;
+static void (*TxCpltCallback_USART1)(void *) = NULL;
+static void (*TxCpltCallback_USART2)(void *) = NULL;
+static void (*TxCpltCallback_LPUART1)(void *) = NULL;
 
 // ADC buffer
 #if defined ( __ICCARM__ ) /* IAR Compiler */
@@ -484,6 +487,34 @@ void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c)
     }
 }
 
+// Register a completion callback
+void MX_UART_TxCpltCallback(UART_HandleTypeDef *huart, void (*cb)(void *))
+{
+    if (huart == &huart1) {
+        TxCpltCallback_USART1 = cb;
+    } 
+    if (huart == &huart2) {
+        TxCpltCallback_USART2 = cb;
+    } 
+    if (huart == &hlpuart1) {
+        TxCpltCallback_LPUART1 = cb;
+    } 
+}
+
+// Transmit complete callback for serial ports
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (huart == &huart1 && TxCpltCallback_USART1 != NULL) {
+        TxCpltCallback_USART1(huart);
+    } 
+    if (huart == &huart2 && TxCpltCallback_USART2 != NULL) {
+        TxCpltCallback_USART2(huart);
+    } 
+    if (huart == &hlpuart1 && TxCpltCallback_LPUART1 != NULL) {
+        TxCpltCallback_LPUART1(huart);
+    } 
+}
+
 // Receive from a register, and return true for success or false for failure
 bool MY_I2C2_ReadRegister(uint16_t i2cAddress, uint8_t Reg, void *data, uint16_t maxdatalen, uint32_t timeoutMs)
 {
@@ -837,19 +868,19 @@ void MX_USART1_UART_Init(void)
 }
 
 // Transmit to USART1
-void MX_USART1_UART_Transmit(uint8_t *buf, uint32_t len)
+void MX_USART1_UART_Transmit(uint8_t *buf, uint32_t len, uint32_t timeoutMs)
 {
 
     // Transmit
     HAL_UART_Transmit_DMA(&huart1, buf, len);
 
     // Wait, so that the caller won't mess with the buffer while the HAL is using it
-    for (int i=0; i<25; i++) {
+    for (uint32_t i=0; i<timeoutMs; i++) {
         HAL_UART_StateTypeDef state = HAL_UART_GetState(&huart1);
         if ((state & HAL_UART_STATE_BUSY_TX) != HAL_UART_STATE_BUSY_TX) {
             break;
         }
-        HAL_Delay(10);
+        HAL_Delay(1);
     }
 
 }
@@ -949,19 +980,19 @@ void MX_USART2_UART_Resume(void)
 }
 
 // Transmit to USART2
-void MX_USART2_UART_Transmit(uint8_t *buf, uint32_t len)
+void MX_USART2_UART_Transmit(uint8_t *buf, uint32_t len, uint32_t timeoutMs)
 {
 
     // Transmit
     HAL_UART_Transmit_DMA(&huart2, buf, len);
 
     // Wait, so that the caller won't mess with the buffer while the HAL is using it
-    for (int i=0; i<25; i++) {
+    for (uint32_t i=0; i<timeoutMs; i++) {
         HAL_UART_StateTypeDef state = HAL_UART_GetState(&huart2);
         if ((state & HAL_UART_STATE_BUSY_TX) != HAL_UART_STATE_BUSY_TX) {
             break;
         }
-        HAL_Delay(10);
+        HAL_Delay(1);
     }
 
 }
@@ -1058,19 +1089,19 @@ void MX_LPUART1_UART_Resume(void)
 }
 
 // Transmit to LPUART1
-void MX_LPUART1_UART_Transmit(uint8_t *buf, uint32_t len)
+void MX_LPUART1_UART_Transmit(uint8_t *buf, uint32_t len, uint32_t timeoutMs)
 {
 
     // Transmit
     HAL_UART_Transmit_IT(&hlpuart1, buf, len);
 
     // Wait, so that the caller won't mess with the buffer while the HAL is using it
-    for (int i=0; i<25; i++) {
+    for (uint32_t i=0; i<timeoutMs; i++) {
         HAL_UART_StateTypeDef state = HAL_UART_GetState(&hlpuart1);
         if ((state & HAL_UART_STATE_BUSY_TX) != HAL_UART_STATE_BUSY_TX) {
             break;
         }
-        HAL_Delay(10);
+        HAL_Delay(1);
     }
 
 }

@@ -30,6 +30,11 @@
 //        while in high power mode, current is sunk directly from the battery
 #define SMPS_DRIVE_SETTING_MAX      SMPS_DRV_60
 
+// Provides the frequency of the chip running on the radio and the frequency step
+// These defines are used for computing the frequency divider to set the RF frequency
+// Note: override the default configuration of radio_driver.c
+#define XTAL_FREQ                   ( 32000000UL )
+
 // In XO mode, set internal capacitor (from 0x00 to 0x2F starting 11.2pF with 0.47pF steps)
 #define XTAL_DEFAULT_CAP_VALUE      0x20
 
@@ -39,6 +44,10 @@
 
 // Voltage of vdd tcxo.
 #define TCXO_CTRL_VOLTAGE           TCXO_CTRL_1_7V
+
+// Radio maximum wakeup time (in ms)
+// override the default configuration of radio_driver.c
+// #define RF_WAKEUP_TIME              ( 1UL )
 
 #ifndef CRITICAL_SECTION_BEGIN
 // Macro used to enter the critical section
@@ -59,3 +68,6 @@
 
 // Memset utilities interface to radio Middleware
 #define RADIO_MEMSET8( dest, value, size )      UTIL_MEM_set_8( dest, value, size )
+
+// Memcpy utilities interface to radio Middleware
+#define RADIO_MEMCPY8( dest, src, size )        UTIL_MEM_cpy_8( dest, src, size )

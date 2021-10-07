@@ -290,6 +290,3 @@
 #if (CURRENT_BOARD != BOARD_NUCLEO)
 #define BATMON_ADJUSTMENT   3           // Multiplier for RP605Z333B used by Sparrow
 #endif
-
-// IO vars
-extern uint32_t ioRFFrequency;

@@ -14,6 +14,9 @@ int8_t wireTransmitDb = 0;
 bool radioIsDeepSleep = false;
 bool radioIOPending = false;
 
+// IO vars
+uint32_t ioRFFrequency;
+
 /* Radio events function pointer */
 static RadioEvents_t RadioEvents;
 static void OnTxDone(void);
@@ -162,10 +165,16 @@ static void OnRxDone(uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr)
 
 }
 
-// Set the channel for transmit or receive
-void radioSetChannel(uint32_t frequency)
+// Set the RF Frequency from configuratioin
+void radioSetRFFrequency(uint32_t frequency)
 {
-    Radio.SetChannel(frequency);
+    ioRFFrequency = frequency;
+}
+
+// Set the channel for transmit or receive
+void radioSetChannel()
+{
+    Radio.SetChannel(ioRFFrequency);
 }
 
 // Get the amount of time necessary to come out of sleep
