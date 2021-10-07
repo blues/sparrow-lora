@@ -185,7 +185,7 @@ void ioInit(void)
     HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
     int gpio0 = tristate(RFSEL_0_Pin, RFSEL_0_GPIO_Port);
     int gpio1 = tristate(RFSEL_1_Pin, RFSEL_1_GPIO_Port);
-    int value;
+    int value = 0;
     if (gpio0 == TRISTATE_FLOAT && gpio1 == TRISTATE_FLOAT) {
         value = 0;
     } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_FLOAT) {

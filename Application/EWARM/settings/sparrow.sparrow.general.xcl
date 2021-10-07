@@ -2,7 +2,7 @@
 
 "C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.4\arm\bin\armstlink2.dll" 
 
-"C:\Users\ray\dev\sparrow\Application\EWARM\sparrow\Exe\sparrow.out" 
+"C:\Users\ray\dev\sparrow-lora\Application\EWARM\sparrow\Exe\sparrow.out" 
 
 --plugin="C:\Program Files (x86)\IAR Systems\Embedded Workbench 8.4\arm\bin\armbat.dll" 
 
