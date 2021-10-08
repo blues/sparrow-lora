@@ -1,3 +1,4 @@
+#define DEBUG_RFSEL
 // Copyright 2021 Blues Inc.  All rights reserved.
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
@@ -181,8 +182,8 @@ void ioInit(void)
     gpio_init_structure.Pin = LED_RED_Pin;
     HAL_GPIO_Init(LED_RED_GPIO_Port, &gpio_init_structure);
     HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-    int gpio0 = tristate(RFSEL_0_Pin, RFSEL_0_GPIO_Port);
-    int gpio1 = tristate(RFSEL_1_Pin, RFSEL_1_GPIO_Port);
+    int gpio0 = tristate(RFSEL_1_Pin, RFSEL_1_GPIO_Port);
+    int gpio1 = tristate(RFSEL_0_Pin, RFSEL_0_GPIO_Port);
     int value = 0;
     if (gpio0 == TRISTATE_FLOAT && gpio1 == TRISTATE_FLOAT) {
         value = 0;
@@ -249,6 +250,11 @@ void ioInit(void)
         break;
     }
     radioSetRFFrequency(freq);
+#ifdef DEBUG_RFSEL
+    char *s0 = (gpio0 == TRISTATE_FLOAT ? "float" : (gpio0 == TRISTATE_HIGH ? "high" : "low"));
+    char *s1 = (gpio1 == TRISTATE_FLOAT ? "float" : (gpio1 == TRISTATE_HIGH ? "high" : "low"));
+    APP_PRINTF("*** rfsel %s %s %d %dMHz ***\r\n", s0, s1, value, (freq/1000000));
+#endif
 #else
     // When using NUCLEO, use US region
     radioSetRFFrequency(915000000);
