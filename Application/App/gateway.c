@@ -54,7 +54,7 @@ bool gatewayProcessSensorRequest(uint8_t *sensorAddress, uint8_t *reqJSON, uint3
             JDelete(req);
         }
     } else {
-        traceLn("processing sensor request:");
+        APP_PRINTF("%s processing sensor request:\r\n", tracePeer());
         rsp = NoteRequestResponse(req);
         if (rsp == NULL) {
             return false;
@@ -65,7 +65,7 @@ bool gatewayProcessSensorRequest(uint8_t *sensorAddress, uint8_t *reqJSON, uint3
     *rspJSON = (uint8_t *) JConvertToJSONString(rsp);
     JDelete(rsp);
     if (rspJSON == NULL) {
-        traceLn("processing sensor request: can't allocate response");
+        APP_PRINTF("%s processing sensor request: can't allocate response\r\n", tracePeer());
         return false;
     }
     *rspJSONLen = strlen((char *)*rspJSON);
@@ -271,20 +271,11 @@ bool gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
                     // If valid hex and the length is at least 2 bytes, set the name
                     if (validHex && addrlen >= 2) {
                         if (flashConfigUpdatePeerName(&addrbuf[ADDRESS_LEN-addrlen], addrlen, sensorName)) {
-                            trace("config: ");
-                            trace(sensorIDHex);
-                            trace(" name updated to '");
-                            trace(sensorName);
-                            trace("'");
-                            traceNL();
+                            APP_PRINTF("config: %s name updated to '%s'\r\n", sensorIDHex, sensorName);
                             updateConfig = true;
                         } else {
 #if 0
-                            trace("config: ");
-                            trace(sensorIDHex);
-                            trace(" remains ");
-                            trace(sensorName);
-                            traceNL();
+                            APP_PRINTF("config: %s name remains '%s'\r\n", sensorIDHex, sensorName);
 #endif
                         }
                     }
@@ -422,7 +413,7 @@ bool gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
             req = NoteNewRequest("note.update");
             if (req == NULL) {
                 JDelete(body);
-                traceLn("sensordb update error");
+                APP_PRINTF("sensordb update error\r\n");
                 continue;
             }
             JAddStringToObject(req, "note", noteID);
@@ -436,9 +427,7 @@ bool gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
 
             // Now that we've updated the note, clear the stats in the cache
             appSensorCacheEntryResetStats(i);
-            trace("sensordb: updated ");
-            trace(noteID);
-            traceNL();
+            APP_PRINTF("sensordb updated %s\r\n", noteID);
 
         }
 
@@ -479,16 +468,13 @@ void gatewayUpdateEnvVar(const char *name, const char *value)
 void gatewayCmd(char *cmd)
 {
     if (strcmp(cmd, "refresh") == 0 || strcmp(cmd, "r") == 0) {
-        trace("REFRESH DB");
-        traceNL();
+        APP_PRINTF("REFRESH DB\r\n");
         dbLastUpdateTime = 0;
     } else if (strcmp(cmd, "counts") == 0 || strcmp(cmd, "count") == 0 || strcmp(cmd, "c") == 0) {
-        trace("RESET COUNTS");
-        traceNL();
+        APP_PRINTF("RESET COUNTS\r\n");
         time_var_gateway_sensordb_reset_counts = NoteTimeST();
         dbLastUpdateTime = 0;
     } else {
-        trace("??");
-        traceNL();
+        APP_PRINTF("??\r\n");
     }
 }

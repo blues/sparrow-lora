@@ -1444,9 +1444,6 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\App\dfu.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\App\dfuload.c</name>
@@ -1498,15 +1495,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\App\trace.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\App\util.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
             </file>
         </group>
         <group>
@@ -1564,9 +1555,6 @@
             <name>Gateway</name>
             <file>
                 <name>$PROJ_DIR$\..\Gateway\auth.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
             </file>
         </group>
         <group>
@@ -1579,9 +1567,6 @@
             </group>
             <file>
                 <name>$PROJ_DIR$\..\Sensor\bme.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Sensor\config.c</name>
@@ -1591,15 +1576,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Sensor\ping.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Sensor\pir.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
             </file>
         </group>
     </group>
@@ -1760,6 +1739,9 @@
         <name>Utilities</name>
         <file>
             <name>$PROJ_DIR$\..\..\Utilities\trace\adv_trace\stm32_adv_trace.c</name>
+            <configuration>
+                <name>sparrow</name>
+            </configuration>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\Utilities\lpm\tiny_lpm\stm32_lpm.c</name>
@@ -1775,6 +1757,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\Utilities\timer\stm32_timer.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\Utilities\misc\stm32_tiny_vsnprintf.c</name>
         </file>
     </group>
 </project>

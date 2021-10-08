@@ -65,13 +65,13 @@ UTIL_ADV_TRACE_Status_t vcom_DeInit(void)
 // Trace over the vcom port with interrupts
 void vcom_Trace(uint8_t *p_data, uint16_t size)
 {
-    MX_DBG((const char *)p_data, (size_t)size, 0);
+    MX_DBG((const char *)p_data, (size_t)size, 100);
 }
 
 // Trace with DMA
 UTIL_ADV_TRACE_Status_t vcom_Trace_DMA(uint8_t *p_data, uint16_t size)
 {
-    MX_DBG((const char *)p_data, (size_t)size, 0);
+    MX_DBG((const char *)p_data, (size_t)size, 100);
     return UTIL_ADV_TRACE_OK;
 }
 

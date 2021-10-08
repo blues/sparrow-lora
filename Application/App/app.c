@@ -142,7 +142,7 @@ void appSetCoreState(States_t newState)
 {
 
 #ifdef TRACE_STATE
-    traceValueLn("SET ", newState, "");
+    APP_PRINTF("SET %d\r\n", newState);
 #endif
 
     // Set the application-level state for the next time we're scheduled
@@ -247,11 +247,11 @@ void sendMessageToPeer(bool useTW, uint8_t *toAddress)
     const char *m1 = "sending (";
     DEBUG_VARIABLE(m1);
     if ((messageToSendFlags & MESSAGE_FLAG_ACK)) {
-        m1 = "sending ACK (";
+        m1 = "sending ACK";
     } else if ((messageToSendFlags & MESSAGE_FLAG_BEACON)) {
-        m1 = "sending BEACON (";
+        m1 = "sending BEACON";
     }
-    traceValue3Ln(m1, sentMessage.Len, "/", messageToSendDataLen, ") at txp:", atpPowerLevel(), "");
+    APP_PRINTF("%s %s (%d/%d) at txp:%d\r\n", tracePeer(), m1, sentMessage.Len, messageToSendDataLen, atpPowerLevel());
 
     // Compute message length of actual message
     uint16_t wireMessageLen = sizeof(sentMessage);
@@ -278,7 +278,7 @@ void sendMessageToPeer(bool useTW, uint8_t *toAddress)
         // Always use the sensor's key when encrypting
         uint8_t key[AES_KEY_BYTES];
         if (!flashConfigFindPeerByAddress(appIsGateway ? sentMessageCarrier.Receiver : sentMessageCarrier.Sender, NULL, key, NULL)) {
-            traceLn("can't find the sensor's key");
+            APP_PRINTF("can't find the sensor's key\r\n");
             memcpy(key, invalidKey, sizeof(key));
         }
 
@@ -286,7 +286,7 @@ void sendMessageToPeer(bool useTW, uint8_t *toAddress)
         bool success = MX_AES_CTR_Encrypt(key, (uint8_t *)&sentMessage, sentMessageCarrier.MessageLen, (uint8_t *)&sentMessageCarrier.Message);
         memcpy(key, invalidKey, sizeof(key));
         if (!success) {
-            traceLn("encryption error");
+            APP_PRINTF("encryption error\r\n");
         }
 
     }
@@ -310,17 +310,8 @@ void sendMessageToPeer(bool useTW, uint8_t *toAddress)
 
     // Compute the next slot
     uint32_t sleepSecs = appNextTransmitWindowDueSecs();
-    char buf[80];
-    strlcpy(buf, "waiting ", sizeof(buf));
-    JItoA(sleepSecs, &buf[strlen(buf)]);
-    strlcat(buf, "s to transmit (slot ", sizeof(buf));
-    JItoA(TWSlotBeginsSecs, &buf[strlen(buf)]);
-    strlcat(buf, "s-", sizeof(buf));
-    JItoA(TWSlotEndsSecs, &buf[strlen(buf)]);
-    strlcat(buf, "s in ", sizeof(buf));
-    JItoA(TWModulusSecs, &buf[strlen(buf)]);
-    strlcat(buf, "s window)", sizeof(buf));
-    traceLn(buf);
+    APP_PRINTF("%s waiting %ds to transmit (slot %ds-%ds in %ds window)\r\n",
+               tracePeer(), sleepSecs, TWSlotBeginsSecs, TWSlotEndsSecs, TWModulusSecs);
 
     // Schedule the timer for the next open transmit window
     ledIndicateTransmitInProgress(false);
@@ -424,7 +415,7 @@ uint32_t appNextTransmitWindowDueSecs()
         twSlotBeginsTime = now + (MX_RNG_Get() % 180);
         twSlotExpiresTime = twSlotBeginsTime + 120;
         MX_RNG_DeInit();
-        traceLn("(using random time window until assigned by gateway)");
+        APP_PRINTF("%s (using random time window until assigned by gateway)\r\n", tracePeer());
 
     } else {
 
@@ -453,7 +444,7 @@ uint32_t appNextTransmitWindowDueSecs()
     } else {
 
 #ifdef TW_TRACE
-        traceValue3Ln("modulus:", TWModulusSecs, " slotBegin:", TWSlotBeginsSecs, " slotEnd:", TWSlotEndsSecs, "");
+        APP_PRINTF("%s modulus:%d slotBegin:%d slotEnd:%d\r\n", tracePeer(), TWModulusSecs, TWSlotBeginsSecs, TWSlotEndsSecs);
 #endif
 
         // Without an offset, all modules everywhere would be aligned to Unix epoch time 0.
@@ -465,7 +456,8 @@ uint32_t appNextTransmitWindowDueSecs()
         uint32_t thisWindowBeginTime = (windowRelativeNowTime / TWModulusSecs) * TWModulusSecs;
         uint32_t nextWindowBeginTime = ((windowRelativeNowTime / TWModulusSecs) + 1) * TWModulusSecs;
 #ifdef TW_TRACE
-        traceValue3Ln("relative winNow:", windowRelativeNowTime, " winThis:", thisWindowBeginTime, " winNext:", nextWindowBeginTime, "");
+        APP_PRINTF("%s relative winNow:%d winThis:%d winNext:%d\r\n",
+                   tracePeer(), windowRelativeNowTime, thisWindowBeginTime, nextWindowBeginTime);
 #endif
 
         // Adjust the slot begin based upon whether or not we've been encountering errors by
@@ -483,13 +475,15 @@ uint32_t appNextTransmitWindowDueSecs()
             twSlotBeginsTime = now + ((thisWindowBeginTime + slotBeginsSecs) - windowRelativeNowTime);
             twSlotExpiresTime = now + ((thisWindowBeginTime + TWSlotEndsSecs) - windowRelativeNowTime);
 #ifdef TW_TRACE
-            traceValue3Ln("absolute now:", now, " THIS slotBegin:", twSlotBeginsTime, " slotEnd:", twSlotExpiresTime, "");
+            APP_PRINTF("%s absolute now:%d THIS slotBegin:%d slotEnd:%d\r\n",
+                       tracePeer(), now, twSlotBeginsTime, twSlotExpiresTime);
 #endif
         } else {
             twSlotBeginsTime = now + ((nextWindowBeginTime + slotBeginsSecs) - windowRelativeNowTime);
             twSlotExpiresTime = now + ((nextWindowBeginTime + TWSlotEndsSecs) - windowRelativeNowTime);
 #ifdef TW_TRACE
-            traceValue3Ln("absolute now:", now, " next slotBegin:", twSlotBeginsTime, " slotEnd:", twSlotExpiresTime, "");
+            APP_PRINTF("%s absolute now:%d next slotBegin:%d slotEnd:%d\r\n",
+                       tracePeer(), now, twSlotBeginsTime, twSlotExpiresTime);
 #endif
         }
 
@@ -544,7 +538,7 @@ bool lbtListenBeforeTalk()
 void lbtTalk()
 {
 #if TRANSMIT_SIZE_TEST
-    traceValueLn("send (", sentMessageCarrierLen, ")");
+    APP_PRINTF("%s send(%d)\r\n", tracePeer(), sentMessageCarrierLen);
 #endif
     ledIndicateTransmitInProgress(true);
     if (!appIsGateway) {
@@ -568,7 +562,7 @@ void sensorSendReqToGateway(J *req, bool responseRequested)
 {
 
     // Show the request ID
-    traceLn(JGetString(req, "req"));
+    APP_PRINTF("%s %s\r\n", tracePeer(), JGetString(req, "req"));
 
     // Convert it to JSON and send it
     uint8_t *reqJSON = (uint8_t *) JConvertToJSONString(req);
@@ -611,7 +605,7 @@ void sensorSendToGateway(bool responseRequested, uint8_t *message, uint32_t leng
     traceSetID("to", gatewayAddress, requestID);
 
     // Send it
-    traceValueLn("sensor sending request (", length, ")");
+    APP_PRINTF("%s sensor sending request (%d)\r\n", tracePeer(), length);
     sendToPeer(true, responseRequested ? MESSAGE_FLAG_RESPONSE : 0,
                wireReceiveRSSI, wireReceiveSNR, gatewayAddress,
                requestID, message, length, dealloc);
@@ -654,7 +648,7 @@ bool sensorResendToGateway()
     TWSlotBeginsTweak = (sensorSendRetriesRemaining <= (GATEWAY_REQUEST_FAILURE_RETRIES/2));
 
     // Send it
-    traceValueLn("sensor re-sending request (retries remaining: ", sensorSendRetriesRemaining, ")");
+    APP_PRINTF("%s sensor re-sending request (retries remaining: %d)\r\n", tracePeer(), sensorSendRetriesRemaining);
     sendToPeer(true, messageToSendFlags,
                wireReceiveRSSI, wireReceiveSNR, gatewayAddress,
                LastRequestID, sendData, sendDataLen, sendDataDealloc);
@@ -686,7 +680,7 @@ void processSensorRequest(requestState *request, bool respond)
 
     // Process the request if we haven't successfully processed it before and if no response is required
     if (!respond && request->lastProcessedRequestID != 0 && request->currentRequestID == request->lastProcessedRequestID) {
-        traceLn("*** ignoring duplicate request ***");
+        APP_PRINTF("%s *** ignoring duplicate request ***\r\n", tracePeer());
         memset(reqJSON, '?', reqJSONLen);
         free(reqJSON);
     } else {
@@ -752,7 +746,7 @@ void gatewayWaitForSensorMessage()
     wireReceiveTimeoutMs = SOLICITED_COMMS_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
     radioRx(wireReceiveTimeoutMs);
-    traceLn("waiting for message from a specific sensor");
+    APP_PRINTF("%s waiting for message from a specific sensor\r\n", tracePeer());
     appSetCoreState(LOWPOWER);
 }
 
@@ -767,7 +761,7 @@ void gatewayWaitForAnySensorMessage()
     ListenPhaseBeforeTalk = false;
     radioRx(wireReceiveTimeoutMs);
     showReceivedTime("rx", 0, 0);
-    traceNL();
+    APP_PRINTF("\r\n");
     appSetCoreState(LOWPOWER);
 }
 
@@ -781,7 +775,7 @@ void sensorWaitForGatewayMessage()
     wireReceiveTimeoutMs = SOLICITED_COMMS_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
     radioRx(wireReceiveTimeoutMs);
-    traceLn("waiting for message from gateway");
+    APP_PRINTF("%s waiting for message from gateway\r\n", tracePeer());
     appSetCoreState(LOWPOWER);
 }
 
@@ -795,7 +789,7 @@ void sensorWaitForGatewayResponse()
     wireReceiveTimeoutMs = SOLICITED_PROCESSING_RX_TIMEOUT_VALUE;
     ListenPhaseBeforeTalk = false;
     radioRx(wireReceiveTimeoutMs);
-    traceLn("waiting for response from gateway");
+    APP_PRINTF("%s waiting for response from gateway\r\n", tracePeer());
     appSetCoreState(LOWPOWER);
 }
 
@@ -809,7 +803,7 @@ void restartReceive(uint32_t timeoutMs)
     ListenPhaseBeforeTalk = false;
     radioRx(timeoutMs);
     showReceivedTime("restarting rx", 0, 0);
-    traceNL();
+    APP_PRINTF("\r\n");
     appSetCoreState(LOWPOWER);
     return;
 }
@@ -832,7 +826,7 @@ void appSensorProcess()
 {
 
 #ifdef TRACE_STATE
-    traceValueLn("ENTER ", CurrentStateCore, "");
+    APP_PRINTF("ENTER %d\r\n", CurrentStateCore);
 #endif
 
     // Default for the identity of the subject of tracing
@@ -858,7 +852,7 @@ void appSensorProcess()
 
     // Exit if not yet paired
     if (!ledIsPairInProgress() && memcmp(gatewayAddress, invalidAddress, sizeof(gatewayAddress)) == 0) {
-        traceLn("not currently paired with a gateway");
+        APP_PRINTF("%s not currently paired with a gateway\r\n", tracePeer());
         ledReset();
         for (int i=0; i<5; i++) {
             ledWalk();
@@ -867,7 +861,7 @@ void appSensorProcess()
         ledReset();
         sensorCoreIdle();
 #ifdef TRACE_STATE
-        traceValueLn("EXIT ", CurrentStateCore, "");
+        APP_PRINTF("EXIT %d\r\n", CurrentStateCore);
 #endif
         return;
     }
@@ -877,7 +871,7 @@ void appSensorProcess()
 
     case TW_OPEN:
         if (NoteTimeST() >= twSlotExpiresTime) {
-            traceLn("*** transmit window expired ***");
+            APP_PRINTF("%s *** transmit window expired ***\r\n", tracePeer());
             schedRequestResponseTimeout();
             sensorCoreIdle();
             break;
@@ -897,7 +891,7 @@ void appSensorProcess()
             if (lbtListenBeforeTalk()) {
                 break;
             }
-            traceLn("*** busy and transmit retries expired ***");
+            APP_PRINTF("%s *** busy and transmit retries expired ***\r\n", tracePeer());
             schedRequestResponseTimeout();
             sensorCoreIdle();
             break;
@@ -921,7 +915,7 @@ void appSensorProcess()
                 flashConfigUpdatePeer(PEER_TYPE_SENSOR|PEER_TYPE_SELF, ourAddress, beaconKey);
                 flashConfigUpdatePeer(PEER_TYPE_GATEWAY, gatewayAddress, invalidKey);
                 memcpy(beaconKey, invalidKey, sizeof(beaconKey));
-                traceLn("received beacon pairing ACK: paired");
+                APP_PRINTF("%s received beacon pairing ACK: paired\r\n", tracePeer());
                 ledIndicatePairInProgress(false);
                 ledIndicateAck(2);
                 // This restart isn't strictly necessary, but it's good
@@ -937,7 +931,7 @@ void appSensorProcess()
 
         // Error if the sender is not the gateway we're paired with
         if (memcmp(gatewayAddress, wireReceivedCarrier.Sender, sizeof(gatewayAddress)) != 0) {
-            traceLn("message received by sensor from wrong gateway");
+            APP_PRINTF("%s message received by sensor from wrong gateway\r\n", tracePeer());
             if (sendTimeout()) {
                 sendMessageToPeer(false, gatewayAddress);
             } else {
@@ -948,7 +942,7 @@ void appSensorProcess()
 
         // We're sending a request to the gateway and we get an ack on a chunk
         if ((wireReceived.Flags & MESSAGE_FLAG_ACK) != 0) {
-            traceLn("ack received");
+            APP_PRINTF("%s ack received\r\n", tracePeer());
 
             // Extract and set the sensor time
             if (wireReceived.Len >= sizeof(gatewayAckBody)-SENSOR_NAME_MAX) {
@@ -987,16 +981,16 @@ void appSensorProcess()
 
                 // Trace
                 if (TWModulusSecs != body->TWModulusSecs) {
-                    traceValue2Ln("TWModulusSecs: from ", TWModulusSecs, " to ", body->TWModulusSecs, "");
+                    APP_PRINTF("%s TWModulusSecs: from %d to %d\r\n", tracePeer(), TWModulusSecs, body->TWModulusSecs);
                 }
                 if (TWModulusOffsetSecs != body->TWModulusOffsetSecs) {
-                    traceValue2Ln("TWModulusOffsetSecs: from ", TWModulusOffsetSecs, " to ", body->TWModulusOffsetSecs, "");
+                    APP_PRINTF("%s TWModulusOffsetSecs: from %d to %d\r\n", tracePeer(), TWModulusOffsetSecs, body->TWModulusOffsetSecs);
                 }
                 if (TWSlotBeginsSecs != body->TWSlotBeginsSecs) {
-                    traceValue2Ln("TWSlotBeginsSecs: from ", TWSlotBeginsSecs, " to ", body->TWSlotBeginsSecs, "");
+                    APP_PRINTF("%s TWSlotBeginsSecs: from %d to %d\r\n", tracePeer(), TWSlotBeginsSecs, body->TWSlotBeginsSecs);
                 }
                 if (TWSlotEndsSecs != body->TWSlotEndsSecs) {
-                    traceValue2Ln("TWSlotEndsSecs: from ", TWSlotEndsSecs, " to ", body->TWSlotEndsSecs, "");
+                    APP_PRINTF("%s TWSlotEndsSecs: from %d to %d\r\n", tracePeer(), TWSlotEndsSecs, body->TWSlotEndsSecs);
                 }
 
                 // Set the time window parameters
@@ -1028,7 +1022,7 @@ void appSensorProcess()
             if (response.responseRequired) {
                 sensorWaitForGatewayResponse();
             } else {
-                traceLn("received final ACK: request completed");
+                APP_PRINTF("%s received final ACK: request completed\r\n", tracePeer());
                 sensorCoreIdle();
             }
             break;
@@ -1044,7 +1038,7 @@ void appSensorProcess()
                 free(response.data);
                 response.data = NULL;
             }
-            traceLn("now receiving response from gateway");
+            APP_PRINTF("%s now receiving response from gateway\r\n", tracePeer());
             response.receivingResponse = true;
             response.sendingRequest = false;
             response.data = (uint8_t *) malloc(wireReceived.TotalLen+1);
@@ -1056,19 +1050,20 @@ void appSensorProcess()
         // If this is a duplicate, skip it
         if (wireReceived.Offset+wireReceived.Len == response.dataAcknowledgedLen) {
 
-            traceLn("*** re-acking duplicate message ***");
+            APP_PRINTF("%s *** re-acking duplicate message ***\r\n", tracePeer());
 
         } else {
 
             // If we're not synchronized on where within the response the transfer is, error
             if (wireReceived.Offset != response.dataAcknowledgedLen) {
-                traceValue2Ln("*** message has wrong offset *** (", wireReceived.Offset, "/", response.dataAcknowledgedLen, ")");
+                APP_PRINTF("%s *** message has wrong offset *** (%d/%d)\r\n",
+                           tracePeer(), wireReceived.Offset, response.dataAcknowledgedLen);
                 schedRequestResponseTimeout();
                 sensorCoreIdle();
                 break;
             }
             if (wireReceived.Offset+wireReceived.Len > response.dataTotalLen) {
-                traceLn("*** message has wrong length ***");
+                APP_PRINTF("%s *** message has wrong length ***\r\n", tracePeer());
                 schedRequestResponseTimeout();
                 sensorCoreIdle();
                 break;
@@ -1106,16 +1101,16 @@ void appSensorProcess()
             response.data[response.dataTotalLen] = '\0';
             J *rsp = JConvertFromJSONString((const char *)response.data);
             if (rsp == NULL) {
-                traceValueLn("*** sensor response isn't valid JSON *** (", response.dataTotalLen, ")");
+                APP_PRINTF("%s *** sensor response isn't valid JSON *** (%d)\r\n", tracePeer(), response.dataTotalLen);
             } else {
                 schedResponseCompleted(rsp);
                 JDelete(rsp);
                 if (twSlotExpiresTimeWasValid && NoteTimeValidST()) {
                     uint32_t now = NoteTimeST();
                     if (now > twSlotExpiresTime) {
-                        traceValueLn("sensor used too much time (", now-twSlotExpiresTime, ")");
+                        APP_PRINTF("%s *** sensor used too much time (%d)\r\n", tracePeer(), now-twSlotExpiresTime);
                     } else {
-                        traceValueLn("sensor completed with time to spare (", twSlotExpiresTime-now, ")");
+                        APP_PRINTF("%s sensor completed with time to spare (%d)\r\n", tracePeer(), twSlotExpiresTime-now);
                     }
                 }
             }
@@ -1174,7 +1169,7 @@ void appSensorProcess()
     }
 
 #ifdef TRACE_STATE
-    traceValueLn("EXIT ", CurrentStateCore, "");
+    APP_PRINTF("EXIT %d\r\n", CurrentStateCore);
 #endif
 
 }
@@ -1189,7 +1184,7 @@ void sensorGatewayRequestFailure(bool wasTX, const char *why)
     } else {
         traceSetID("fm", gatewayAddress, LastRequestID);
     }
-    traceLn(why);
+    APP_PRINTF("%s %s\r\n", tracePeer(), why);
 
     // Indicate to the ATP subsystem that we lost a message
     // 2021-04-19 move to this side of ResendToGateway so that we take every failure into account
@@ -1225,7 +1220,7 @@ void appGatewayProcess()
 {
 
 #ifdef TRACE_STATE
-    traceValueLn("ENTER ", CurrentStateCore, "");
+    APP_PRINTF("ENTER %d\r\n", CurrentStateCore);
 #endif
 
     // Set identity of the 'subject' of our work to 'unknown'
@@ -1246,7 +1241,7 @@ void appGatewayProcess()
     switch (CurrentStateCore) {
 
     case TW_OPEN:
-        traceLn("*** INVALID STATE FOR GATEWAY ***");
+        APP_PRINTF("%s *** INVALID STATE FOR GATEWAY ***\r\n", tracePeer());
         gatewayWaitForAnySensorMessage();
         break;
 
@@ -1258,7 +1253,7 @@ void appGatewayProcess()
             if (lbtListenBeforeTalk()) {
                 break;
             }
-            traceLn("*** busy and transmit retries expired ***");
+            APP_PRINTF("%s *** busy and transmit retries expired ***\r\n", tracePeer());
             gatewayWaitForAnySensorMessage();
             break;
         }
@@ -1292,7 +1287,7 @@ void appGatewayProcess()
             }
             memset(&foundRequest, 0, sizeof(requestState));
             memcpy(foundRequest.sensorAddress, wireReceivedCarrier.Sender, sizeof(wireReceivedCarrier.Sender));
-            traceLn("**** new sensor being cached ****\n");
+            APP_PRINTF("%s *** new sensor being cached ***\r\n", tracePeer());
             found = cachedSensors-1;
             forceSensorRefresh = true;
         }
@@ -1305,7 +1300,7 @@ void appGatewayProcess()
         requestState *request = &requestCache[0];
         request->lastReceivedTime = NoteTimeST();
         traceSetID("fm", request->sensorAddress, request->currentRequestID);
-        traceValue3Ln("rcv txp:", wireReceived.TXP, " rssi:", wireReceived.RSSI, " snr:", wireReceived.SNR, "");
+        APP_PRINTF("%s rcv txp:%d rssi:%d snr:%d\r\n", tracePeer(), wireReceived.TXP, wireReceived.RSSI, wireReceived.SNR);
 
         // Remember the radio stats
         if (wireReceiveSignalValid && (wireReceiveRSSI != 0 || wireReceiveSNR != 0)) {
@@ -1370,26 +1365,27 @@ void appGatewayProcess()
             request->dataAcknowledgedLen = 0;
             request->currentRequestID = wireReceived.RequestID;
             traceSetID("fm", request->sensorAddress, request->currentRequestID);
-            traceLn("now receiving request from sensor");
+            APP_PRINTF("%s now receiving request from sensor\r\n", tracePeer());
         }
 
         // If this is a duplicate, skip it
         if (wireReceived.Offset+wireReceived.Len == request->dataAcknowledgedLen) {
 
-            traceLn("*** re-acking duplicate message ***");
+            APP_PRINTF("%s *** re-acking duplicate message ***\r\n", tracePeer());
 
         } else {
 
             // If we're not synchronized on where within the request the transfer is, error
             if (wireReceived.Offset != request->dataAcknowledgedLen) {
-                traceValue2Ln("*** message has wrong offset *** (", wireReceived.Offset, "/", request->dataAcknowledgedLen, ")");
+                APP_PRINTF("%s *** message has wrong offset *** (%d/%d)\r\n", tracePeer(),
+                           wireReceived.Offset, request->dataAcknowledgedLen);
                 gatewayWaitForAnySensorMessage();
                 break;
             }
             if (wireReceived.Offset+wireReceived.Len > request->dataTotalLen) {
                 request->receivingRequest = true;
                 request->sendingResponse = false;
-                traceLn("*** message has wrong length ***");
+                APP_PRINTF("%s *** message has wrong length ***\r\n", tracePeer());
                 gatewayWaitForAnySensorMessage();
                 break;
             }
@@ -1405,11 +1401,11 @@ void appGatewayProcess()
         // If this was a beacon, update the key and algorithm
         if ((wireReceived.Flags & MESSAGE_FLAG_BEACON) != 0) {
             if (wireReceived.RequestID != MESSAGE_ALG_CTR) {
-                traceLn("*** beacon message has wrong encryption type ***");
+                APP_PRINTF("%s *** beacon message has wrong encryption type ***\r\n", tracePeer());
                 gatewayWaitForAnySensorMessage();
             }
             flashConfigUpdatePeer(PEER_TYPE_SENSOR, request->sensorAddress, wireReceived.Body);
-            traceLn("beacon: updated sensor key");
+            APP_PRINTF("%s *** beacon: updated sensor key\r\n", tracePeer());
         }
 
         // Prepare the body
@@ -1481,7 +1477,7 @@ void appGatewayProcess()
         requestState *request = &requestCache[0];
         traceSetID("to", request->sensorAddress, request->currentRequestID);
         if (memcmp(sentMessageCarrier.Receiver, request->sensorAddress, sizeof(request->sensorAddress)) != 0) {
-            traceLn("$$$ WRONG SENDER $$$");
+            APP_PRINTF("%s $$$ WRONG SENDER $$$\r\n", tracePeer());
         }
 
         // Process the sensor request when it's completely received
@@ -1510,7 +1506,7 @@ void appGatewayProcess()
         break;
     }
 
-    // Expected wait
+        // Expected wait
     case RX_TIMEOUT:
         if (ListenPhaseBeforeTalk) {
             lbtTalk();
@@ -1518,7 +1514,7 @@ void appGatewayProcess()
         }
         traceSetID("fm", wireReceivedCarrier.Sender, wireReceivedCarrier.Message.RequestID);
         if (wireReceiveTimeoutMs != UNSOLICITED_RX_TIMEOUT_VALUE) {
-            traceLn("*** no response from sensor ***");
+            APP_PRINTF("%s *** no response from sensor ***\r\n", tracePeer());
         }
         gatewayWaitForAnySensorMessage();
         break;
@@ -1544,7 +1540,7 @@ void appGatewayProcess()
 
     case TX_TIMEOUT:
         traceSetID("to", sentMessageCarrier.Receiver, sentMessage.RequestID);
-        traceLn("*** can't transmit to sensor ***");
+        APP_PRINTF("%s *** can't transmit to sensor ***\r\n", tracePeer());
         gatewayWaitForAnySensorMessage();
         break;
 
@@ -1554,7 +1550,7 @@ void appGatewayProcess()
     }
 
 #ifdef TRACE_STATE
-    traceValueLn("EXIT ", CurrentStateCore, "");
+    APP_PRINTF("EXIT %d\r\n", CurrentStateCore);
 #endif
 
 }
@@ -1579,17 +1575,10 @@ void showReceivedTime(char *msg, uint32_t beginSecs, uint32_t endSecs)
     DEBUG_VARIABLE(thisSlotOffset);
     DEBUG_VARIABLE(nextSlotBeginTime);
     DEBUG_VARIABLE(sensorSlotEndTime);
-    trace(msg);
+    APP_PRINTF("%s %s", tracePeer(), msg);
     if (appIsGateway && NoteTimeValidST() && thisWindowBeginTime > gatewayBootTime) {
-        trace(" window:");
-        trace32(thisWindowBeginTime-gatewayBootTime);
-        trace("-");
-        trace32(nextWindowBeginTime-gatewayBootTime);
-        trace(" slot#");
-        trace32(thisSlotNumber);
-        trace("/");
-        trace32(modSecs/slotSecs);
-        trace("(");
+        APP_PRINTF(" window:%d-%d", thisWindowBeginTime-gatewayBootTime, nextWindowBeginTime-gatewayBootTime);
+        APP_PRINTF(" slot#%d/%d(", thisSlotNumber, modSecs/slotSecs);
         char slotOwner[SENSOR_NAME_MAX];
         strlcpy(slotOwner, "+++ UNKNOWN +++", sizeof(slotOwner));
         for (int i=0; i<cachedSensors; i++) {
@@ -1598,19 +1587,10 @@ void showReceivedTime(char *msg, uint32_t beginSecs, uint32_t endSecs)
                 break;
             }
         }
-        trace(slotOwner);
-        trace(")=");
-        trace32(thisSlotOffset);
-        trace("%");
-        trace32(slotSecs);
-        trace(":");
-        trace32(thisSlotBeginTime-thisWindowBeginTime);
-        trace("-");
-        trace32(nextSlotBeginTime-thisWindowBeginTime);
+        APP_PRINTF("%s)=%d%%%d:%d-%d", slotOwner, thisSlotOffset, slotSecs,
+                   thisSlotBeginTime-thisWindowBeginTime, nextSlotBeginTime-thisWindowBeginTime);
         if (endSecs > 0) {
-            trace(" sensor#");
-            trace32(sensorSlotNumber);
-            trace("(");
+            APP_PRINTF("sensor#%d(", sensorSlotNumber);
             strlcpy(slotOwner, "+++ UNKNOWN +++", sizeof(slotOwner));
             for (int i=0; i<cachedSensors; i++) {
                 if (beginSecs == requestCache[i].twSlotBeginsSecs) {
@@ -1618,19 +1598,14 @@ void showReceivedTime(char *msg, uint32_t beginSecs, uint32_t endSecs)
                     break;
                 }
             }
-            trace(slotOwner);
-            trace(")=");
-            trace32(endSecs-beginSecs);
-            trace(":");
-            trace32(sensorSlotBeginTime-thisWindowBeginTime);
-            trace("-");
-            trace32(sensorSlotEndTime-thisWindowBeginTime);
+            APP_PRINTF("%s)=%d:%d-%d", slotOwner, endSecs-beginSecs,
+                       sensorSlotBeginTime-thisWindowBeginTime, sensorSlotEndTime-thisWindowBeginTime);
             if (thisSlotBeginTime != sensorSlotBeginTime || thisSlotNumber != sensorSlotNumber) {
-                trace(" +++ WRONG SLOT +++");
+                APP_PRINTF(" +++ WRONG SLOT +++");
             }
         }
     }
-    traceNL();
+    APP_PRINTF("\r\n");
     HAL_Delay(5);   // Flush output before sleep
 }
 
@@ -1643,16 +1618,16 @@ bool validateReceivedMessage()
 
     // Exit if not the right protocol version
     if (wireReceivedCarrier.Version != MESSAGE_VERSION) {
-        traceLn("invalid protocol version");
+        APP_PRINTF("%s invalid protocol version\r\n", tracePeer());
         return false;
     }
 
     // Exit if not intended for us
     if (appIsGateway && ledIsPairInProgress() && memcmp(wildcardAddress, wireReceivedCarrier.Receiver, sizeof(ourAddress)) == 0) {
-        traceLn("received pairing beacon");
+        APP_PRINTF("%s received pairing beacon\r\n", tracePeer());
     }  else {
         if (memcmp(ourAddress, wireReceivedCarrier.Receiver, sizeof(ourAddress)) != 0) {
-            traceLn("message not intended for us");
+            APP_PRINTF("%s message not intended for us\r\n", tracePeer());
             return false;
         }
     }
@@ -1660,7 +1635,7 @@ bool validateReceivedMessage()
     // If it's cleartext, we're done
     if (wireReceivedCarrier.Algorithm == MESSAGE_ALG_CLEAR) {
         if (wireReceivedCarrier.MessageLen > sizeof(wireReceived)) {
-            traceLn("cleartext message has incorrect length");
+            APP_PRINTF("%s cleartext message has incorrect length\r\n", tracePeer());
             return false;
         }
         memcpy((uint8_t *)&wireReceived, (uint8_t *)&wireReceivedCarrier.Message, wireReceivedCarrier.MessageLen);
@@ -1669,14 +1644,14 @@ bool validateReceivedMessage()
 
     // Exit if not a supported crypto version
     if (wireReceivedCarrier.Algorithm != MESSAGE_ALG_CTR) {
-        traceLn("unsupported encryption type");
+        APP_PRINTF("%s unsupported encryption type\r\n", tracePeer());
         return false;
     }
 
     // Always use the sensor's key when decrypting
     uint8_t key[AES_KEY_BYTES];
     if (!flashConfigFindPeerByAddress(appIsGateway ? wireReceivedCarrier.Sender : wireReceivedCarrier.Receiver, NULL, key, NULL)) {
-        traceLn("can't find the sensor's key");
+        APP_PRINTF("%s can't find the sensor's key\r\n", tracePeer());
         return false;
     }
 
@@ -1689,7 +1664,7 @@ bool validateReceivedMessage()
 
     // Fail if can't decrypt
     if (!success) {
-        traceLn("can't decrypt received message");
+        APP_PRINTF("%s can't decrypt received message\r\n", tracePeer());
         return false;
     }
 
@@ -1723,7 +1698,7 @@ void twRefresh()
     twLastActiveSensors = activeSensors;
 
     // Force the database to be updated
-    traceValueLn("**** active sensors changed to ", activeSensors, " ****\n");
+    APP_PRINTF("%s **** active sensors changed to %d ****\r\n", tracePeer(), activeSensors);
     forceSensorRefresh = true;
 
     // Update active sensors and modulus, assigning a modulus offset to keep us from
@@ -1753,12 +1728,7 @@ void twRefresh()
         // Display the slot assignment
         char msg[40];
         utilAddressToText(requestCache[i].sensorAddress, msg, sizeof(msg));
-        trace(msg);
-        trace(" assigned slot ");
-        trace32(requestCache[i].twSlotBeginsSecs);
-        trace("-");
-        trace32(requestCache[i].twSlotEndsSecs);
-        traceNL();
+        APP_PRINTF("%s %s assigned slot %d-%d\r\n", tracePeer(), msg, requestCache[i].twSlotBeginsSecs, requestCache[i].twSlotEndsSecs);
 
     }
 
@@ -1867,7 +1837,7 @@ void appSendLoRaPacketSizeTestPing()
     static int nextBodySize = TRANSMIT_SIZE_TEST_BEGIN;
     uint8_t *testmsg = malloc(nextBodySize);
     if (testmsg != NULL) {
-        traceValueLn("TRANSMIT_SIZE_TEST (", nextBodySize, ")");
+        APP_PRINTF("%s TRANSMIT_SIZE_TEST (%d)\r\n", tracePeer(), nextBodySize);
         memset(testmsg, '?', nextBodySize);
         sensorIgnoreTimeWindow();
         sensorSendToGateway(false, testmsg, nextBodySize);

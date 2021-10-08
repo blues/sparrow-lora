@@ -69,6 +69,11 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Utilities/timer/stm32_timer.c</locationURI>
 		</link>
 		<link>
+			<name>Utilities/stm32_tiny_vsnprintf.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Utilities/misc/stm32_tiny_vsnprintf.c</locationURI>
+		</link>
+		<link>
 			<name>note-c/n_atof.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/note-c/n_atof.c</locationURI>
@@ -242,6 +247,11 @@
 			<name>Application/Core/timer_if.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/timer_if.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Core/usart_if.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/usart_if.c</locationURI>
 		</link>
 		<link>
 			<name>Application/Core/util_if.c</name>

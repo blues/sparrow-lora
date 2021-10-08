@@ -1,4 +1,3 @@
-#define TRACE_ATP
 // Copyright 2021 Blues Inc.  All rights reserved.
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
@@ -58,15 +57,6 @@ uint8_t pastSamples = 0;
 static int8_t pastRSSI[SAMPLES];
 static int8_t pastSNR[SAMPLES];
 
-// Trace
-#ifndef TRACE_ATP
-#define traceValueLn(a,b,c)
-#define traceValue2Ln(a,b,c,d,e)
-#define traceValue3Ln(a,b,c,d,e,f,g)
-#define traceValue4Ln(a,b,c,d,e,f,g,h,i)
-#define traceValue5Ln(a,b,c,d,e,f,g,h,i,j,k)
-#endif
-
 // Forwards
 void atpUpdate(bool useSignal, int8_t rssi, int8_t snr);
 bool powerLevelIsLossy(int level);
@@ -83,7 +73,7 @@ void atpGatewayMessageReceived(int8_t rssi, int8_t snr, int8_t rssiGateway, int8
         pastRSSI[pastSamples] = rssi;
         pastSNR[pastSamples] = snr;
         pastSamples++;
-        traceValueLn("ATP: buffered sample ", pastSamples, "");
+        APP_PRINTF("ATP: buffered sample %d\r\n", pastSamples);
 
     } else {
 
@@ -140,7 +130,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
         memset(packetsSent, 0, sizeof(packetsSent));
         memset(packetsLost, 0, sizeof(packetsLost));
         memset(failResets, 0, sizeof(failResets));
-        traceValueLn("ATP: state reset to ", currentLevel, "db so that we may try again");
+        APP_PRINTF("ATP: state reset to %ddb so that we may try again\r\n", currentLevel);
     }
 
     // If we've sent many packets at this level and have had great success, clear out the
@@ -159,7 +149,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
                 packetsSent[currentLevel-1] = 0;
                 packetsLost[currentLevel-1] = 0;
                 failResets[currentLevel-1]++;
-                traceValueLn("ATP: resetting ", (currentLevel-1)+RBO_MIN, "db level because of low fail pct at current level");
+                APP_PRINTF("ATP: resetting %ddb level because of low fail pct at current level\r\n", (currentLevel-1)+RBO_MIN);
             }
         }
     }
@@ -168,7 +158,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
     // nothing but danger.  If this is an anomaly it will be corrected later.
     if (useSignal && snr < INCREASE_POWER_IF_QUALITY_BELOW) {
         mustIncreaseTxPower = true;
-        traceValueLn("ATP: must increase power because snr is ", snr, "db");
+        APP_PRINTF("ATP: must increase power because snr is %ddb\r\n", snr);
     }
 
     // Add it to samples
@@ -187,10 +177,10 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
         // Make decisions
         if (averageSNR < INCREASE_POWER_IF_QUALITY_BELOW) {
             shouldIncreaseTxPower = true;
-            traceValueLn("ATP: would increase power because avg snr is ", averageSNR, "db");
+            APP_PRINTF("ATP: would increase power because avg snr is %ddb\r\n", averageSNR);
         } else if (averageRSSI < INCREASE_POWER_IF_SIGNAL_BELOW) {
             shouldIncreaseTxPower = true;
-            traceValueLn("ATP: would increase power because avg rssi is ", averageRSSI, "db");
+            APP_PRINTF("ATP: would increase power because avg rssi is %ddb\r\n", averageRSSI);
         } else if (averageRSSI > DECREASE_POWER_IF_SIGNAL_ABOVE) {
 
             // Attempt to decrease power by a big step
@@ -198,27 +188,29 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
             decreasePowerLevelByDb += 2 * ((averageRSSI - DECREASE_POWER_IF_SIGNAL_ABOVE) / 10);
             if (decreasePowerLevelByDb > currentLevel) {
                 decreasePowerLevelByDb = currentLevel;
-                traceValueLn("ATP: would decrease power but it's already bottomed-out at ", decreasePowerLevelByDb, "db");
+                APP_PRINTF("ATP: would decrease power but it's already bottomed-out at %ddb\r\n", decreasePowerLevelByDb);
             } else {
-                traceValue2Ln("ATP: should decrease power by ", decreasePowerLevelByDb, "db because avg rssi is ", averageRSSI, "db");
+                APP_PRINTF("ATP: should decrease power by %ddb because avg rssi is %ddb\r\n", decreasePowerLevelByDb, averageRSSI);
             }
 
             // If that step would cause loss, try a single step
             if (powerLevelIsLossy(currentLevel-decreasePowerLevelByDb)) {
-                traceValue2Ln("ATP: can't decrease power that much because ", packetsLost[currentLevel-decreasePowerLevelByDb],
-                              "/", packetsSent[currentLevel-decreasePowerLevelByDb]," lost");
+                APP_PRINTF("ATP: can't decrease power that much because %d/%d lost\r\n",
+                           packetsLost[currentLevel-decreasePowerLevelByDb],
+                           packetsSent[currentLevel-decreasePowerLevelByDb]);
                 decreasePowerLevelByDb = 1;
                 if (decreasePowerLevelByDb > currentLevel) {
                     decreasePowerLevelByDb = currentLevel;
-                    traceValueLn("ATP: would decrease power but it's already bottomed-out at ", averageRSSI, "db");
+                    APP_PRINTF("ATP: would decrease power but it's already bottomed-out at %ddb\r\n", averageRSSI);
                 } else {
-                    traceValueLn("ATP: trying to decrease power by ", decreasePowerLevelByDb, "db");
+                    APP_PRINTF("ATP: trying to decrease power by %ddb\r\n", decreasePowerLevelByDb);
                 }
 
                 // If that step would cause loss, give up
                 if (powerLevelIsLossy(currentLevel-decreasePowerLevelByDb)) {
-                    traceValue2Ln("ATP: can't decrease power at all because ", packetsLost[currentLevel-decreasePowerLevelByDb],
-                                  "/", packetsSent[currentLevel-decreasePowerLevelByDb]," lost");
+                    APP_PRINTF("ATP: can't decrease power at all because %d/%d lost\r\n",
+                               packetsLost[currentLevel-decreasePowerLevelByDb],
+                               packetsSent[currentLevel-decreasePowerLevelByDb]);
                     shouldTryDecreasingTxPower = false;
                 }
 
@@ -234,7 +226,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
         currentLevel++;
         pastSamples = 0;
         radioSetTxPower(atpPowerLevel());
-        traceValueLn("ATP: increased power to ", currentLevel+RBO_MIN, " dBm");
+        APP_PRINTF("ATP: increased power to %d dBm\r\n", currentLevel+RBO_MIN);
     } else if (currentLevel > 0 && !mustNotDecreaseTxPower && shouldTryDecreasingTxPower) {
         currentLevel -= decreasePowerLevelByDb;
         if (currentLevel < lowestLevel) {
@@ -242,21 +234,22 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
         }
         pastSamples = 0;
         radioSetTxPower(atpPowerLevel());
-        traceValue3Ln("ATP: decreased power to ", currentLevel+RBO_MIN, " dBm (", packetsLost[currentLevel], "/", packetsSent[currentLevel], " lost at this level)");
+        APP_PRINTF("ATP: decreased power to %d dbm (%d/%d lost at this level)\r\n",
+                   currentLevel+RBO_MIN, packetsLost[currentLevel], packetsSent[currentLevel]);
     } else {
 
         // Display signal
         if (useSignal) {
             if (averageRSSI != 0 || averageSNR != 0) {
-                traceValue5Ln("ATP: rssi/snr:", rssi, "/", snr, " avg:", averageRSSI, "/", averageSNR, " txp:", atpPowerLevel(), "");
+                APP_PRINTF("ATP: rssi/snr:%d/%d avg:%d/%d txp:%d\r\n", rssi, snr, averageRSSI, averageSNR, atpPowerLevel());
             } else {
-                traceValue3Ln("ATP: rssi/snr:", rssi, "/", snr, " txp:", atpPowerLevel(), "");
+                APP_PRINTF("ATP: rssi/snr:%d/%d txp:%d\r\n", rssi, snr, atpPowerLevel());
             }
         } else {
             if (averageRSSI != 0 || averageSNR != 0) {
-                traceValue3Ln("ATP: avg:", averageRSSI, "/", averageSNR, " txp:", atpPowerLevel(), "");
+                APP_PRINTF("ATP: avg:%d/%d txp:%d\r\n", averageRSSI, averageSNR, atpPowerLevel());
             } else {
-                traceValueLn("ATP: txp:", atpPowerLevel(), "");
+                APP_PRINTF("ATP: txp:%d\r\n", atpPowerLevel());
             }
         }
 
@@ -287,8 +280,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
             }
             strlcat(msg, " ", sizeof(msg));
         }
-        trace(msg);
-        traceNL();
+        APP_PRINTF("%s\r\n", msg);
 
     }
 #endif
@@ -333,7 +325,7 @@ void atpGatewayMessageLost()
 #if ATP_ENABLED
     uint32_t lost = packetsLost[currentLevel];
     if (lost == 1) {
-        traceValueLn("ATP: first packet lost at ", currentLevel+RBO_MIN, " dBm");
+        APP_PRINTF("ATP: first packet lost at %d dBm\r\n", currentLevel+RBO_MIN);
     } else {
         int8_t newLevel = currentLevel + INCREASE_POWER_INCREMENT;
         if (newLevel >= RBO_LEVELS) {
@@ -343,7 +335,7 @@ void atpGatewayMessageLost()
             currentLevel = newLevel;
             pastSamples = 0;
             radioSetTxPower(atpPowerLevel());
-            traceValue2Ln("ATP: increased power to ", currentLevel+RBO_MIN, " dBm because ", lost, " lost");
+            APP_PRINTF("ATP: increased power to %d dBm because %d lost\r\n", currentLevel+RBO_MIN, lost);
         }
     }
 #endif

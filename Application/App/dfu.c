@@ -32,7 +32,7 @@ bool noteFirmwareUpdateIfAvailable()
             if (body != NULL) {
                 imageLength = JGetInt(body, "length");
                 if (imageLength > flashCodeMaxBytes) {
-                    traceLn("dfu: can't use image because it's too large");
+                    APP_PRINTF("dfu: can't use image because it's too large\r\n");
                     return false;
                 }
                 strlcpy(imageMD5, JGetString(body, "md5"), sizeof(imageMD5));
@@ -50,7 +50,7 @@ bool noteFirmwareUpdateIfAvailable()
 #endif
                     return false;
                 }
-                traceLn("dfu: replacing current image because of MD5 mismatch");
+                APP_PRINTF("dfu: replacing current image because of MD5 mismatch\r\n");
             }
         }
         NoteDeleteResponse(rsp);
@@ -90,19 +90,19 @@ bool noteFirmwareUpdateIfAvailable()
             NoteDeleteResponse(rsp);
         }
         if (!inDFUMode) {
-            traceLn("dfu: waiting for access to DFU image");
+            APP_PRINTF("dfu: waiting for access to DFU image\r\n");
             HAL_Delay(2500);
         }
     }
 
     // If we failed, leave DFU mode immediately
     if (!inDFUMode) {
-        traceLn("dfu: timeout waiting for notecard to enter DFU mode");
+        APP_PRINTF("dfu: timeout waiting for notecard to enter DFU mode\r\n");
         return true;
     }
 
     // The image is ready.
-    traceLn("dfu: beginning firmware update");
+    APP_PRINTF("dfu: beginning firmware update\r\n");
 
     // Loop over received chunks.  The chunk size is arbitrary, so we'll use page size
     // just so that the flash programming code doesn't need to do any buffering.
@@ -124,35 +124,35 @@ bool noteFirmwareUpdateIfAvailable()
         // As such, it's a conservative measure just to retry.
         char *payload = NULL;
         for (int retry=0; retry<5; retry++) {
-            traceValue3Ln("dfu: reading chunk (offset:", offset, " length:", thislen, " try:", retry+1, ")");
+            APP_PRINTF("dfu: reading chunk (offset:%d length:%d try:%d)\r\n", offset, thislen, retry+1);
             // Request the next chunk from the notecard
             J *req = NoteNewRequest("dfu.get");
             if (req == NULL) {
-                traceLn("dfu: insufficient memory");
+                APP_PRINTF("dfu: insufficient memory\r\n");
                 return true;
             }
             JAddNumberToObject(req, "offset", offset);
             JAddNumberToObject(req, "length", thislen);
             J *rsp = NoteRequestResponse(req);
             if (rsp == NULL) {
-                traceLn("dfu: insufficient memory");
+                APP_PRINTF("dfu: insufficient memory\r\n");
                 return true;
             }
             if (NoteResponseError(rsp)) {
 
-                trace2Ln("dfu: error on read: ", JGetString(rsp, "err"));
+                APP_PRINTF("dfu: error on read: %s\r\n", JGetString(rsp, "err"));
 
             } else {
 
                 char *payloadB64 = JGetString(rsp, "payload");
                 if (payloadB64[0] == '\0') {
-                    traceLn("dfu: no payload");
+                    APP_PRINTF("dfu: no payload\r\n");
                     NoteDeleteResponse(rsp);
                     return true;
                 }
                 payload = (char *) malloc(JB64DecodeLen(payloadB64));
                 if (payload == NULL) {
-                    traceLn("dfu: can't allocate payload decode buffer");
+                    APP_PRINTF("dfu: can't allocate payload decode buffer\r\n");
                     NoteDeleteResponse(rsp);
                     return true;
                 }
@@ -169,9 +169,9 @@ bool noteFirmwareUpdateIfAvailable()
                 payload = NULL;
 
                 if (thislen != actuallen) {
-                    traceValue2Ln("dfu: decoded data not the correct length (", thislen, " != actual ", actuallen, ")");
+                    APP_PRINTF("dfu: decoded data not the correct length (%d != actual %d)", thislen, actuallen);
                 } else {
-                    traceValueLn("dfu: ", actuallen, "-byte decoded data MD5 mismatch");
+                    APP_PRINTF("dfu: %d-byte decoded data MD5 mismatch\r\n", actuallen);
                 }
 
             }
@@ -180,7 +180,7 @@ bool noteFirmwareUpdateIfAvailable()
 
         }
         if (payload == NULL) {
-            traceLn("dfu: unrecoverable error on read");
+            APP_PRINTF("dfu: unrecoverable error on read\r\n");
             return true;
         }
 
@@ -196,7 +196,7 @@ bool noteFirmwareUpdateIfAvailable()
 
         // Move to next chunk
         free(payload);
-        traceValue2Ln("dfu: successfully transferred offset:", offset, " len:", thislen, "");
+        APP_PRINTF("dfu: successfully transferred offset:%d len:%d\r\n", offset, thislen);
         offset += thislen;
         left -= thislen;
 
@@ -216,10 +216,10 @@ bool noteFirmwareUpdateIfAvailable()
     NoteMD5Final(md5Hash, &md5Context);
     char md5HashString[NOTE_MD5_HASH_STRING_SIZE];
     NoteMD5HashToString(md5Hash, md5HashString, sizeof(md5HashString));
-    trace2Ln("dfu:    MD5 of image: ", imageMD5);
-    trace2Ln("dfu: MD5 of download: ", md5HashString);
+    APP_PRINTF("dfu:    MD5 of image: %s\r\n", imageMD5);
+    APP_PRINTF("dfu: MD5 of download: %s\r\n", md5HashString);
     if (strcmp(imageMD5, md5HashString) != 0) {
-        traceLn("MD5 MISMATCH - ABANDONING DFU");
+        APP_PRINTF("MD5 MISMATCH - ABANDONING DFU\r\n");
         return true;
     }
 
@@ -233,7 +233,7 @@ bool noteFirmwareUpdateIfAvailable()
 #endif
 
     // Jump to the DFU copying method
-    traceValueLn("dfu: copy ", flashCodePages, " pages to active partition");
+    APP_PRINTF("dfu: copy %d pages to active partition", flashCodePages);
     dfuLoader(flashCodeActiveBase, flashCodeDFUBase, flashCodePages);
 
     // (will not return here)

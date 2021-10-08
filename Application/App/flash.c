@@ -79,12 +79,12 @@ uint32_t FLASH_Init()
         if (HAL_FLASH_Lock() == HAL_OK) {
             success = true;
         } else {
-            traceLn("flash: init: failed to lock");
+            APP_PRINTF("flash: init: failed to lock\r\n");
         }
 
     } else {
 
-        traceLn("flash: init: failed to unlock");
+        APP_PRINTF("flash: init: failed to unlock\r\n");
 
     }
 
@@ -110,7 +110,7 @@ bool FLASH_write_at(uint32_t address, uint64_t *pData, uint32_t datalen)
                               address + i,
                               *(pData + (i/8) )) != HAL_OK) {
             __enable_irq();
-            traceLn("flash: program error");
+            APP_PRINTF("flash: program error\r\n");
             break;
         }
     }
@@ -121,7 +121,7 @@ bool FLASH_write_at(uint32_t address, uint64_t *pData, uint32_t datalen)
         uint32_t *src = ((uint32_t *) pData) + (i/4);
         if ( *dst != *src ) {
             __enable_irq();
-            traceLn("flash: write failed");
+            APP_PRINTF("flash: write failed\r\n");
             break;
         }
         success = true;
@@ -134,17 +134,18 @@ bool FLASH_write_at(uint32_t address, uint64_t *pData, uint32_t datalen)
 // Perform startup duties
 void flashDFUInit()
 {
-    traceNL();
-    traceValueLn("flash:  peers: ", MAX_PEERS, "");
-    traceValueLn("       config: ", FLASH_MAX_USED_BYTES, " bytes");
-    traceValueLn("               ", FLASH_CONFIG_BYTES-FLASH_MAX_USED_BYTES, " spare");
-    traceValueLn("         code: ", MX_Image_Size(), " bytes");
-    traceValueLn("               ", MX_Image_Pages(), " pages");
-    traceValueLn("          max: ", FLASH_CODE_MAX_BYTES, " bytes");
-    traceValueLn("               ", FLASH_CODE_PAGES, " pages");
-    traceValueLn("mem:     heap: ", MX_Heap_Size(NULL), " bytes");
-    traceValueLn("               ", NoteMemAvailable(), " actual");
-    traceNL();
+    APP_PRINTF("\r\n");
+    APP_PRINTF("flash:  peers: %d\r\n", MAX_PEERS);
+    APP_PRINTF("       config: %d bytes\r\n", FLASH_MAX_USED_BYTES);
+    APP_PRINTF("               %d spare\r\n", FLASH_CONFIG_BYTES-FLASH_MAX_USED_BYTES);
+    APP_PRINTF("         code: %d bytes\r\n", MX_Image_Size());
+    APP_PRINTF("               %d pages\r\n", MX_Image_Pages());
+    APP_PRINTF("          max: %d bytes\r\n", FLASH_CODE_MAX_BYTES);
+    APP_PRINTF("               %d pages\r\n", FLASH_CODE_PAGES);
+    APP_PRINTF("mem:     heap: %d bytes\r\n", MX_Heap_Size(NULL));
+    APP_PRINTF("               %d actual\r\n", NoteMemAvailable());
+    APP_PRINTF("\r\n");
+
 }
 
 // Write to flash, returning true if success
@@ -178,16 +179,16 @@ bool flashWrite(uint8_t *flashDest, void *source, uint32_t bytes)
         EraseInit.TypeErase = FLASH_TYPEERASE_PAGES;
         EraseInit.Page = (fl_addr - FLASH_BASE) / FLASH_PAGE_SIZE;
         if (HAL_FLASH_Unlock() != HAL_OK) {
-            traceLn("flash: error unlocking flash for Erase");
+            APP_PRINTF("flash: error unlocking flash for Erase\r\n");
         }
         if (HAL_FLASHEx_Erase(&EraseInit, &PageError) != HAL_OK) {
-            traceLn("flash: hal erase error");
+            APP_PRINTF("flash: hal erase error\r\n");
             success = false;
         } else {
             if (!FLASH_write_at(fl_addr, (uint64_t *)page_cache, FLASH_PAGE_SIZE)) {
-                traceLn("flash: retrying write error");
+                APP_PRINTF("flash: retrying write error\r\n");
                 if (!FLASH_write_at(fl_addr, (uint64_t *)page_cache, FLASH_PAGE_SIZE)) {
-                    traceLn("flash: unrecoverable write error");
+                    APP_PRINTF("flash: unrecoverable write error\r\n");
                     success = false;
                 }
             }
@@ -229,7 +230,7 @@ void flashConfigLoad()
     peer = (peerConfig *) malloc(config.peers * sizeof(peerConfig));
     if (peer == NULL) {
         config.peers = 0;
-        traceLn("*** can't allocate peers - peer table reset ***");
+        APP_PRINTF("*** can't allocate peers - peer table reset ***\r\n");
         return;
     }
     memcpy(peer, (uint8_t *)FLASH_PEER_TABLE_ADDRESS, config.peers * sizeof(peerConfig));
@@ -242,13 +243,13 @@ bool flashConfigUpdate()
 
     // Update peer table
     if (!flashWrite((uint8_t *)FLASH_PEER_TABLE_ADDRESS, peer, config.peers * sizeof(peerConfig))) {
-        traceLn("*** can't write peers ***");
+        APP_PRINTF("*** can't write peers ***\r\n");
         return false;
     }
 
     // Update header
     if (!flashWrite((uint8_t *)FLASH_CONFIG_BASE_ADDRESS, &config, sizeof(flashConfig))) {
-        traceLn("*** can't write config ***");
+        APP_PRINTF("*** can't write config ***\r\n");
         return false;
     }
 
@@ -264,7 +265,7 @@ void flashConfigFactoryReset()
     config.signature = 0;
     config.peers = 0;
     if (!flashWrite((uint8_t *)FLASH_CONFIG_BASE_ADDRESS, &config, sizeof(flashConfig))) {
-        traceLn("*** can't reset config ***");
+        APP_PRINTF("*** can't reset config ***\r\n");
     }
 
     ledIndicateAck(3);
@@ -374,7 +375,7 @@ bool flashConfigUpdatePeer(uint16_t peertype, uint8_t *address, uint8_t *key)
     if (update) {
         memcpy(entry, &newEntry, sizeof(newEntry));
         if (!flashConfigUpdate()) {
-            traceLn("*** can't update config ***");
+            APP_PRINTF("*** can't update config ***\r\n");
             return false;
         }
     }

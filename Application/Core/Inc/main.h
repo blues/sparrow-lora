@@ -58,7 +58,6 @@ bool MX_DBG_Enabled(void);
 bool MX_DBG_Active(void);
 bool MX_DBG_Available(void);
 void MX_DBG_TxCpltCallback(void (*cb)(void *));
-void MX_UART_TxCpltCallback(UART_HandleTypeDef *huart, void (*cb)(void *));
 uint8_t MX_DBG_Receive(bool *underrun, bool *overrun);
 void MX_TIM17_DelayUs(uint32_t us);
 #define HAL_DelayUs(us) MX_TIM17_DelayUs(us)

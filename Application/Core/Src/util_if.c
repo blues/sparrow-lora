@@ -6,6 +6,7 @@
 #include "stm32_seq.h"
 #include "stm32_lpm.h"
 #include "stm32_timer.h"
+#include "stm32_adv_trace.h"
 #include "utilities_def.h"
 
 // Initializes ST's utility packages
@@ -14,6 +15,10 @@ void MX_UTIL_Init(void)
 
     // Initialises timer and RTC
     UTIL_TIMER_Init();
+
+    // Initialize the trace terminal
+    UTIL_ADV_TRACE_Init();
+    UTIL_ADV_TRACE_SetVerboseLevel(VERBOSE_LEVEL);
 
     // Init low power manager
     UTIL_LPM_Init();

@@ -36,7 +36,7 @@ void schedInit()
     sensors = sensorGetConfig(&sensor);
     state = malloc(sizeof(sensorState)*sensors);
     if (state == NULL) {
-        traceLn("*** can't allocate sensor state array ***");
+        APP_PRINTF("*** can't allocate sensor state array ***\r\n");
     }
     memset(state, 0, sizeof(sensorState)*sensors);
     for (int i=0; i<sensors; i++) {
@@ -79,9 +79,7 @@ void schedDisable(int sensorID)
 {
     if (!state[sensorID].disabled) {
         state[sensorID].disabled = true;
-        trace(sensor[sensorID].name);
-        trace(" PERMANENTLY DISABLED");
-        traceNL();
+        APP_PRINTF("%s PERMANENTLY DISABLED\r\n", sensor[sensorID].name);
     }
 }
 
@@ -128,15 +126,12 @@ void schedSetState(int sensorID, int newstate, const char *why)
 {
     if (state[sensorID].currentState != newstate) {
         state[sensorID].currentState = newstate;
-        trace(sensor[sensorID].name);
-        trace(" now ");
-        trace(schedStateName(newstate));
+        APP_PRINTF("%s now %s", sensor[sensorID].name, schedStateName(newstate));
         if (why != NULL) {
-            trace(" (");
-            trace(why);
-            trace(")");
+            APP_PRINTF(" (%s)\r\n", why);
+        } else {
+            APP_PRINTF("\r\n");
         }
-        traceNL();
     }
 }
 
@@ -146,13 +141,8 @@ void schedSetCompletionState(int sensorID, int successstate, int errorstate)
     if (state[sensorID].completionSuccessState != successstate || state[sensorID].completionErrorState != errorstate) {
         state[sensorID].completionSuccessState = successstate;
         state[sensorID].completionErrorState = errorstate;
-        trace(sensor[sensorID].name);
-        trace(" state will be set to ");
-        trace(schedStateName(successstate));
-        trace(" on success, or ");
-        trace(schedStateName(errorstate));
-        trace(" on error");
-        traceNL();
+        APP_PRINTF("%s state will be set to %s on success, or %s on error\r\n", 
+                    sensor[sensorID].name, schedStateName(successstate), schedStateName(errorstate));
     }
 }
 
@@ -341,9 +331,7 @@ uint32_t schedPoll()
                 // state can be overridden by an ISR that wakes it for some other reason.
                 state[i].active = false;
                 state[i].currentState = STATE_ACTIVATED;
-                trace(sensor[i].name);
-                trace(" deactivated");
-                traceNL();
+                APP_PRINTF("%s deactivated\r\n", sensor[i].name);
                 break;
 
             }
@@ -375,18 +363,14 @@ uint32_t schedPoll()
         // Something should be schedulable, even if it's a long time out.  This
         // is just defensive coding to ensure that we have some kind of wakeup.
         if (earliestDueSensor == -1) {
-            traceLn("*** no sensors enabled ***");
+            APP_PRINTF("*** no sensors enabled ***\r\n");
             return now + 60*60;
         }
 
         // If something is due but not ready to activate, return the time when it's due.  We
         // add 1 to increase the chance that it will actually be ready when the timer expires.
         if (earliestDueSecs > 0) {
-            trace(sensor[earliestDueSensor].name);
-            trace(" next up in ");
-            trace32(earliestDueSecs);
-            trace("s");
-            traceNL();
+            APP_PRINTF("%s next up in %ds\r\n", sensor[earliestDueSensor].name, earliestDueSecs);
             return now + earliestDueSecs + 1;
         }
 
@@ -406,20 +390,13 @@ uint32_t schedPoll()
 
         // The activation failed, so just move on to the next one
         state[lastActiveSensor].active = false;
-        trace(sensor[lastActiveSensor].name);
-        trace(" declined activation");
-        traceNL();
+        APP_PRINTF("%s declined activation\r\n", sensor[lastActiveSensor].name);
 
     }
 
     // Mark the sensor as active
-    trace(sensor[lastActiveSensor].name);
-    trace(" activated with ");
-    trace32(sensor[lastActiveSensor].activationPeriodSecs);
-    trace("s activation period and ");
-    trace32(sensor[lastActiveSensor].pollIntervalSecs);
-    trace("s poll interval");
-    traceNL();
+    APP_PRINTF("%s activated with %ds activation period and %ds poll interval\r\n",
+               sensor[lastActiveSensor].name, sensor[lastActiveSensor].activationPeriodSecs, sensor[lastActiveSensor].pollIntervalSecs);
     return now;
 
 }

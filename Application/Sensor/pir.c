@@ -196,7 +196,7 @@ void pirPoll(int sensorID, int state)
         if (!templateRegistered) {
             registerNotefileTemplate();
             schedSetCompletionState(sensorID, STATE_ACTIVATED, STATE_MOTION_CHECK);
-            traceLn("pir: template registration request");
+            APP_PRINTF("pir: template registration request\r\n");
             break;
         }
 
@@ -207,10 +207,10 @@ void pirPoll(int sensorID, int state)
             schedSetState(sensorID, STATE_DEACTIVATED, "pir: completed");
             break;
         }
-        traceValueLn("pir: ", motionEvents, " motion events sensed");
+        APP_PRINTF("pir: %d motion events sensed\r\n", motionEvents);
         addNote();
         schedSetCompletionState(sensorID, STATE_MOTION_CHECK, STATE_MOTION_CHECK);
-        traceLn("pir: note queued");
+        APP_PRINTF("pir: note queued\r\n");
         break;
 
     }
@@ -263,16 +263,14 @@ void pirResponse(int sensorID, J *rsp)
 
     // If this is a response timeout, indicate as such
     if (rsp == NULL) {
-        traceLn("pir: response timeout");
+        APP_PRINTF("pir: response timeout\r\n");
         return;
     }
 
     // See if there's an error
     char *err = JGetString(rsp, "err");
     if (err[0] != '\0') {
-        trace("sensor error response: ");
-        trace(err);
-        traceNL();
+        APP_PRINTF("sensor error response: %d\r\n", err);
         return;
     }
 
@@ -281,7 +279,7 @@ void pirResponse(int sensorID, J *rsp)
 
     case REQUESTID_TEMPLATE:
         templateRegistered = true;
-        traceLn("pir: SUCCESSFUL template registration");
+        APP_PRINTF("pir: SUCCESSFUL template registration\r\n");
         break;
     }
 

@@ -52,7 +52,7 @@ void pingPoll(int sensorID, int state)
         if (!templateRegistered) {
             registerNotefileTemplate();
             schedSetCompletionState(sensorID, STATE_ACTIVATED, STATE_DEACTIVATED);
-            traceLn("ping: template registration request");
+            APP_PRINTF("ping: template registration request\r\n");
             break;
         }
 
@@ -60,7 +60,7 @@ void pingPoll(int sensorID, int state)
         static int notecount = 0;
         addNote(++notecount);
         schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
-        traceLn("ping: note queued");
+        APP_PRINTF("ping: note queued\r\n");
         break;
 
 #endif  // SURVEY_MODE
@@ -76,7 +76,7 @@ void pingPoll(int sensorID, int state)
         ledIndicateAck(1);
         sendHealthLogMessage(true);
         schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
-        traceLn("ping: sent health update");
+        APP_PRINTF("ping: sent health update\r\n");
         break;
 
     }
@@ -239,16 +239,14 @@ void pingResponse(int sensorID, J *rsp)
 
     // If this is a response timeout, indicate as such
     if (rsp == NULL) {
-        traceLn("ping: response timeout");
+        APP_PRINTF("ping: response timeout\r\n");
         return;
     }
 
     // See if there's an error
     char *err = JGetString(rsp, "err");
     if (err[0] != '\0') {
-        trace("sensor error response: ");
-        trace(err);
-        traceNL();
+        APP_PRINTF("sensor error response: %d\r\n", err);
         return;
     }
 
@@ -257,13 +255,13 @@ void pingResponse(int sensorID, J *rsp)
 
     case REQUESTID_MANUAL_PING:
         ledIndicateAck(2);
-        traceLn("ping: SUCCESSFUL response");
+        APP_PRINTF("ping: SUCCESSFUL response\r\n");
         break;
 
 #if !SURVEY_MODE
     case REQUESTID_TEMPLATE:
         templateRegistered = true;
-        traceLn("ping: SUCCESSFUL template registration");
+        APP_PRINTF("ping: SUCCESSFUL template registration\r\n");
         break;
 #endif
 

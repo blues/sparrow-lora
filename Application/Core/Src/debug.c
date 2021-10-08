@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include "main.h"
+#include "stm32_adv_trace.h"
 
 // IAR-only method of writing to debug terminal without loading printf library
 #if defined( __ICCARM__ )
@@ -23,18 +24,20 @@ bool dbgDisableOutput = false;
 
 // Optional callbacks
 static void (*dbgRxCallback)(uint8_t *rxChar, uint16_t size, uint8_t error) = NULL;
+static void (*dbgTxCpltCallback)(void *) = NULL;
 
 // Register a TX completion callback
 void MX_DBG_TxCpltCallback(void (*cb)(void *))
 {
-#if (DEBUGGER_ON_USART2||DEBUGGER_ON_LPUART1)
-#if DEBUGGER_ON_USART2
-    MX_UART_TxCpltCallback(&huart2, cb);
-#endif
-#if DEBUGGER_ON_LPUART1
-    MX_UART_TxCpltCallback(&hlpuart1, cb);
-#endif
-#endif
+    dbgTxCpltCallback = cb;
+}
+
+// Transmit complete callback for serial ports
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if (dbgTxCpltCallback != NULL) {
+        dbgTxCpltCallback(huart);
+    } 
 }
 
 // Set the optional rx callback
@@ -54,11 +57,6 @@ bool MX_DBG_Active()
 // carriage return.
 void MX_DBG(const char *message, size_t length, uint32_t timeout)
 {
-
-    // Exit if disabled
-    if (dbgDisableOutput) {
-        return;
-    }
 
     // Output on the appropriate port
 #if (DEBUGGER_ON_USART2||DEBUGGER_ON_LPUART1)
@@ -192,6 +190,7 @@ void dbgReceivedByteISR(UART_HandleTypeDef *huart)
 void MX_DBG_Disable()
 {
     dbgDisableOutput = true;
+    UTIL_ADV_TRACE_SetVerboseLevel(VLEVEL_OFF);
 }
 
 // See if output is currently enabled
@@ -204,6 +203,7 @@ bool MX_DBG_Enabled()
 void MX_DBG_Enable()
 {
     dbgDisableOutput = false;
+    UTIL_ADV_TRACE_SetVerboseLevel(VERBOSE_LEVEL);
 }
 
 // Init debugging

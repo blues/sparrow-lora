@@ -35,7 +35,7 @@ void radioInit()
     uint16_t sizeWM = sizeof(wireMessage);
     uint16_t sizeWMC = sizeof(wireMessageCarrier);
     if (sizeWM > 254 || sizeWMC > 254) {
-        traceLn("*** maximum LoRa message size is 254 ***");
+        APP_PRINTF("*** maximum LoRa message size is 254 ***\r\n");
     }
 
     RadioEvents.TxDone = OnTxDone;

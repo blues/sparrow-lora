@@ -64,16 +64,16 @@ void sensorTimerStart()
     if (thisSleepSecs > 1) {
         uint32_t transmitWindowDueSecs = appNextTransmitWindowDueSecs();
         if (transmitWindowDueSecs == 0) {
-            traceValueLn("sched: sleeping ", thisSleepSecs, "s");
+            APP_PRINTF("sched: sleeping %ds\r\n", thisSleepSecs);
         } else {
-            traceValue2Ln("sched: sleeping ", thisSleepSecs, "s (next transmit window in ", transmitWindowDueSecs, "s)");
+            APP_PRINTF("sched: sleeping %ds (next transmit window in %ds)\r\n", thisSleepSecs, transmitWindowDueSecs);
         }
     }
 
     // Put the radio to sleep if we're waiting for a while.  We choose 5 seconds because it's less than the amount
     // of time we'll wait if sleeping waiting for a transmit window.
     if (thisSleepSecs > 5 && radioDeepSleep()) {
-        traceLn("sched: radio put into deep sleep mode");
+        APP_PRINTF("sched: radio put into deep sleep mode\r\n");
     }
 
     // Go to sleep
@@ -112,6 +112,5 @@ void sensorPoll()
 // Execute console command
 void sensorCmd(char *cmd)
 {
-    trace("??");
-    traceNL();
+    APP_PRINTF("??\r\n");
 }

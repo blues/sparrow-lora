@@ -123,7 +123,7 @@ void ledIndicatePairInProgress(bool on)
     ledStatePairBeganTime = on ? NoteTimeST() : 0;
     ledStatePairTimeWasValid = NoteTimeValidST();
     HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
-    traceLn(on ? "pairing mode ON" : "pairing mode OFF");
+    APP_PRINTF("%s\r\n", on ? "pairing mode ON" : "pairing mode OFF");
 }
 
 // Is in progress?

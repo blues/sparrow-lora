@@ -38,28 +38,26 @@ void MX_AppMain(void)
     unpack32(&ourAddress[4], HAL_GetUIDw1());
     unpack32(&ourAddress[8], HAL_GetUIDw2());
     utilAddressToText(ourAddress, ourAddressText, sizeof(ourAddressText));
-    trace("{\"id\":\"");
-    trace(ourAddressText);
-    traceLn("\"}");
-    traceLn("");
+    APP_PRINTF("{\"id\":\"%s\"}\r\n\r\n", ourAddressText);
 
     // Remember the time when we were booted
     appBootMs = TIMER_IF_GetTimeMs();
 
     // Conditionally disable debugging
     if (!buttonHeldAtBoot && !MX_DBG_Active()) {
-        traceLn("CONSOLE TRACE DISABLED");
+        APP_PRINTF("CONSOLE TRACE DISABLED\r\n");
         NoteSetFnDebugOutput(NULL);
         MX_DBG_Disable();
     } else {
-        traceLn("CONSOLE TRACE ENABLED");
+        MX_DBG_Enable();
+        APP_PRINTF("CONSOLE TRACE ENABLED\r\n");
     }
 
     // Initialize the Notecard
     appIsGateway = noteInit();
 
     // Show the firmware version
-    traceLn(appFirmwareVersion());
+    APP_PRINTF("%s\r\n", appFirmwareVersion());
 
     // On the gateway, prep for flash DFU
     if (appIsGateway) {

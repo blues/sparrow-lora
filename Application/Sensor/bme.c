@@ -78,14 +78,14 @@ void bmePoll(int sensorID, int state)
         if (!templateRegistered) {
             registerNotefileTemplate();
             schedSetCompletionState(sensorID, STATE_ACTIVATED, STATE_DEACTIVATED);
-            traceLn("bme: template registration request");
+            APP_PRINTF("bme: template registration request\r\n");
             break;
         }
         if (!addNote()) {
             schedSetState(sensorID, STATE_DEACTIVATED, "bme: update failure");
         } else {
             schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
-            traceLn("bme: note queued");
+            APP_PRINTF("bme: note queued\r\n");
         }
         break;
 
@@ -141,16 +141,14 @@ void bmeResponse(int sensorID, J *rsp)
 
     // If this is a response timeout, indicate as such
     if (rsp == NULL) {
-        traceLn("bme: response timeout");
+        APP_PRINTF("bme: response timeout\r\n");
         return;
     }
 
     // See if there's an error
     char *err = JGetString(rsp, "err");
     if (err[0] != '\0') {
-        trace("sensor error response: ");
-        trace(err);
-        traceNL();
+        APP_PRINTF("sensor error response: %d\r\n", err);
         return;
     }
 
@@ -159,7 +157,7 @@ void bmeResponse(int sensorID, J *rsp)
 
     case REQUESTID_TEMPLATE:
         templateRegistered = true;
-        traceLn("bme: SUCCESSFUL template registration");
+        APP_PRINTF("bme: SUCCESSFUL template registration\r\n");
         break;
     }
 
@@ -197,7 +195,7 @@ static bool addNote()
     HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_SET);
 #endif
     if (!success) {
-        traceLn("bme: update failed");
+        APP_PRINTF("bme: update failed\r\n");
         return false;
     }
 
@@ -221,15 +219,9 @@ static bool addNote()
     JAddNumberToObject(body, "temperature", lastBME.temperature);
     JAddNumberToObject(body, "humidity", lastBME.humidity);
     JAddNumberToObject(body, "pressure", lastBME.pressure);
-    traceValue4Ln("bme temperature:",
-                  (int) lastBME.temperature,
-                  ".",
-                  (int) (fabs(lastBME.temperature*100)) % 100,
-                  "C humidity:",
-                  (int) lastBME.humidity,
-                  ".",
-                  (int) (fabs(lastBME.humidity*100)) % 100,
-                  "%");
+    APP_PRINTF("bme temperature: %d.%dC humidity:%d.%d%%\r\n",
+               (int) lastBME.temperature, (int) (fabs(lastBME.temperature*100)) % 100,
+               (int) lastBME.humidity, (int) (fabs(lastBME.humidity*100)) % 100);
 
     // Attach the body to the request, and send it to the gateway
     JAddItemToObject(req, "body", body);
