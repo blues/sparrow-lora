@@ -1,4 +1,3 @@
-#define DEBUG_RFSEL
 // Copyright 2021 Blues Inc.  All rights reserved.
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
@@ -173,9 +172,14 @@ void ioInit(void)
     GPIO_InitTypeDef  gpio_init_structure = {0};
 
     // Compute the RF frequency based on the region switch settings.  Note that
-    // we power these pins with LED_RED so that they aren't a constant current
-    // draw on the system.
-#if (CURRENT_BOARD!=BOARD_NUCLEO)
+    // we power these pins with LED_RED so that even if the user happens to select
+    // an invalid switch combination they aren't a constant current draw on the system.
+    // This switch design methodology allows for a selection of any of 9 unique
+    // frequency plans based on the switches.  We have chosen what we view to be the
+    // the most common plans globally, but the developer can feel free to reassign
+    // these as is appropriate for their product or market.
+    uint32_t freq = 915000000;
+#if (CURRENT_BOARD != BOARD_NUCLEO)
     gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_init_structure.Pull = GPIO_NOPULL;
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_LOW;
@@ -184,80 +188,41 @@ void ioInit(void)
     HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
     int gpio0 = tristate(RFSEL_1_Pin, RFSEL_1_GPIO_Port);
     int gpio1 = tristate(RFSEL_0_Pin, RFSEL_0_GPIO_Port);
-    int value = 0;
     if (gpio0 == TRISTATE_FLOAT && gpio1 == TRISTATE_FLOAT) {
-        value = 0;
+        // 0 OFF OFF OFF OFF
+        freq = 915000000;   // US915
     } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_FLOAT) {
-        value = 1;
+        // 1  ON OFF OFF OFF
+        freq = 923000000;   // AS923
     } else if (gpio0 == TRISTATE_LOW && gpio1 == TRISTATE_FLOAT) {
-        value = 2;
-    } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_FLOAT) {
-        value = 1;
+        // 2 OFF  ON OFF OFF
+        freq = 920000000;   // KR920
     } else if (gpio0 == TRISTATE_FLOAT && gpio1 == TRISTATE_HIGH) {
-        value = 3;
+        // 3 OFF OFF  ON OFF
+        freq = 865000000;   // IN865
     } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_HIGH) {
-        value = 4;
+        // 4 ON OFF  ON OFF
+        freq = 868000000;   // EU868
     } else if (gpio0 == TRISTATE_LOW && gpio1 == TRISTATE_HIGH) {
-        value = 5;
-    } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_HIGH) {
-        value = 4;
+        // 5 OFF  ON  ON OFF
+        freq = 864000000;   // RU864
     } else if (gpio0 == TRISTATE_FLOAT && gpio1 == TRISTATE_LOW) {
-        value = 6;
+        // 6 OFF OFF OFF  ON
+        freq = 915000000;   // AU915
     } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_LOW) {
-        value = 7;
+        // 7 ON OFF OFF  ON
+        freq = 470000000;   // CN470
+//        freq = 779000000;   // CN779
     } else if (gpio0 == TRISTATE_LOW && gpio1 == TRISTATE_LOW) {
-        value = 8;
-    } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_LOW) {
-        value = 7;
-    } else if (gpio0 == TRISTATE_FLOAT && gpio1 == TRISTATE_HIGH) {
-        value = 3;
-    } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_HIGH) {
-        value = 4;
-    } else if (gpio0 == TRISTATE_LOW && gpio1 == TRISTATE_HIGH) {
-        value = 5;
-    } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_HIGH) {
-        value = 4;
-    }
-    uint32_t freq = 915000000;
-    switch (value) {
-    default:
-    case 0:
-        freq = 915000000;  // OFF OFF OFF OFF (US915 & AU915)
-        break;
-    case 1:
-        freq = 923000000;  //  ON OFF OFF OFF (AS923)
-        break;
-    case 2:
-        freq = 920000000;  // OFF  ON OFF OFF (KR920)
-        break;
-    case 3:
-        freq = 865000000;  // OFF OFF  ON OFF (IN865)
-        break;
-    case 4:
-        freq = 868000000;  //  ON OFF  ON OFF (EU868)
-        break;
-    case 5:
-        freq = 864000000;  // OFF  ON  ON OFF (RU864)
-        break;
-    case 6:
-        freq = 779000000;  // OFF OFF OFF  ON (CN779)
-        break;
-    case 7:
-        freq = 470000000;  //  ON OFF OFF  ON (CN470)
-        break;
-    case 8:
-        freq = 433000000;  // OFF  ON OFF  ON (EU433)
-        break;
+        // 8 OFF  ON OFF  ON
+        freq = 433000000;   // EU433
     }
     radioSetRFFrequency(freq);
 #ifdef DEBUG_RFSEL
     char *s0 = (gpio0 == TRISTATE_FLOAT ? "float" : (gpio0 == TRISTATE_HIGH ? "high" : "low"));
     char *s1 = (gpio1 == TRISTATE_FLOAT ? "float" : (gpio1 == TRISTATE_HIGH ? "high" : "low"));
-    APP_PRINTF("*** rfsel %s %s %d %dMHz ***\r\n", s0, s1, value, (freq/1000000));
+    APP_PRINTF("*** rfsel %s %s %dMHz ***\r\n", s0, s1, (freq/1000000));
 #endif
-#else
-    // When using NUCLEO, use US region
-    radioSetRFFrequency(915000000);
 #endif
     
     // Init LEDs
