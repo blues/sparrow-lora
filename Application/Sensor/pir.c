@@ -20,11 +20,12 @@
 // TRUE if we've successfully registered the template
 static bool templateRegistered = false;
 
-// Number of motion events since last note
+// Number of motion events
 static uint32_t motionEvents = 0;
+static uint32_t motionEventsTotal = 0;
 
 // Forwards
-static void addNote(void);
+static void addNote(bool immediate);
 static bool registerNotefileTemplate(void);
 static void resetInterrupt(void);
 
@@ -208,7 +209,7 @@ void pirPoll(int sensorID, int state)
             break;
         }
         APP_PRINTF("pir: %d motion events sensed\r\n", motionEvents);
-        addNote();
+        addNote(true);
         schedSetCompletionState(sensorID, STATE_MOTION_CHECK, STATE_MOTION_CHECK);
         APP_PRINTF("pir: note queued\r\n");
         break;
@@ -249,6 +250,7 @@ static bool registerNotefileTemplate()
 
     // Fill-in the body template
     JAddNumberToObject(body, "count", TINT32);
+    JAddNumberToObject(body, "total", TINT32);
 
     // Attach the body to the request, and send it to the gateway
     JAddItemToObject(req, "body", body);
@@ -286,7 +288,7 @@ void pirResponse(int sensorID, J *rsp)
 }
 
 // Send the sensor data
-static void addNote()
+static void addNote(bool immediate)
 {
 
     // Create the request
@@ -305,10 +307,15 @@ static void addNote()
     // Set the target notefile
     JAddStringToObject(req, "file", SENSORDATA_NOTEFILE);
 
+    // If immediate, sync now
+    if (immediate) {
+        JAddBoolToObject(req, "sync", true);
+    }
+
     // Fill-in the body
-    uint32_t count = motionEvents;
+    JAddNumberToObject(body, "total", motionEventsTotal);
+    JAddNumberToObject(body, "count", motionEvents);
     motionEvents = 0;
-    JAddNumberToObject(body, "count", count);
 
     // Attach the body to the request, and send it to the gateway
     JAddItemToObject(req, "body", body);
@@ -323,8 +330,9 @@ void pirISR(int sensorID, uint16_t pins)
     // Set the state to 'motion' and immediately schedule
     if ((pins & PIR_DIRECT_LINK_Pin) != 0) {
         motionEvents++;
+        motionEventsTotal++;
         resetInterrupt();
-        if (schedGetState(sensorID) == STATE_DEACTIVATED) {
+        if (!schedIsActive(sensorID)) {
             schedActivateNowFromISR(sensorID, true, STATE_MOTION_CHECK);
         }
         return;

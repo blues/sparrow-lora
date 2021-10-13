@@ -158,6 +158,7 @@ void schedInit(void);
 void schedDispatchISR(uint16_t pins);
 void schedDispatchResponse(J *rsp);
 uint32_t schedPoll(void);
+bool schedIsActive(int sensorID);
 void schedDisable(int sensorID);
 void schedActivateNow(int sensorID);
 bool schedActivateNowFromISR(int sensorID, bool interruptIfActive, int nextState);

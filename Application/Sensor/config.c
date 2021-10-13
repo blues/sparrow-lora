@@ -8,9 +8,9 @@
 #if SURVEY_MODE
 #define USE_PING_TEST               true
 #else
-#define USE_PING_TEST               true
-#define USE_BME                     false
-#define USE_PIR                     false
+#define USE_PING_TEST               false
+#define USE_BME                     true    // true for Reference Sensor
+#define USE_PIR                     true    // true for Reference Sensor
 #define USE_TASK_SCHEDULER_TEST     false
 #define USE_SLEEP_CURRENT_TEST      false
 #endif
@@ -28,7 +28,7 @@ sensorConfig allSensors[] = {
 #if USE_BME
     {
         .name = "bme",
-        .activationPeriodSecs = MINS(15),
+        .activationPeriodSecs = MINS(60),
         .pollIntervalSecs = 15,
         .initFn = bmeInit,
         .activateFn = NULL,

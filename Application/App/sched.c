@@ -115,6 +115,12 @@ char *schedStateName(int state)
     return other;
 }
 
+// See if the sensor is currently active
+bool schedIsActive(int sensorID)
+{
+    return state[sensorID].active;
+}
+
 // Get the current state for a sensor
 int schedGetState(int sensorID)
 {

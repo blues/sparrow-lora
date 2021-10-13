@@ -34,6 +34,9 @@ extern I2C_HandleTypeDef hi2c2;
 // Device address
 static uint8_t bme_dev_addr = 0;
 
+// Whether or not the next note should sync
+static bool syncNow = false;
+
 // Forwards
 static bool bmeUpdate(void);
 static bool bme280_read(struct bme280_dev *dev, struct bme280_data *comp_data);
@@ -127,6 +130,7 @@ static bool registerNotefileTemplate()
     JAddNumberToObject(body, "temperature", TFLOAT16);
     JAddNumberToObject(body, "humidity", TFLOAT16);
     JAddNumberToObject(body, "pressure", TFLOAT32);
+    JAddNumberToObject(body, "voltage", TFLOAT32);
 
     // Attach the body to the request, and send it to the gateway
     JAddItemToObject(req, "body", body);
@@ -170,6 +174,7 @@ void bmeISR(int sensorID, uint16_t pins)
     // Set the state to button, and immediately schedule
     if ((pins & BUTTON1_Pin) != 0) {
         sensorIgnoreTimeWindow();
+        syncNow = true;
         schedActivateNowFromISR(sensorID, true, STATE_ACTIVATED);
         return;
     }
@@ -215,6 +220,12 @@ static bool addNote()
     // Set the target notefile
     JAddStringToObject(req, "file", SENSORDATA_NOTEFILE);
 
+    // If immediate, sync now
+    if (syncNow) {
+        syncNow = false;
+        JAddBoolToObject(req, "sync", true);
+    }
+
     // Fill-in the body
     JAddNumberToObject(body, "temperature", lastBME.temperature);
     JAddNumberToObject(body, "humidity", lastBME.humidity);
@@ -222,6 +233,11 @@ static bool addNote()
     APP_PRINTF("bme temperature: %d.%dC humidity:%d.%d%%\r\n",
                (int) lastBME.temperature, (int) (fabs(lastBME.temperature*100)) % 100,
                (int) lastBME.humidity, (int) (fabs(lastBME.humidity*100)) % 100);
+
+    // Add the voltage, just for convenient reference
+#if (CURRENT_BOARD != BOARD_NUCLEO)
+    JAddNumberToObject(body, "voltage", MX_ADC_A0_Voltage());
+#endif
 
     // Attach the body to the request, and send it to the gateway
     JAddItemToObject(req, "body", body);
