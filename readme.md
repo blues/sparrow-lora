@@ -41,3 +41,52 @@ SESNSOR INSTRUCTIONS
 
 - Tapping the button will send out a test message to the gateway, in the form of a messaging that goes to "_health.qo" that indicates the sensor's ID.
 
+
+GATEWAY ENVIRONMENT VARIABLES
+
+"env_update_mins"
+(config_notecard.h VAR_GATEWAY_ENV_UPDATE_MINS, default is currently 5)
+
+Because the sparrow firmware is using a single-threaded operating environment, whenever it is doing some "overhead" task such as reading and processing and updating environment variables on the Notecard, it is "offline" with respect to LoRa and thus will miss any LoRa message that is sent to it during that period.  As such, we try to do housekeeping tasks as seldomly as we can, and we try to do it when we seem to be idle.
+
+This variable specifies the number of minutes between asking the Notecard "has any update to the environment variables been received from the Notehub?"  And if an update has occurred, the updated env vars (below) are pulled-in from the Notecard and are processed.
+
+"pairing_timeout_mins"
+(config_notecard.h VAR_PAIRING_BEACON_GATEWAY_TIMEOUT_MINS, default is currently 60)
+
+When the user walks over to the gateway and taps the blue button, it toggles Pairing mode on/off.  It stays "on" for a while simply because you are likely to be walking around your home pairing one device after another.
+
+However, if you left the gateway indefinitely in pairing mode, it might inadvertently allow someone else (your neighbor) to pair their devices with your gateway.  This is likely not what you intend - and so pairing mode turns "off" after this timeout just in case you forget to do so. 
+
+"sensordb_update_mins"
+(config_notecard.h VAR_GATEWAY_SENSORDB_UPDATE_MINS, default is currently 60)
+
+The sensor database (sensors.db) contains statistics about the operations of each sensor, with each NoteID being the ID of the sensor whose stats it contains.
+
+The upside of keeping this database up-to-date is that the Notehub (and by extension the customer's cloud application) can see the message counts, RSSI, and so on, of each sensor.  The downside, as I noted above, is that whenever the gateway is spending time moving statistics from memory into the Notecard via note.update, it isn't listening to the network for LoRa activity.
+
+"sensordb_reset_counts"
+(config_notecard.h VAR_GATEWAY_SENSORDB_RESET_COUNTS)
+
+Normally, the "message count" statistics in the sensor database (sensors.db) just keep counting upward.  Messages received, messages lost, and so on.  Sometimes you will move sensors around, or even move the gateway around, and you'd just like to reset the statistics.
+
+The way that you do this is to set this env var to the current unix epoch time.  The Notecard will notice that this value has changed since the last time it checked, and will reset all the counters to 0.
+
+
+THE CONFIG.DB NOTEFILE
+
+The gateway uses one notefile in a read-only manner, to receive configuration information that it may use for itself and will pass-on to the sensors themselves.  Although not strictly required, it is recommended that the cloud app use the HTTPS API to add or update notes within this database to distinguish one sensor from another, as the sensor IDs are fairly obscure.
+
+The NoteID of each note is the sensor ID.  The two (optional) fields currently in the body of each note are:
+"name" is the human-readable name of the sensor
+"loc" is the Open Location Code string indicating the geolocation of the sensor
+
+If you examine config_radio.h, you'll see that each time the gateway sends an ACK to a sensor, it carries along with it, among other things,
+- The current Unix Epoch time
+- The current Time Zone offset (minutes from UTC)
+- The current Time Zone abbreviation (3 characters)
+- The current sensor's name
+
+The reason these are sent to the sensor is so that if the sensor has a UI, it can display its name and the time.  Furthermore, decisions can be made by the sensor such as taking a sensor reading only at 2AM local time.
+
+(The location is not passed to the device only because I haven't found a useful reason to do so, but that's an easy extension to this structure.)
