@@ -32,13 +32,28 @@ void MX_AppMain(void)
     // Initialize GPIOs
     ioInit();
 
-    // Determine and display our own device address
+    // Determine our own device address
     memset(ourAddress, 0, sizeof(ourAddress));
     unpack32(&ourAddress[0], HAL_GetUIDw0());
     unpack32(&ourAddress[4], HAL_GetUIDw1());
     unpack32(&ourAddress[8], HAL_GetUIDw2());
     utilAddressToText(ourAddress, ourAddressText, sizeof(ourAddressText));
-    APP_PRINTF("{\"id\":\"%s\"}\r\n\r\n", ourAddressText);
+
+    // Perform power-on self-test
+    char *failReason = post();
+    if (failReason == NULL) {
+        APP_PRINTF("{\"sensor\":\"%s\"}\r\n\r\n", ourAddressText);
+    } else {
+        APP_PRINTF("{\"sensor\":\"%s\",\"err:\"%s\"}\r\n\r\n", ourAddressText, failReason);
+        HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_RESET);
+        for (;;) {
+            HAL_Delay(150);
+            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+            HAL_Delay(150);
+            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+        }
+    }
 
     // Remember the time when we were booted
     appBootMs = TIMER_IF_GetTimeMs();

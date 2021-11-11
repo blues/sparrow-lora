@@ -1476,6 +1476,9 @@
                 </configuration>
             </file>
             <file>
+                <name>$PROJ_DIR$\..\App\post.c</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\App\radioinit.c</name>
                 <configuration>
                     <name>sparrow</name>

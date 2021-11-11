@@ -184,6 +184,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/App/note.c</locationURI>
 		</link>
 		<link>
+			<name>Application/App/post.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/App/post.c</locationURI>
+		</link>
+		<link>
 			<name>Application/App/radioinit.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/App/radioinit.c</locationURI>

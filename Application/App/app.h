@@ -179,6 +179,9 @@ void dfuLoader(uint8_t *dst, uint8_t *src, uint32_t pages);
 // dfu.c
 bool noteFirmwareUpdateIfAvailable(void);
 
+// post.c
+char *post(void);
+
 // atp.c
 int8_t atpPowerLevel(void);
 int8_t atpLowestPowerLevel(void);
