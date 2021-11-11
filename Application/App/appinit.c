@@ -38,6 +38,14 @@ void MX_AppMain(void)
     unpack32(&ourAddress[8], HAL_GetUIDw2());
     utilAddressToText(ourAddress, ourAddressText, sizeof(ourAddressText));
 
+    // Banner
+    APP_PRINTF("\r\n");
+    APP_PRINTF("===================\r\n");
+    APP_PRINTF("===== SPARROW =====\r\n");
+    APP_PRINTF("===================\r\n");
+    APP_PRINTF("%s\r\n", appFirmwareVersion());
+    APP_PRINTF("%s\r\n", ourAddressText);
+
     // Remember the time when we were booted
     appBootMs = TIMER_IF_GetTimeMs();
 
@@ -53,9 +61,6 @@ void MX_AppMain(void)
 
     // Initialize the Notecard
     appIsGateway = noteInit();
-
-    // Show the firmware version
-    APP_PRINTF("%s\r\n", appFirmwareVersion());
 
     // On the gateway, prep for flash DFU
     if (appIsGateway) {
