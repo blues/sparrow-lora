@@ -45,6 +45,11 @@ extern int8_t wireReceiveSNR;
 extern int8_t wireTransmitDb;
 
 // appinit.c
+#define SKU_UNKNOWN     0
+#define SKU_CORE        1
+#define SKU_REFERENCE   2
+int appSKU(void);
+void appSetSKU(int);
 const char *appFirmwareVersion(void);
 void appEnterSoftAP(void);
 void MX_AppMain(void);
@@ -184,7 +189,9 @@ void dfuLoader(uint8_t *dst, uint8_t *src, uint32_t pages);
 bool noteFirmwareUpdateIfAvailable(void);
 
 // post.c
-char *post(void);
+#define POST_GPIO       0x00000001
+#define POST_BME        0x00000002
+char *post(uint32_t whatToTest);
 
 // atp.c
 int8_t atpPowerLevel(void);

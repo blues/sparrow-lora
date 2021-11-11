@@ -13,6 +13,9 @@ int64_t appBootMs = 0;
 uint32_t gatewayBootTime = 0;
 bool buttonHeldAtBoot = false;
 
+// Which SKU we're configured for
+uint32_t SKU = SKU_UNKNOWN;
+
 // Forwards
 void registerApp(void);
 void ioInit(void);
@@ -45,6 +48,7 @@ void MX_AppMain(void)
     APP_PRINTF("===================\r\n");
     APP_PRINTF("%s\r\n", appFirmwareVersion());
     APP_PRINTF("%s\r\n", ourAddressText);
+    SKU = SKU_CORE;
 
     // Remember the time when we were booted
     appBootMs = TIMER_IF_GetTimeMs();
@@ -225,7 +229,7 @@ void ioInit(void)
     APP_PRINTF("*** rfsel %s %s %dMHz ***\r\n", s0, s1, (freq/1000000));
 #endif
 #endif
-    
+
     // Init LEDs
     gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_init_structure.Pull = GPIO_NOPULL;
@@ -352,4 +356,16 @@ void appEnterSoftAP(void)
 
     // We're back with a functioning Notecard
 
+}
+
+// Set the SKU
+void appSetSKU(int sku)
+{
+    SKU = sku;
+}
+
+// Get the SKU
+int appSKU(void)
+{
+    return SKU;
 }

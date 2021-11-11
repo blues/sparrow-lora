@@ -50,14 +50,21 @@ static bool registerNotefileTemplate(void);
 bool bmeInit(int sensorID)
 {
 
-    // Power off the sensor to ensure that current draw is low
+    // Power on the sensor to see if it's here
     GPIO_InitTypeDef init = {0};
     init.Speed = GPIO_SPEED_FREQ_HIGH;
     init.Pin = BME_POWER_Pin;
     init.Mode = GPIO_MODE_OUTPUT_PP;
     init.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(BME_POWER_GPIO_Port, &init);
+    HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_SET);
+    MX_I2C2_Init();
+    bool success = bmeUpdate();
+    MX_I2C2_DeInit();
     HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_RESET);
+    if (success) {
+        appSetSKU(SKU_REFERENCE);
+    }
 
     return true;
 
@@ -66,6 +73,12 @@ bool bmeInit(int sensorID)
 // Poller
 void bmePoll(int sensorID, int state)
 {
+
+    // Disable if this isn't a reference sensor
+    if (appSKU() != SKU_REFERENCE) {
+        schedDisable(sensorID);
+        return;
+    }
 
     // Switch based upon state
     switch (state) {

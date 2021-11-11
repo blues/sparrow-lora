@@ -231,30 +231,11 @@ bool commonCmd(char *cmd)
     }
 
     // Perform a self-test
-    if (strcmp(cmd, "{\"req\":\"card.test\"}") == 0 || strcmp(cmd, "*") == 0) {
-        NoteSetFnDebugOutput(trace);
-        char *failReason = post();
-        if (failReason == NULL) {
-            APP_PRINTF("{\"sensor\":\"%s\"}\r\n\r\n", ourAddressText);
-            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_RESET);
-            for (;;) {
-                HAL_Delay(150);
-                HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-                HAL_Delay(150);
-                HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
-            }
-        } else {
-            APP_PRINTF("{\"sensor\":\"%s\",\"err\":\"%s\"}\r\n\r\n", ourAddressText, failReason);
-            HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_RESET);
-            for (;;) {
-                HAL_Delay(150);
-                HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-                HAL_Delay(150);
-                HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-            }
-        }
+    if (strcmp(cmd, "{\"req\":\"card.test\"}") == 0 || strcmp(cmd, "test") == 0) {
+        post(POST_GPIO);
+    }
+    if (strcmp(cmd, "{\"req\":\"card.test\",\"sku\":\"ref\"}") == 0 || strcmp(cmd, "test-ref") == 0) {
+        post(POST_GPIO|POST_BME);
     }
 
     // Restart the module

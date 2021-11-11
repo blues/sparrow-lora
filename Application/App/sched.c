@@ -147,8 +147,8 @@ void schedSetCompletionState(int sensorID, int successstate, int errorstate)
     if (state[sensorID].completionSuccessState != successstate || state[sensorID].completionErrorState != errorstate) {
         state[sensorID].completionSuccessState = successstate;
         state[sensorID].completionErrorState = errorstate;
-        APP_PRINTF("%s state will be set to %s on success, or %s on error\r\n", 
-                    sensor[sensorID].name, schedStateName(successstate), schedStateName(errorstate));
+        APP_PRINTF("%s state will be set to %s on success, or %s on error\r\n",
+                   sensor[sensorID].name, schedStateName(successstate), schedStateName(errorstate));
     }
 }
 

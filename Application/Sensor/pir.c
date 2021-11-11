@@ -190,6 +190,13 @@ void resetInterrupt()
 void pirPoll(int sensorID, int state)
 {
 
+    // Disable if this isn't a reference sensor
+    if (appSKU() != SKU_REFERENCE) {
+        HAL_NVIC_DisableIRQ(PIR_DIRECT_LINK_EXTI_IRQn);
+        schedDisable(sensorID);
+        return;
+    }
+
     // Switch based upon state
     switch (state) {
 

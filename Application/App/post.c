@@ -19,50 +19,113 @@ bool pinIsFloat(char *alias, void *port, uint16_t pin);
 bool pinIsLow(char *alias, void *port, uint16_t pin);
 bool pinIsHigh(char *alias, void *port, uint16_t pin);
 char *simple_utoa(unsigned int i, char *out);
+char *postTest(uint32_t whatToTest);
 
 // Power-on self test, returns NULL or error message.  Note
 // that this does not test LPUART1/USART2 because that's the
 // port that is connected to the debugger to get POST output.
-char *post()
+char *post(uint32_t whatToTest)
 {
 
+    // Make sure that output is enabled
+    MX_DBG_Enable();
+
+    // Deinit GPIOs and disable IRQ's so that it doesn't confuse below
     MX_GPIO_DeInit();
 
-    if (!pinIsFloat("SPI1_CS", SPI1_CS_GPIO_Port, SPI1_CS_Pin))
-        return err;
-    if (!pinIsFloat("SPI1_SCK", SPI1_SCK_GPIO_Port, SPI1_SCK_Pin))
-        return err;
-    if (!pinIsFloat("SPI1_MISO", SPI1_MISO_GPIO_Port, SPI1_MISO_Pin))
-        return err;
-    if (!pinIsFloat("SPI1_MOSI", SPI1_MOSI_GPIO_Port, SPI1_MOSI_Pin))
-        return err;
+    // Do the test
+    char *failReason = postTest(whatToTest);
+    if (failReason == NULL) {
+        APP_PRINTF("{\"sensor\":\"%s\"}\r\n\r\n", ourAddressText);
+        HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_RESET);
+        for (;;) {
+            HAL_Delay(150);
+            HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
+            HAL_Delay(150);
+            HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+        }
+    } else {
+        APP_PRINTF("{\"sensor\":\"%s\",\"err\":\"%s\"}\r\n\r\n", ourAddressText, failReason);
+        HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_RESET);
+        for (;;) {
+            HAL_Delay(150);
+            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+            HAL_Delay(150);
+            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+        }
 
+    }
+}
+
+// Perform the body of the test
+char *postTest(uint32_t whatToTest)
+{
+
+    // If the BME was present at init, it passes
+    if ((whatToTest & POST_BME) != 0 && appSKU() != SKU_REFERENCE) {
+        strlcpy(err, "BME failure", sizeof(err));
+        return err;
+    }
+
+    // Test GPIOs
+    if ((whatToTest & POST_GPIO) != 0) {
+        if (!pinIsFloat("SPI1_CS", SPI1_CS_GPIO_Port, SPI1_CS_Pin)) {
+            return err;
+        }
+        if (appSKU() != SKU_REFERENCE) {
+            if (!pinIsFloat("SPI1_MISO", SPI1_MISO_GPIO_Port, SPI1_MISO_Pin)) {
+                return err;    // used for PIR serial in
+            }
+            if (!pinIsFloat("SPI1_MOSI", SPI1_MOSI_GPIO_Port, SPI1_MOSI_Pin)) {
+                return err;    // used for PIR direct link
+            }
+            if (!pinIsFloat("SPI1_SCK", SPI1_SCK_GPIO_Port, SPI1_SCK_Pin)) {
+                return err;    // used for BME power
+            }
+        }
+
+        if (appSKU() != SKU_REFERENCE) {
 #if CURRENT_BOARD == BOARD_V1
-    if (!pinIsFloat("I2C2_SDA", I2C2_SDA_GPIO_Port, I2C2_SDA_Pin))
-        return err;
-    if (!pinIsFloat("I2C2_SCL", I2C2_SCL_GPIO_Port, I2C2_SCL_Pin))
-        return err;
+            if (!pinIsFloat("I2C2_SDA", I2C2_SDA_GPIO_Port, I2C2_SDA_Pin)) {
+                return err;
+            }
+            if (!pinIsFloat("I2C2_SCL", I2C2_SCL_GPIO_Port, I2C2_SCL_Pin)) {
+                return err;
+            }
 #else
-    if (!pinIsHigh("I2C2_SDA", I2C2_SDA_GPIO_Port, I2C2_SDA_Pin))
-        return err;
-    if (!pinIsHigh("I2C2_SCL", I2C2_SCL_GPIO_Port, I2C2_SCL_Pin))
-        return err;
+            if (!pinIsHigh("I2C2_SDA", I2C2_SDA_GPIO_Port, I2C2_SDA_Pin)) {
+                return err;
+            }
+            if (!pinIsHigh("I2C2_SCL", I2C2_SCL_GPIO_Port, I2C2_SCL_Pin)) {
+                return err;
+            }
 #endif
+        }
 
-    if (!pinIsHigh("USART1_RX", USART1_RX_GPIO_Port, USART1_RX_Pin))
-        return err;
-    if (!pinIsFloat("USART1_TX", USART1_TX_GPIO_Port, USART1_TX_Pin))
-        return err;
+        if (!pinIsHigh("USART1_RX", USART1_RX_GPIO_Port, USART1_RX_Pin)) {
+            return err;
+        }
+        if (!pinIsFloat("USART1_TX", USART1_TX_GPIO_Port, USART1_TX_Pin)) {
+            return err;
+        }
 
-    if (!pinIsHigh("BUTTON1", BUTTON1_GPIO_Port, BUTTON1_Pin))
-        return err;
+        if (!pinIsHigh("BUTTON1", BUTTON1_GPIO_Port, BUTTON1_Pin)) {
+            return err;
+        }
 
-    if (!pinIsFloat("A1", A1_GPIO_Port, A1_Pin))
-        return err;
-    if (!pinIsFloat("A2", A2_GPIO_Port, A2_Pin))
-        return err;
-    if (!pinIsFloat("A3", A3_GPIO_Port, A3_Pin))
-        return err;
+        if (!pinIsFloat("A1", A1_GPIO_Port, A1_Pin)) {
+            return err;
+        }
+        if (!pinIsFloat("A2", A2_GPIO_Port, A2_Pin)) {
+            return err;
+        }
+        if (!pinIsFloat("A3", A3_GPIO_Port, A3_Pin)) {
+            return err;
+        }
+
+    }
 
     return NULL;
 
