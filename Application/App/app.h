@@ -49,6 +49,10 @@ const char *appFirmwareVersion(void);
 void appEnterSoftAP(void);
 void MX_AppMain(void);
 void MX_AppISR(uint16_t GPIO_Pin);
+#define PINSTATE_FLOAT  0
+#define PINSTATE_HIGH   1
+#define PINSTATE_LOW    2
+int pinstate(void *port, uint16_t pin);
 
 // app.c
 void appSetCoreState(States_t newState);

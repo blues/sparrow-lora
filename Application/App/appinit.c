@@ -17,7 +17,6 @@ bool buttonHeldAtBoot = false;
 void registerApp(void);
 void ioInit(void);
 void unpack32(uint8_t *p, uint32_t value);
-int tristate(uint16_t pin, GPIO_TypeDef *port);
 
 // Get the version of the image
 const char *appFirmwareVersion()
@@ -38,22 +37,6 @@ void MX_AppMain(void)
     unpack32(&ourAddress[4], HAL_GetUIDw1());
     unpack32(&ourAddress[8], HAL_GetUIDw2());
     utilAddressToText(ourAddress, ourAddressText, sizeof(ourAddressText));
-
-    // Perform power-on self-test
-    char *failReason = post();
-    if (failReason == NULL) {
-        APP_PRINTF("{\"sensor\":\"%s\"}\r\n\r\n", ourAddressText);
-    } else {
-        APP_PRINTF("{\"sensor\":\"%s\",\"err:\"%s\"}\r\n\r\n", ourAddressText, failReason);
-        HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_RESET);
-        for (;;) {
-            HAL_Delay(150);
-            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-            HAL_Delay(150);
-            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-        }
-    }
 
     // Remember the time when we were booted
     appBootMs = TIMER_IF_GetTimeMs();
@@ -145,12 +128,10 @@ void MX_AppISR(uint16_t GPIO_Pin)
 
 }
 
-// Get the value of a tri-state GPIO
-#define TRISTATE_FLOAT  0
-#define TRISTATE_HIGH   1
-#define TRISTATE_LOW    2
-int tristate(uint16_t pin, GPIO_TypeDef *port)
+// Get the digital state of a GPIO, leaving it in analog mode
+int pinstate(void *portv, uint16_t pin)
 {
+    GPIO_TypeDef *port = (GPIO_TypeDef *) portv;
     GPIO_InitTypeDef  gpio_init_structure = {0};
     gpio_init_structure.Mode = GPIO_MODE_INPUT;
     gpio_init_structure.Pull = GPIO_PULLUP;
@@ -176,9 +157,9 @@ int tristate(uint16_t pin, GPIO_TypeDef *port)
     gpio_init_structure.Pin = pin;
     HAL_GPIO_Init(port, &gpio_init_structure);
     if (pulledHigh && pulledLow) {
-        return TRISTATE_FLOAT;
+        return PINSTATE_FLOAT;
     }
-    return (high ? TRISTATE_HIGH : TRISTATE_LOW);
+    return (high ? PINSTATE_HIGH : PINSTATE_LOW);
 }
 
 // Initialize app hardware I/O
@@ -201,41 +182,41 @@ void ioInit(void)
     gpio_init_structure.Pin = LED_RED_Pin;
     HAL_GPIO_Init(LED_RED_GPIO_Port, &gpio_init_structure);
     HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-    int gpio0 = tristate(RFSEL_1_Pin, RFSEL_1_GPIO_Port);
-    int gpio1 = tristate(RFSEL_0_Pin, RFSEL_0_GPIO_Port);
-    if (gpio0 == TRISTATE_FLOAT && gpio1 == TRISTATE_FLOAT) {
+    int gpio0 = pinstate(RFSEL_1_GPIO_Port, RFSEL_1_Pin);
+    int gpio1 = pinstate(RFSEL_0_GPIO_Port, RFSEL_0_Pin);
+    if (gpio0 == PINSTATE_FLOAT && gpio1 == PINSTATE_FLOAT) {
         // 0 OFF OFF OFF OFF
         freq = 915000000;   // US915
-    } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_FLOAT) {
+    } else if (gpio0 == PINSTATE_HIGH && gpio1 == PINSTATE_FLOAT) {
         // 1  ON OFF OFF OFF
         freq = 923000000;   // AS923
-    } else if (gpio0 == TRISTATE_LOW && gpio1 == TRISTATE_FLOAT) {
+    } else if (gpio0 == PINSTATE_LOW && gpio1 == PINSTATE_FLOAT) {
         // 2 OFF  ON OFF OFF
         freq = 920000000;   // KR920
-    } else if (gpio0 == TRISTATE_FLOAT && gpio1 == TRISTATE_HIGH) {
+    } else if (gpio0 == PINSTATE_FLOAT && gpio1 == PINSTATE_HIGH) {
         // 3 OFF OFF  ON OFF
         freq = 865000000;   // IN865
-    } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_HIGH) {
+    } else if (gpio0 == PINSTATE_HIGH && gpio1 == PINSTATE_HIGH) {
         // 4 ON OFF  ON OFF
         freq = 868000000;   // EU868
-    } else if (gpio0 == TRISTATE_LOW && gpio1 == TRISTATE_HIGH) {
+    } else if (gpio0 == PINSTATE_LOW && gpio1 == PINSTATE_HIGH) {
         // 5 OFF  ON  ON OFF
         freq = 864000000;   // RU864
-    } else if (gpio0 == TRISTATE_FLOAT && gpio1 == TRISTATE_LOW) {
+    } else if (gpio0 == PINSTATE_FLOAT && gpio1 == PINSTATE_LOW) {
         // 6 OFF OFF OFF  ON
         freq = 915000000;   // AU915
-    } else if (gpio0 == TRISTATE_HIGH && gpio1 == TRISTATE_LOW) {
+    } else if (gpio0 == PINSTATE_HIGH && gpio1 == PINSTATE_LOW) {
         // 7 ON OFF OFF  ON
         freq = 470000000;   // CN470
 //        freq = 779000000;   // CN779
-    } else if (gpio0 == TRISTATE_LOW && gpio1 == TRISTATE_LOW) {
+    } else if (gpio0 == PINSTATE_LOW && gpio1 == PINSTATE_LOW) {
         // 8 OFF  ON OFF  ON
         freq = 433000000;   // EU433
     }
     radioSetRFFrequency(freq);
 #ifdef DEBUG_RFSEL
-    char *s0 = (gpio0 == TRISTATE_FLOAT ? "float" : (gpio0 == TRISTATE_HIGH ? "high" : "low"));
-    char *s1 = (gpio1 == TRISTATE_FLOAT ? "float" : (gpio1 == TRISTATE_HIGH ? "high" : "low"));
+    char *s0 = (gpio0 == PINSTATE_FLOAT ? "float" : (gpio0 == PINSTATE_HIGH ? "high" : "low"));
+    char *s1 = (gpio1 == PINSTATE_FLOAT ? "float" : (gpio1 == PINSTATE_HIGH ? "high" : "low"));
     APP_PRINTF("*** rfsel %s %s %dMHz ***\r\n", s0, s1, (freq/1000000));
 #endif
 #endif

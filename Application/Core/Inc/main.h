@@ -12,6 +12,7 @@
 #include "board.h"
 
 void MX_GPIO_Init(void);
+void MX_GPIO_DeInit(void);
 void MX_DMA_Init(void);
 void MX_ADC_Init(void);
 void MX_ADC_DeInit(void);

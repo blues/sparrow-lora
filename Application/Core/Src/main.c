@@ -210,6 +210,24 @@ void MX_DMA_Init(void)
 
 }
 
+// DeInit all known peripherals
+void MX_GPIO_DeInit(void)
+{
+    HAL_NVIC_DisableIRQ(EXTI0_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI1_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI2_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI3_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI4_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI9_5_IRQn);
+    HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+    MX_AES_DeInit();
+    MX_RNG_DeInit();
+    MX_USART1_UART_DeInit();
+    MX_SPI1_DeInit();
+    MX_I2C2_DeInit();
+    MX_ADC_DeInit();
+}
+
 // Initialize ADC
 void MX_ADC_Init(void)
 {
