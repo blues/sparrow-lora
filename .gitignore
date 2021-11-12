@@ -1,6 +1,5 @@
 # Sub-modules
 ###################
-note-c*
 Application/STM32CubeIDE/Debug*
 Application/STM32CubeIDE/Release*
 

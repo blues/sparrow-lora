@@ -1,3 +1,6 @@
+NOTE:
+This project depends upon the Blues "note-c" repo.
+When cloning this repo, please remember to do a "git clone https://github.com/blues/note-c.git" into the root (sparrow-lora) folder.
 
 COMMON INSTRUCTIONS FOR BOTH GATEWAY AND SENSOR
 
