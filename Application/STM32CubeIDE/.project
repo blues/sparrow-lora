@@ -124,6 +124,11 @@
 			<locationURI>PARENT-2-PROJECT_LOC/note-c/n_md5.c</locationURI>
 		</link>
 		<link>
+			<name>note-c/n_printf.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/note-c/n_printf.c</locationURI>
+		</link>
+		<link>
 			<name>note-c/n_request.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/note-c/n_request.c</locationURI>
