@@ -139,6 +139,11 @@
 			<locationURI>PARENT-2-PROJECT_LOC/note-c/n_str.c</locationURI>
 		</link>
 		<link>
+			<name>note-c/n_ua.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/note-c/n_ua.c</locationURI>
+		</link>
+		<link>
 			<name>Application/App/app.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/App/app.c</locationURI>
