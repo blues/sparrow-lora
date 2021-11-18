@@ -11,6 +11,7 @@
 #define USE_PING_TEST               false
 #define USE_BME                     true    // true for Reference Sensor
 #define USE_PIR                     true    // true for Reference Sensor
+#define USE_BUTTON                  true    // button-press sends a message
 #define USE_TASK_SCHEDULER_TEST     false
 #define USE_SLEEP_CURRENT_TEST      false
 #endif
@@ -32,7 +33,7 @@ sensorConfig allSensors[] = {
         .pollIntervalSecs = 15,
         .initFn = bmeInit,
         .activateFn = NULL,
-        .interruptFn = bmeISR,
+        .interruptFn = NULL,
         .pollFn = bmePoll,
         .responseFn = bmeResponse,
     },
@@ -49,6 +50,20 @@ sensorConfig allSensors[] = {
         .interruptFn = pirISR,
         .pollFn = pirPoll,
         .responseFn = pirResponse,
+    },
+#endif
+
+    // A task that does nothing but respond to a button-press
+#if USE_BUTTON
+    {
+        .name = "button",
+        .activationPeriodSecs = HRS(24),
+        .pollIntervalSecs = 15,
+        .initFn = NULL,
+        .activateFn = NULL,
+        .interruptFn = buttonISR,
+        .pollFn = buttonPoll,
+        .responseFn = buttonResponse,
     },
 #endif
 

@@ -1572,6 +1572,9 @@
                 <name>$PROJ_DIR$\..\Sensor\bme.c</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\..\Sensor\button.c</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\..\Sensor\config.c</name>
             </file>
             <file>

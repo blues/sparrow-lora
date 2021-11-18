@@ -279,6 +279,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Sensor/bme.c</locationURI>
 		</link>
 		<link>
+			<name>Application/Sensor/button.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Sensor/button.c</locationURI>
+		</link>
+		<link>
 			<name>Application/Sensor/config.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Sensor/config.c</locationURI>

@@ -173,20 +173,6 @@ void bmeResponse(int sensorID, J *rsp)
 
 }
 
-// Interrupt handler
-void bmeISR(int sensorID, uint16_t pins)
-{
-
-    // Set the state to button, and immediately schedule
-    if ((pins & BUTTON1_Pin) != 0) {
-        sensorIgnoreTimeWindow();
-        syncNow = true;
-        schedActivateNowFromISR(sensorID, true, STATE_ACTIVATED);
-        return;
-    }
-
-}
-
 // Send the sensor data
 static bool addNote()
 {

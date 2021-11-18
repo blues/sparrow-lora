@@ -93,4 +93,8 @@ bool bmeInit(int sensorID);
 bool bmeActivate(int sensorID);
 void bmePoll(int sensorID, int state);
 void bmeResponse(int sensorID, J *rsp);
-void bmeISR(int sensorID, uint16_t pins);
+
+// button.c
+void buttonISR(int sensorID, uint16_t pins);
+void buttonPoll(int sensorID, int state);
+void buttonResponse(int sensorID, J *rsp);

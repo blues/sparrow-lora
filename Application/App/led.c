@@ -106,10 +106,15 @@ bool ledIsPairInProgress()
         return ledStatePair;
     }
 
-    // If a sensor that's never been paired, always put us into that mode
+    // If a sensor that's never been paired, always put us into that mode.  Note that
+    // this behavior is optional, because the net-effect of this code is that if you
+    // insert batteries into multiple devices, you won't be able to distinguish them
+    // when they start pairing with the gateway.
+#ifdef AUTO_PAIR_IF_UNPAIRED
     if (ledStatePairBeganTime == 0 && ledIsPairMandatory()) {
         ledIndicatePairInProgress(true);
     }
+#endif
 
     // Done
     return ledStatePair;

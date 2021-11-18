@@ -277,10 +277,24 @@ void sendMessageToPeer(bool useTW, uint8_t *toAddress)
 
         // Always use the sensor's key when encrypting
         uint8_t key[AES_KEY_BYTES];
-        if (!flashConfigFindPeerByAddress(appIsGateway ? sentMessageCarrier.Receiver : sentMessageCarrier.Sender, NULL, key, NULL)) {
+        uint8_t *sensorAddress = appIsGateway ? sentMessageCarrier.Receiver : sentMessageCarrier.Sender;
+        if (!flashConfigFindPeerByAddress(sensorAddress, NULL, key, NULL)) {
             APP_PRINTF("can't find the sensor's key\r\n");
             memcpy(key, invalidKey, sizeof(key));
         }
+
+        // Trace
+#ifdef SHOW_KEYS
+        APP_PRINTF("ENCRYPT: ");
+        for (int i=0; i<ADDRESS_LEN; i++) {
+            APP_PRINTF("%02x", sensorAddress[i]);
+        }
+        APP_PRINTF(": ");
+        for (int i=0; i<sizeof(key); i++) {
+            APP_PRINTF("%02x", key[i]);
+        }
+        APP_PRINTF("\r\n");
+#endif
 
         // Encrypt the data
         bool success = MX_AES_CTR_Encrypt(key, (uint8_t *)&sentMessage, sentMessageCarrier.MessageLen, (uint8_t *)&sentMessageCarrier.Message);
@@ -913,6 +927,17 @@ void appSensorProcess()
             if ((wireReceived.Flags & (MESSAGE_FLAG_BEACON|MESSAGE_FLAG_ACK)) == (MESSAGE_FLAG_BEACON|MESSAGE_FLAG_ACK)) {
                 memcpy(gatewayAddress, wireReceivedCarrier.Sender, sizeof(gatewayAddress));
                 flashConfigUpdatePeer(PEER_TYPE_SENSOR|PEER_TYPE_SELF, ourAddress, beaconKey);
+#ifdef SHOW_KEYS
+                APP_PRINTF("STORE OURS: ");
+                for (int i=0; i<ADDRESS_LEN; i++) {
+                    APP_PRINTF("%02x", ourAddress[i]);
+                }
+                APP_PRINTF(": ");
+                for (int i=0; i<AES_KEY_BYTES; i++) {
+                    APP_PRINTF("%02x", beaconKey[i]);
+                }
+                APP_PRINTF("\r\n");
+#endif
                 flashConfigUpdatePeer(PEER_TYPE_GATEWAY, gatewayAddress, invalidKey);
                 memcpy(beaconKey, invalidKey, sizeof(beaconKey));
                 APP_PRINTF("%s received beacon pairing ACK: paired\r\n", tracePeer());
@@ -1406,6 +1431,17 @@ void appGatewayProcess()
             }
             flashConfigUpdatePeer(PEER_TYPE_SENSOR, request->sensorAddress, wireReceived.Body);
             APP_PRINTF("%s *** beacon: updated sensor key\r\n", tracePeer());
+#ifdef SHOW_KEYS
+            APP_PRINTF("STORE PEER: ");
+            for (int i=0; i<ADDRESS_LEN; i++) {
+                APP_PRINTF("%02x", request->sensorAddress[i]);
+            }
+            APP_PRINTF(": ");
+            for (int i=0; i<AES_KEY_BYTES; i++) {
+                APP_PRINTF("%02x", wireReceived.Body[i]);
+            }
+            APP_PRINTF("\r\n");
+#endif
         }
 
         // Prepare the body
@@ -1506,7 +1542,7 @@ void appGatewayProcess()
         break;
     }
 
-    // Expected wait
+        // Expected wait
     case RX_TIMEOUT:
         if (ListenPhaseBeforeTalk) {
             lbtTalk();
@@ -1650,10 +1686,24 @@ bool validateReceivedMessage()
 
     // Always use the sensor's key when decrypting
     uint8_t key[AES_KEY_BYTES];
-    if (!flashConfigFindPeerByAddress(appIsGateway ? wireReceivedCarrier.Sender : wireReceivedCarrier.Receiver, NULL, key, NULL)) {
+    uint8_t *sensorAddress = appIsGateway ? wireReceivedCarrier.Sender : wireReceivedCarrier.Receiver;
+    if (!flashConfigFindPeerByAddress(sensorAddress, NULL, key, NULL)) {
         APP_PRINTF("%s can't find the sensor's key\r\n", tracePeer());
         return false;
     }
+
+    // Trace
+#ifdef SHOW_KEYS
+    APP_PRINTF("DECRYPT: ");
+    for (int i=0; i<ADDRESS_LEN; i++) {
+        APP_PRINTF("%02x", sensorAddress[i]);
+    }
+    APP_PRINTF(": ");
+    for (int i=0; i<sizeof(key); i++) {
+        APP_PRINTF("%02x", key[i]);
+    }
+    APP_PRINTF("\r\n");
+#endif
 
     // Decrypt it
     bool success = MX_AES_CTR_Decrypt(key, (uint8_t *)&wireReceivedCarrier.Message, wireReceivedCarrier.MessageLen, (uint8_t *)&wireReceived);
@@ -1791,6 +1841,7 @@ bool appProcessButton()
         return true;
 
     case BUTTON_PRESSED:
+        // Single tap on gateway always toggles pairing
         if (ledIsPairInProgress() && !ledIsPairMandatory()) {
             ledIndicatePairInProgress(false);
         } else {
@@ -1800,7 +1851,14 @@ bool appProcessButton()
 #if TRANSMIT_SIZE_TEST
                 appSendLoRaPacketSizeTestPing();
 #else
-                schedDispatchISR(BUTTON1_Pin);
+                // If we're not yet paired, a single button
+                // press will initiate pairing.  Otherwise,
+                // send the button-press to a sensor app.
+                if (ledIsPairMandatory()) {
+                    ledIndicatePairInProgress(true);
+                } else {
+                    schedDispatchISR(BUTTON1_Pin);
+                }
 #endif
             }
         }
