@@ -48,7 +48,6 @@
 #define GATEWAY_REQUEST_FAILURE_RETRIES                 5
 
 // Environment variables
-#define VAR_NOTECARD_PRODUCT_UID                        "product"
 extern uint32_t var_gateway_env_update_mins;
 #define VAR_GATEWAY_ENV_UPDATE_MINS                     "env_update_mins"
 #define DEFAULT_GATEWAY_ENV_UPDATE_MINS                 (5)
