@@ -57,9 +57,51 @@ bool noteSetup()
     // Set the essential info, retrying in case of I/O error during startup
     // simply because this is so essential
     for (int i=0; i<5; i++) {
+
+        // Give the developer the option of overriding the firmware-wired
+        // productUID by interactively doing an env.set
+        const char *productUID = NOTECARD_PRODUCT_UID;
+        bool messageDisplayed = false;
+        for (;;) {
+            J *req = NoteNewRequest("env.get");
+            if (req != NULL) {
+                JAddStringToObject(req, "name", VAR_NOTECARD_PRODUCT_UID);
+                NoteSuspendTransactionDebug();
+                J *rsp = NoteRequestResponse(req);
+                NoteResumeTransactionDebug();
+                if (rsp != NULL) {
+                    const char *value = JGetString(rsp, "text");
+                    if (value[0] != '\0') {
+                        productUID = value;
+                        NoteDeleteResponse(rsp);
+                        break;
+                    }
+                    NoteDeleteResponse(rsp);
+                }
+                if (productUID[0] != '\0') {
+                    break;
+                }
+                if (!messageDisplayed) {
+                    APP_PRINTF("\r\n");
+                    APP_PRINTF("Waiting for you to set product UID of this gateway using:\r\n");
+                    APP_PRINTF("{\"req\":\"env.set\",\"name\":\"%s\",\"text\":\"your-notehub-project's-ProductID\"}\r\n",
+                               VAR_NOTECARD_PRODUCT_UID);
+                    APP_PRINTF("\r\n");
+                    messageDisplayed = true;
+                } else {
+                    APP_PRINTF("^");
+                }
+                HAL_Delay(5000);
+            }
+        }
+        if (messageDisplayed) {
+            APP_PRINTF("\r\n");
+        }
+
+        // Set the product UID and essential info
         J *req = NoteNewRequest("hub.set");
         if (req != NULL) {
-            JAddStringToObject(req, "product", NOTECARD_PRODUCT_UID);
+            JAddStringToObject(req, "product", productUID);
             JAddStringToObject(req, "mode", NOTECARD_CONNECTION_MODE);
             JAddNumberToObject(req, "outbound", NOTECARD_OUTBOUND_PERIOD_MINS);
             JAddNumberToObject(req, "inbound", NOTECARD_INBOUND_PERIOD_MINS);

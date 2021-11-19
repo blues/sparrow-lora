@@ -4,7 +4,7 @@
 
 #pragma once
 
-#define NOTECARD_PRODUCT_UID                "net.ozzie.ray:sparrow"
+#define NOTECARD_PRODUCT_UID                ""          // YOUR PRODUCT UID GOES HERE
 #define NOTECARD_CONNECTION_MODE            "continuous"
 #define NOTECARD_CONTINUOUS_SYNC            true        // Allows gateway to respond immediately to env changes
 #define NOTECARD_OUTBOUND_PERIOD_MINS       (15)
@@ -48,6 +48,7 @@
 #define GATEWAY_REQUEST_FAILURE_RETRIES                 5
 
 // Environment variables
+#define VAR_NOTECARD_PRODUCT_UID                        "product"
 extern uint32_t var_gateway_env_update_mins;
 #define VAR_GATEWAY_ENV_UPDATE_MINS                     "env_update_mins"
 #define DEFAULT_GATEWAY_ENV_UPDATE_MINS                 (5)

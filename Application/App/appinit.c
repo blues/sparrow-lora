@@ -53,18 +53,22 @@ void MX_AppMain(void)
     // Remember the time when we were booted
     appBootMs = TIMER_IF_GetTimeMs();
 
-    // Conditionally disable debugging
-    if (!buttonHeldAtBoot && !MX_DBG_Active()) {
-        APP_PRINTF("CONSOLE TRACE DISABLED\r\n");
-        NoteSetFnDebugOutput(NULL);
-        MX_DBG_Disable();
-    } else {
-        MX_DBG_Enable();
-        APP_PRINTF("CONSOLE TRACE ENABLED\r\n");
-    }
-
     // Initialize the Notecard
     appIsGateway = noteInit();
+
+    // Conditionally enable or disable trace
+    if (appIsGateway) {
+        MX_DBG_Enable();
+    } else {
+        if (!buttonHeldAtBoot && !MX_DBG_Active()) {
+            APP_PRINTF("CONSOLE TRACE DISABLED\r\n");
+            NoteSetFnDebugOutput(NULL);
+            MX_DBG_Disable();
+        } else {
+            MX_DBG_Enable();
+            APP_PRINTF("CONSOLE TRACE ENABLED\r\n");
+        }
+    }
 
     // On the gateway, prep for flash DFU
     if (appIsGateway) {
