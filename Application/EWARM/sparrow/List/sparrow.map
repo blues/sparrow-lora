@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR ELF Linker V8.50.9.278/W32 for ARM                  19/Nov/2021  12:18:55
+# IAR ELF Linker V8.50.9.278/W32 for ARM                  19/Nov/2021  12:30:15
 # Copyright 2007-2020 IAR Systems AB.
 #
 #    Output file  =
@@ -8,7 +8,7 @@
 #    Map file     =
 #        C:\Users\ray\dev\sparrow-lora\Application\EWARM\sparrow\List\sparrow.map
 #    Command line =
-#        -f C:\Users\ray\AppData\Local\Temp\EW5D5.tmp
+#        -f C:\Users\ray\AppData\Local\Temp\EW6311.tmp
 #        (C:\Users\ray\dev\sparrow-lora\Application\EWARM\sparrow\Obj\app.o
 #        C:\Users\ray\dev\sparrow-lora\Application\EWARM\sparrow\Obj\appinit.o
 #        C:\Users\ray\dev\sparrow-lora\Application\EWARM\sparrow\Obj\atp.o
@@ -2189,7 +2189,7 @@ noteI2CTransmit          0x801'49ad   0x94  Code  Gb  note.o [1]
 noteInit                 0x801'479d   0x68  Code  Gb  note.o [1]
 noteMillis               0x801'4995    0x8  Code  Gb  note.o [1]
 noteSendToGatewayAsync   0x801'4b55   0x2e  Code  Gb  note.o [1]
-noteSetup                0x801'4805  0x174  Code  Gb  note.o [1]
+noteSetup                0x801'4805  0x172  Code  Gb  note.o [1]
 notecardReset           0x2000'2330    0x4  Data  Lc  n_hooks.o [1]
 notecardTransaction     0x2000'2334    0x4  Data  Lc  n_hooks.o [1]
 null_ptr_check           0x801'85d9   0x20  Code  Lc  bme280.o [1]

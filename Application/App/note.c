@@ -62,7 +62,7 @@ bool noteSetup()
         // productUID by interactively doing an env.set
         const char *productUID = NOTECARD_PRODUCT_UID;
         bool messageDisplayed = false;
-        for (;;) {
+        while (productUID[0] == '\0') {
             J *req = NoteNewRequest("env.get");
             if (req != NULL) {
                 JAddStringToObject(req, "name", VAR_NOTECARD_PRODUCT_UID);
@@ -78,9 +78,6 @@ bool noteSetup()
                     }
                     NoteDeleteResponse(rsp);
                 }
-                if (productUID[0] != '\0') {
-                    break;
-                }
                 if (!messageDisplayed) {
                     APP_PRINTF("\r\n");
                     APP_PRINTF("Waiting for you to set product UID of this gateway using:\r\n");
@@ -91,7 +88,7 @@ bool noteSetup()
                 } else {
                     APP_PRINTF("^");
                 }
-                HAL_Delay(5000);
+                HAL_Delay(2500);
             }
         }
         if (messageDisplayed) {
