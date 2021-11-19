@@ -1423,12 +1423,17 @@ void appGatewayProcess()
 
         }
 
-        // If this was a beacon, update the key and algorithm
+        // If this was a beacon, we're completing a peering request
         if ((wireReceived.Flags & MESSAGE_FLAG_BEACON) != 0) {
+
+            // Verify that it's a supported algorithm
             if (wireReceived.RequestID != MESSAGE_ALG_CTR) {
                 APP_PRINTF("%s *** beacon message has wrong encryption type ***\r\n", tracePeer());
                 gatewayWaitForAnySensorMessage();
+                break;
             }
+
+            // Update the key and algorithm for this peer in flash
             flashConfigUpdatePeer(PEER_TYPE_SENSOR, request->sensorAddress, wireReceived.Body);
             APP_PRINTF("%s *** beacon: updated sensor key\r\n", tracePeer());
 #ifdef SHOW_KEYS
@@ -1442,6 +1447,18 @@ void appGatewayProcess()
             }
             APP_PRINTF("\r\n");
 #endif
+
+            // Notify the notecard and notehub that we've peered with this sensor
+            J *req = NoteNewCommand("hub.log");
+            if (req != NULL) {
+                JAddStringToObject(req, "method", "sensor-provision");
+                char saddr[40];
+                utilAddressToText(request->sensorAddress, saddr, sizeof(saddr));
+                JAddStringToObject(req, "text", saddr);
+                JAddBoolToObject(req, "sync", true);
+                NoteRequest(req);
+            }
+
         }
 
         // Prepare the body

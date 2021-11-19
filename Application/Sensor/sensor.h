@@ -73,24 +73,20 @@ uint32_t sensorGetConfig(sensorConfig **retSensorConfig);
 
 // ping.c
 void pingISR(int sensorID, uint16_t pins);
-bool pingActivate(int sensorID);
 void pingPoll(int sensorID, int state);
 void pingResponse(int sensorID, J *rsp);
 
 // null.c
-bool nullActivate(int sensorID);
 void nullPoll(int sensorID, int state);
 
 // pir.c
 bool pirInit(int sensorID);
 void pirISR(int sensorID, uint16_t pins);
-bool pirActivate(int sensorID);
 void pirPoll(int sensorID, int state);
 void pirResponse(int sensorID, J *rsp);
 
 // bme.c
 bool bmeInit(int sensorID);
-bool bmeActivate(int sensorID);
 void bmePoll(int sensorID, int state);
 void bmeResponse(int sensorID, J *rsp);
 

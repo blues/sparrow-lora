@@ -62,7 +62,6 @@ void MX_AppMain(void)
     } else {
         if (!buttonHeldAtBoot && !MX_DBG_Active()) {
             APP_PRINTF("CONSOLE TRACE DISABLED\r\n");
-            NoteSetFnDebugOutput(NULL);
             MX_DBG_Disable();
         } else {
             MX_DBG_Enable();

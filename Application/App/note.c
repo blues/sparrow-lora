@@ -41,9 +41,6 @@ bool noteInit()
 
     }
 
-    // Set the debug output function
-    NoteSetFnDebugOutput(trace);
-
     // Success
     return true;
 
