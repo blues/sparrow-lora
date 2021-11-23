@@ -13,8 +13,6 @@ jobs:
       - name: Checkout Code
         id: checkout
         uses: actions/checkout@v2
-        with:
-          submodules: true
       - name: Build in Container
         id: build
         uses: ./.github/actions/build
