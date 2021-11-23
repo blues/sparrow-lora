@@ -32,4 +32,8 @@ note-c/
 .Trashes
 ehthumbs.db
 Thumbs.db
+<<<<<<< HEAD
 .vscode/
+=======
+cmake-build-*
+>>>>>>> 8b0041c (feat: first pass at a cmake build)

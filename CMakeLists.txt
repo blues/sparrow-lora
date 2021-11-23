@@ -1,0 +1,378 @@
+cmake_minimum_required(VERSION 3.20)
+project(sparrow_lora)
+
+enable_language(C ASM)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS ON)  # required for inline asm
+
+set(EXECUTABLE ${PROJECT_NAME}.elf)
+
+include_directories(Application)
+include_directories(Application/App)
+include_directories(Application/Core/Inc)
+include_directories(Application/Core/Radio)
+include_directories(Application/Sensor)
+include_directories(Application/Sensor/bme280)
+include_directories(Drivers/CMSIS/Core/Include)
+include_directories(Drivers/CMSIS/Device/ST/STM32WLxx/Include)
+include_directories(Drivers/CMSIS/DSP/Include)
+include_directories(Drivers/CMSIS/Include)
+include_directories(Drivers/STM32WLxx_HAL_Driver/Inc)
+include_directories(Drivers/STM32WLxx_HAL_Driver/Inc/Legacy)
+include_directories(Middlewares/Third_Party/SubGHz_Phy)
+include_directories(Middlewares/Third_Party/SubGHz_Phy/Conf)
+include_directories(Middlewares/Third_Party/SubGHz_Phy/stm32_radio_driver)
+include_directories(note-c)
+include_directories(Utilities/lpm/tiny_lpm)
+include_directories(Utilities/misc)
+include_directories(Utilities/sequencer)
+include_directories(Utilities/timer)
+include_directories(Utilities/trace/adv_trace)
+# use target_include_directories()?
+
+add_executable(${EXECUTABLE}
+        Application/App/app.c
+        Application/App/app.h
+        Application/App/appinit.c
+        Application/App/atp.c
+        Application/App/dfu.c
+        Application/App/dfuload.c
+        Application/App/flash.c
+        Application/App/gateway.c
+        Application/App/led.c
+        Application/App/note.c
+        Application/App/post.c
+        Application/App/radioinit.c
+        Application/App/sched.c
+        Application/App/sensor.c
+        Application/App/trace.c
+        Application/App/util.c
+        Application/Core/Inc/main.h
+        Application/Core/Inc/stm32_lpm_if.h
+        Application/Core/Inc/stm32wlxx_hal_conf.h
+        Application/Core/Inc/stm32wlxx_it.h
+        Application/Core/Inc/timer_if.h
+        Application/Core/Inc/utilities_conf.h
+        Application/Core/Inc/utilities_def.h
+        Application/Core/Radio/mw_log_conf.h
+        Application/Core/Radio/radio_board_if.c
+        Application/Core/Radio/radio_conf.h
+        Application/Core/Radio/timer.h
+        Application/Core/Src/debug.c
+        Application/Core/Src/main.c
+        Application/Core/Src/stm32_lpm_if.c
+        Application/Core/Src/stm32wlxx_hal_msp.c
+        Application/Core/Src/stm32wlxx_it.c
+        Application/Core/Src/system_stm32wlxx.c
+        Application/Core/Src/timer_if.c
+        Application/Core/Src/usart_if.c
+        Application/Core/Src/util_if.c
+        Application/Gateway/auth.c
+        Application/Sensor/bme280/bme280.c
+        Application/Sensor/bme280/bme280.h
+        Application/Sensor/bme280/bme280_defs.h
+        Application/Sensor/bme.c
+        Application/Sensor/button.c
+        Application/Sensor/config.c
+        Application/Sensor/null.c
+        Application/Sensor/ping.c
+        Application/Sensor/pir.c
+        Application/Sensor/sensor.h
+        Application/STM32CubeIDE/Application/Startup/startup_stm32wl55jcix.s
+        Application/STM32CubeIDE/sys/syscalls.c
+        Application/STM32CubeIDE/sys/sysmem.c
+        Application/board.h
+        Application/board_radio.h
+        Application/config_notecard.h
+        Application/config_radio.h
+        Application/config_sys.h
+        Drivers/CMSIS/Core/Include/cmsis_armcc.h
+        Drivers/CMSIS/Core/Include/cmsis_armclang.h
+        Drivers/CMSIS/Core/Include/cmsis_armclang_ltm.h
+        Drivers/CMSIS/Core/Include/cmsis_compiler.h
+        Drivers/CMSIS/Core/Include/cmsis_gcc.h
+        Drivers/CMSIS/Core/Include/cmsis_iccarm.h
+        Drivers/CMSIS/Core/Include/cmsis_version.h
+        Drivers/CMSIS/Core/Include/core_armv81mml.h
+        Drivers/CMSIS/Core/Include/core_armv8mbl.h
+        Drivers/CMSIS/Core/Include/core_armv8mml.h
+        Drivers/CMSIS/Core/Include/core_cm0.h
+        Drivers/CMSIS/Core/Include/core_cm0plus.h
+        Drivers/CMSIS/Core/Include/core_cm1.h
+        Drivers/CMSIS/Core/Include/core_cm23.h
+        Drivers/CMSIS/Core/Include/core_cm3.h
+        Drivers/CMSIS/Core/Include/core_cm33.h
+        Drivers/CMSIS/Core/Include/core_cm35p.h
+        Drivers/CMSIS/Core/Include/core_cm4.h
+        Drivers/CMSIS/Core/Include/core_cm7.h
+        Drivers/CMSIS/Core/Include/core_sc000.h
+        Drivers/CMSIS/Core/Include/core_sc300.h
+        Drivers/CMSIS/Core/Include/mpu_armv7.h
+        Drivers/CMSIS/Core/Include/mpu_armv8.h
+        Drivers/CMSIS/Core/Include/tz_context.h
+        Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wl54xx.h
+        Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wl55xx.h
+        Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wle4xx.h
+        Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wle5xx.h
+        Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wlxx.h
+        Drivers/CMSIS/Device/ST/STM32WLxx/Include/system_stm32wlxx.h
+        Drivers/CMSIS/DSP/Include/arm_common_tables.h
+        Drivers/CMSIS/DSP/Include/arm_const_structs.h
+        Drivers/CMSIS/DSP/Include/arm_math.h
+        Drivers/CMSIS/Include/cmsis_armcc.h
+        Drivers/CMSIS/Include/cmsis_armclang.h
+        Drivers/CMSIS/Include/cmsis_armclang_ltm.h
+        Drivers/CMSIS/Include/cmsis_compiler.h
+        Drivers/CMSIS/Include/cmsis_gcc.h
+        Drivers/CMSIS/Include/cmsis_iccarm.h
+        Drivers/CMSIS/Include/cmsis_version.h
+        Drivers/CMSIS/Include/core_armv81mml.h
+        Drivers/CMSIS/Include/core_armv8mbl.h
+        Drivers/CMSIS/Include/core_armv8mml.h
+        Drivers/CMSIS/Include/core_cm0.h
+        Drivers/CMSIS/Include/core_cm0plus.h
+        Drivers/CMSIS/Include/core_cm1.h
+        Drivers/CMSIS/Include/core_cm23.h
+        Drivers/CMSIS/Include/core_cm3.h
+        Drivers/CMSIS/Include/core_cm33.h
+        Drivers/CMSIS/Include/core_cm35p.h
+        Drivers/CMSIS/Include/core_cm4.h
+        Drivers/CMSIS/Include/core_cm7.h
+        Drivers/CMSIS/Include/core_sc000.h
+        Drivers/CMSIS/Include/core_sc300.h
+        Drivers/CMSIS/Include/mpu_armv7.h
+        Drivers/CMSIS/Include/mpu_armv8.h
+        Drivers/CMSIS/Include/tz_context.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_adc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_adc_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_comp.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_cortex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_crc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_crc_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_cryp.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_cryp_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_dac.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_dac_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_def.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_dma.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_dma_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_exti.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_flash.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_flash_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_gpio.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_gpio_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_gtzc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_hsem.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_i2c.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_i2c_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_i2s.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_ipcc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_irda.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_irda_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_iwdg.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_lptim.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_pka.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_pwr.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_pwr_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_rcc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_rcc_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_rng.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_rng_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_rtc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_rtc_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_smartcard.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_smartcard_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_smbus.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_spi.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_spi_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_subghz.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_tim.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_tim_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_uart.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_uart_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_usart.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_usart_ex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_wwdg.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_adc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_bus.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_comp.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_cortex.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_crc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dac.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dma.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dmamux.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_gpio.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_hsem.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_i2c.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_ipcc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_iwdg.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_lptim.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_lpuart.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_pka.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_pwr.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_rcc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_rng.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_rtc.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_spi.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_system.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_tim.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_usart.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_utils.h
+        Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_wwdg.h
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_adc.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_adc_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_comp.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_cortex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_crc.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_crc_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_cryp.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_cryp_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_dac.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_dac_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_dma.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_dma_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_exti.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_flash.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_flash_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_gpio.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_gtzc.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_hsem.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_i2c.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_i2c_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_i2s.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_ipcc.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_irda.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_iwdg.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_lptim.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_pka.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_pwr.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_pwr_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_rcc.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_rcc_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_rng.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_rng_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_rtc.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_rtc_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_smartcard.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_smartcard_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_smbus.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_spi.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_spi_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_subghz.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_tim.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_tim_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_uart.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_uart_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_usart.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_usart_ex.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_hal_wwdg.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_adc.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_comp.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_crc.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_dac.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_dma.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_exti.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_gpio.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_i2c.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_lptim.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_lpuart.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_pka.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_pwr.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_rcc.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_rng.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_rtc.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_spi.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_tim.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_usart.c
+        Drivers/STM32WLxx_HAL_Driver/Src/stm32wlxx_ll_utils.c
+        Middlewares/Third_Party/SubGHz_Phy/stm32_radio_driver/radio.c
+        Middlewares/Third_Party/SubGHz_Phy/stm32_radio_driver/radio_driver.c
+        Middlewares/Third_Party/SubGHz_Phy/stm32_radio_driver/radio_driver.h
+        Middlewares/Third_Party/SubGHz_Phy/stm32_radio_driver/subghz_phy_version.h
+        Middlewares/Third_Party/SubGHz_Phy/radio.h
+        Middlewares/Third_Party/SubGHz_Phy/radio_ex.h
+        note-c/n_atof.c
+        note-c/n_b64.c
+        note-c/n_cjson.c
+        note-c/n_cjson.h
+        note-c/n_cjson_helpers.c
+        note-c/n_const.c
+        note-c/n_ftoa.c
+        note-c/n_helpers.c
+        note-c/n_hooks.c
+        note-c/n_i2c.c
+        note-c/n_lib.h
+        note-c/n_md5.c
+        note-c/n_printf.c
+        note-c/n_request.c
+        note-c/n_serial.c
+        note-c/n_str.c
+        note-c/n_ua.c
+        note-c/note.h
+        Utilities/lpm/tiny_lpm/stm32_lpm.c
+        Utilities/lpm/tiny_lpm/stm32_lpm.h
+        Utilities/misc/stm32_mem.c
+        Utilities/misc/stm32_mem.h
+        Utilities/misc/stm32_systime.c
+        Utilities/misc/stm32_systime.h
+        Utilities/misc/stm32_tiny_sscanf.c
+        Utilities/misc/stm32_tiny_sscanf.h
+        Utilities/misc/stm32_tiny_vsnprintf.c
+        Utilities/misc/stm32_tiny_vsnprintf.h
+        Utilities/sequencer/stm32_seq.c
+        Utilities/sequencer/stm32_seq.h
+        Utilities/timer/stm32_timer.c
+        Utilities/timer/stm32_timer.h
+        Utilities/trace/adv_trace/stm32_adv_trace.c
+        Utilities/trace/adv_trace/stm32_adv_trace.h
+        )
+
+target_compile_definitions(${EXECUTABLE} PRIVATE
+        -DSTM32WL55xx
+        -DCORE_CM4
+        )
+
+target_compile_options(${EXECUTABLE} PRIVATE
+        -mcpu=cortex-m4
+        -c
+        -ffunction-sections
+        -fdata-sections
+        -O0 -g3
+        -Wall
+        -fstack-usage
+        -MMD
+        -MP
+        --specs=nano.specs
+        -mfloat-abi=soft
+        -mthumb
+        )
+
+target_link_options(${EXECUTABLE} PRIVATE
+        -T${CMAKE_SOURCE_DIR}/Application/STM32CubeIDE/STM32WL55JCIX_FLASH.ld
+        -mcpu=cortex-m4
+        --specs=nosys.specs
+        -Wl,-Map="${PROJECT_NAME}.map"
+        -Wl,--gc-sections
+        -static
+        --specs=nano.specs
+        -mfloat-abi=soft
+        -mthumb
+        -Wl,--start-group -lc -lm -Wl,--end-group
+        -Wl,--print-memory-usage
+        )
+
+# Print executable size
+add_custom_command(TARGET ${EXECUTABLE}
+        POST_BUILD
+        COMMAND arm-none-eabi-size ${EXECUTABLE})
+
+# Create hex file
+add_custom_command(TARGET ${EXECUTABLE}
+        POST_BUILD
+        COMMAND arm-none-eabi-objcopy -O ihex ${EXECUTABLE} ${PROJECT_NAME}.hex
+        COMMAND arm-none-eabi-objcopy -O binary ${EXECUTABLE} ${PROJECT_NAME}.bin)
