@@ -230,7 +230,7 @@ bool commonCmd(char *cmd)
     }
 
     // Turn notecard I/O trace on/off
-    if (appIsGateway && strcmp(cmd, "note") == 0 || strcmp(cmd, "n") == 0) {
+    if ((appIsGateway && strcmp(cmd, "note") == 0) || strcmp(cmd, "n") == 0) {
         NoteSetFnDebugOutput(trace);
         MX_DBG_Enable();
         APP_PRINTF("NOTECARD TRACE ON\r\n");
