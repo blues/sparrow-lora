@@ -2,6 +2,8 @@
 ###################
 Application/STM32CubeIDE/Debug*
 Application/STM32CubeIDE/Release*
+Application/STM32CubeIDE/.settings
+Application/STM32CubeIDE/sparrow.launch
 
 # Compiled source #
 ###################
