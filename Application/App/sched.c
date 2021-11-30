@@ -57,12 +57,13 @@ int schedRegisterSensor(sensorConfig *sensorToRegister)
     }
 
     // switch to, and initialize, new config and state
-    if (sensor != NULL) {
+    if (sensors) {
         memcpy(newConfig, sensor, sensors * sizeof(sensorConfig));
         free(sensor);
         memcpy(newState, state, sensors * sizeof(sensorState));
         free(state);
     }
+    newSensorID = sensors;
     memcpy(&newConfig[newSensorID], sensorToRegister, sizeof(sensorConfig));
     sensor = newConfig;
     memset(&newState[newSensorID], 0, sizeof(sensorConfig));
