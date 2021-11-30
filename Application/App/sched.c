@@ -32,25 +32,50 @@ uint32_t nextActivationDueSecs(int i);
 void schedInit()
 {
 
-    // Initialize sensor table
-    sensors = sensorGetConfig(&sensor);
-    state = malloc(sizeof(sensorState)*sensors);
-    if (state == NULL) {
-        APP_PRINTF("*** can't allocate sensor state array ***\r\n");
-    }
-    memset(state, 0, sizeof(sensorState)*sensors);
-    for (int i=0; i<sensors; i++) {
-        state[i].currentState = STATE_ONCE;
-        state[i].completionSuccessState = STATE_UNDEFINED;
-        state[i].completionErrorState = STATE_UNDEFINED;
-        if (sensor[i].initFn != NULL) {
-            sensor[i].initFn(i);
-        }
-    }
+    // Initialize all sensors
+    initSensors();
 
     // Start the sensor timer so that we get called back to schedule
     sensorTimerStart();
 
+}
+
+// Register a sensor, returning sensor ID (or -1 if failure)
+int schedRegisterSensor(sensorConfig *sensorToRegister)
+{
+    int newSensorID = -1;
+
+    // Allocate a new sensor and state table
+    sensorConfig *newConfig = malloc((sensors+1)*sizeof(sensorConfig));
+    if (newConfig == NULL) {
+        return newSensorID;
+    }
+    sensorState *newState = malloc((sensors+1)*sizeof(sensorState));
+    if (newState == NULL) {
+        free(newConfig);
+        return newSensorID;
+    }
+
+    // switch to, and initialize, new config and state
+    if (sensor != NULL) {
+        memcpy(newConfig, sensor, sensors * sizeof(sensorConfig));
+        free(sensor);
+        memcpy(newState, state, sensors * sizeof(sensorState));
+        free(state);
+    }
+    memcpy(&newConfig[newSensorID], sensorToRegister, sizeof(sensorConfig));
+    sensor = newConfig;
+    memset(&newState[newSensorID], 0, sizeof(sensorConfig));
+    state = newState;
+    state[newSensorID].currentState = STATE_ONCE;
+    state[newSensorID].completionSuccessState = STATE_UNDEFINED;
+    state[newSensorID].completionErrorState = STATE_UNDEFINED;
+
+    // We now have coherent config and state tables
+    sensors++;
+
+    // Done
+    return newSensorID;
 }
 
 // Get the sensor name

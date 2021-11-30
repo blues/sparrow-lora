@@ -24,14 +24,35 @@ static bool templateRegistered = false;
 static uint32_t motionEvents = 0;
 static uint32_t motionEventsTotal = 0;
 
+// Our sensor ID
+static int sensorID = -1;
+
 // Forwards
+static void pirISR(int sensorID, uint16_t pins);
+static void pirPoll(int sensorID, int state);
+static void pirResponse(int sensorID, J *rsp);
 static void addNote(bool immediate);
 static bool registerNotefileTemplate(void);
 static void resetInterrupt(void);
 
 // Sensor One-Time Init
-bool pirInit(int sensorID)
+bool pirInit()
 {
+
+    // Register the sensor
+    sensorConfig config = {
+        .name = "pir",
+        .activationPeriodSecs = 60 * 60,
+        .pollIntervalSecs = 15,
+        .activateFn = NULL,
+        .interruptFn = pirISR,
+        .pollFn = pirPoll,
+        .responseFn = pirResponse,
+    };
+    sensorID = schedRegisterSensor(&config);
+    if (sensorID < 0) {
+        return false;
+    }
 
     // Initialize GPIOs as per data sheet 2.6 and 2.7
     GPIO_InitTypeDef init = {0};

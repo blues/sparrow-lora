@@ -37,18 +37,38 @@ static uint8_t bme_dev_addr = 0;
 // Whether or not the next note should sync
 static bool syncNow = false;
 
+// Our sensor ID
+static int sensorID = -1;
+
 // Forwards
-static bool bmeUpdate(void);
 static bool bme280_read(struct bme280_dev *dev, struct bme280_data *comp_data);
 static void bme280_delay_us(uint32_t period, void *intf_ptr);
 static int8_t bme280_i2c_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, void *intf_ptr);
 static int8_t bme280_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, void *intf_ptr);
 static bool addNote(void);
 static bool registerNotefileTemplate(void);
+static bool bmeUpdate(void);
+static void bmePoll(int sensorID, int state);
+static void bmeResponse(int sensorID, J *rsp);
 
 // Sensor One-Time Init
-bool bmeInit(int sensorID)
+bool bmeInit()
 {
+
+    // Register the sensor
+    sensorConfig config = {
+        .name = "bme",
+        .activationPeriodSecs = 60 * 60,
+        .pollIntervalSecs = 15,
+        .activateFn = NULL,
+        .interruptFn = NULL,
+        .pollFn = bmePoll,
+        .responseFn = bmeResponse,
+    };
+    sensorID = schedRegisterSensor(&config);
+    if (sensorID < 0) {
+        return false;
+    }
 
     // Power on the sensor to see if it's here
     GPIO_InitTypeDef init = {0};
@@ -66,6 +86,7 @@ bool bmeInit(int sensorID)
         appSetSKU(SKU_REFERENCE);
     }
 
+    // Done
     return true;
 
 }

@@ -284,14 +284,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Sensor/button.c</locationURI>
 		</link>
 		<link>
-			<name>Application/Sensor/config.c</name>
+			<name>Application/Sensor/init.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Sensor/config.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Sensor/null.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Sensor/null.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Sensor/init.c</locationURI>
 		</link>
 		<link>
 			<name>Application/Sensor/ping.c</name>

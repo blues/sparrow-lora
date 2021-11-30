@@ -10,8 +10,38 @@
 // Special request IDs
 #define REQUESTID_MANUAL_PING       1
 
+// Our sensor ID
+static int sensorID = -1;
+
 // Forwards
+static void buttonISR(int sensorID, uint16_t pins);
+static void buttonPoll(int sensorID, int state);
+static void buttonResponse(int sensorID, J *rsp);
 static bool sendHealthLogMessage(bool immediate);
+
+// Sensor One-Time Init
+bool buttonInit()
+{
+
+    // Register the sensor
+    sensorConfig config = {
+        .name = "button",
+        .activationPeriodSecs = 60 * 24,
+        .pollIntervalSecs = 15,
+        .activateFn = NULL,
+        .interruptFn = buttonISR,
+        .pollFn = buttonPoll,
+        .responseFn = buttonResponse,
+    };
+    sensorID = schedRegisterSensor(&config);
+    if (sensorID < 0) {
+        return false;
+    }
+
+    // Done
+    return true;
+
+}
 
 // Poller
 void buttonPoll(int sensorID, int state)

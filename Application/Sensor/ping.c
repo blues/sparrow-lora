@@ -22,12 +22,42 @@
 static bool templateRegistered = false;
 #endif
 
+// Our sensor ID
+static int sensorID = -1;
+
 // Forwards
+static void pingISR(int sensorID, uint16_t pins);
+static void pingPoll(int sensorID, int state);
+static void pingResponse(int sensorID, J *rsp);
 static bool sendHealthLogMessage(bool immediate);
 #if !SURVEY_MODE
 static void addNote(uint32_t count);
 static bool registerNotefileTemplate(void);
 #endif
+
+// Sensor One-Time Init
+bool pingInit()
+{
+
+    // Register the sensor
+    sensorConfig config = {
+        .name = "ping",
+        .activationPeriodSecs = 60 * 15,
+        .pollIntervalSecs = 15,
+        .activateFn = NULL,
+        .interruptFn = pingISR,
+        .pollFn = pingPoll,
+        .responseFn = pingResponse,
+    };
+    sensorID = schedRegisterSensor(&config);
+    if (sensorID < 0) {
+        return false;
+    }
+
+    // Done
+    return true;
+
+}
 
 // Poller
 void pingPoll(int sensorID, int state)

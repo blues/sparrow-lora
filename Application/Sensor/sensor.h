@@ -16,11 +16,6 @@
 // Forward reference to sensor configuration definition, because circular.
 struct sensorConfig_c;
 
-// Called once so that sensor may to state initialization, etc. Note that
-// this method must not send messages to the gateway; it's only allowed
-// to do local operations.
-typedef bool (*sensorInitFunc) (int sensorID);
-
 // Called when time to activate; return false to cancel this activation.
 // Note that this method must not send messages to the gateway; it's only
 // allowed to do local operations.
@@ -59,7 +54,6 @@ struct sensorConfig_c {
     uint32_t pollIntervalSecs;
 
     // Handlers
-    sensorInitFunc initFn;
     sensorActivateFunc activateFn;
     sensorInterruptFunc interruptFn;
     sensorPollFunc pollFn;
@@ -68,29 +62,14 @@ struct sensorConfig_c {
 };
 typedef struct sensorConfig_c sensorConfig;
 
-// config.c
-uint32_t sensorGetConfig(sensorConfig **retSensorConfig);
+// app/sched.c
+int schedRegisterSensor(sensorConfig *sensorToRegister);
 
-// ping.c
-void pingISR(int sensorID, uint16_t pins);
-void pingPoll(int sensorID, int state);
-void pingResponse(int sensorID, J *rsp);
+// init.c
+void initSensors(void);
 
-// null.c
-void nullPoll(int sensorID, int state);
-
-// pir.c
-bool pirInit(int sensorID);
-void pirISR(int sensorID, uint16_t pins);
-void pirPoll(int sensorID, int state);
-void pirResponse(int sensorID, J *rsp);
-
-// bme.c
-bool bmeInit(int sensorID);
-void bmePoll(int sensorID, int state);
-void bmeResponse(int sensorID, J *rsp);
-
-// button.c
-void buttonISR(int sensorID, uint16_t pins);
-void buttonPoll(int sensorID, int state);
-void buttonResponse(int sensorID, J *rsp);
+// Sensor init methods
+bool bmeInit(void);
+bool pirInit(void);
+bool pingInit(void);
+bool buttonInit(void);
