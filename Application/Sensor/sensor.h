@@ -4,9 +4,16 @@
 
 #pragma once
 
+// Standard Libraries
+#include <stdbool.h>
+#include <stdint.h>
+
+// 3rd-party Libraries
+#include <note.h>
+
+// Internal Headers
 #include "board.h"
 #include "app.h"
-#include "note.h"
 
 // If TRUE, we're in survey mode in which the button is used to send
 // pings that include RSSI/SNR transmitted at full power, and all
@@ -60,13 +67,10 @@ struct sensorConfig_c {
     sensorResponseFunc responseFn;
 
 };
-typedef struct sensorConfig_c sensorConfig;
-
-// app/sched.c
-int schedRegisterSensor(sensorConfig *sensorToRegister);
 
 // init.c
 void initSensors(void);
+int register_sensors (void);
 
 // Sensor init methods
 bool bmeInit(void);
