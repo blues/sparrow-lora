@@ -2,6 +2,9 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
+#include <stddef.h>
+#include <stdint.h>
+
 #include "stm32wlxx_hal.h"
 
 // This is the function that copies new firmware into the primary firmware
@@ -54,7 +57,7 @@ void DFULOADER_FUNC dfuLoader(uint8_t *flashDst, uint8_t *flashSrc, uint32_t pag
     __HAL_FLASH_CLEAR_FLAG(FLASH_FLAG_EOP | FLASH_FLAG_PGSERR | FLASH_FLAG_WRPERR | FLASH_FLAG_OPTVERR);
 
     // Loop, copying pages
-    for (int page=0; page<pages; page++) {
+    for (size_t page=0; page<pages; page++) {
 
         // Skip the current page that contains this code
         if (page == 1) {
@@ -67,7 +70,7 @@ void DFULOADER_FUNC dfuLoader(uint8_t *flashDst, uint8_t *flashSrc, uint32_t pag
         // Program the page
         uint64_t *sourceDoubleWord = (uint64_t *) (flashSrc + (FLASH_PAGE_SIZE * page));
         uint8_t *destPageBase = (uint8_t *) (flashDst + (FLASH_PAGE_SIZE * page));
-        for (int i=0; i<FLASH_PAGE_SIZE; i+=8) {
+        for (size_t i=0; i<FLASH_PAGE_SIZE; i+=8) {
             local_HAL_FLASH_Program((uint32_t)(&destPageBase[i]), sourceDoubleWord[i/8]);
         }
 

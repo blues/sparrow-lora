@@ -2,6 +2,9 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
+#include <stddef.h>
+#include <stdint.h>
+
 #include "stm32_timer.h"
 #include "stm32_seq.h"
 #include "utilities_def.h"
@@ -367,7 +370,7 @@ void appSendBeaconToGateway()
     uint32_t requestID = MESSAGE_ALG_CTR;
     uint32_t length = AES_KEY_BYTES;
     MX_RNG_Init();
-    for (int i=0; i<length; i++) {
+    for (size_t i=0; i<length; i++) {
         beaconKey[i] = MX_RNG_Get();
     }
     MX_RNG_DeInit();
@@ -980,7 +983,7 @@ void appSensorProcess()
                 } else {
                     memcpy(sensorName, body->Name, sizeof(sensorName));
                     sensorName[sensorNameLen-1] = '\0';
-                    for (int i=0; i<sensorNameLen-1; i++) {
+                    for (size_t i=0; i<sensorNameLen-1; i++) {
                         if (sensorName[i] < ' ') {
                             sensorName[i] = '?';
                         }

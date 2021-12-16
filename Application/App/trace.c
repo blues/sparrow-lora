@@ -2,6 +2,9 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
+#include <stddef.h>
+#include <stdint.h>
+
 #include "app.h"
 #include "main.h"
 #include "stm32wlxx_ll_gpio.h"
@@ -29,12 +32,12 @@ void traceClearID(void)
 // Set the identity of what's being processed
 void traceSetID(const char *state, const uint8_t *address, uint32_t requestID)
 {
-    int addrLen = 6;
+    size_t addrLen = 6;
     traceID[0] = '\0';
     if (!appIsGateway) {
         char hex[40];
         utilAddressToText(ourAddress, hex, sizeof(hex));
-        int len = strlen(hex) > addrLen ? addrLen : strlen(hex);
+        size_t len = strlen(hex) > addrLen ? addrLen : strlen(hex);
         strlcat(traceID, &hex[strlen(hex)-len], sizeof(traceID));
     }
     if (state[0] != '\0') {
@@ -55,7 +58,7 @@ void traceSetID(const char *state, const uint8_t *address, uint32_t requestID)
         } else {
             char hex[40];
             utilAddressToText(address, hex, sizeof(hex));
-            int len = strlen(hex) > addrLen ? addrLen : strlen(hex);
+            size_t len = strlen(hex) > addrLen ? addrLen : strlen(hex);
             strlcat(traceID, &hex[strlen(hex)-len], sizeof(traceID));
         }
     }

@@ -2,6 +2,9 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
+#include <stddef.h>
+#include <stdint.h>
+
 #include "app.h"
 
 // Convert a byte to 2 hex digits, null-terminating it
@@ -64,7 +67,7 @@ void extractNameComponents(char *in, char *namebuf, char *olcbuf, uint32_t olcbu
     if (olcbuf != NULL) {
         *olcbuf = '\0';
         if (*in == '[') {
-            int olclen = 0;
+            size_t olclen = 0;
             while (true) {
                 ++in;
                 if (*in == '\0' || *in == ']') {
