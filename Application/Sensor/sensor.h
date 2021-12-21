@@ -70,7 +70,7 @@ struct sensorConfig_c {
 
 // init.c
 void initSensors(void);
-int register_sensors (void);
+int registerSensors (void);
 
 // Sensor init methods
 bool bmeInit(void);

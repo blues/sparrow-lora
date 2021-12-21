@@ -39,9 +39,9 @@ void initSensors()
 #endif
 
     // Entrypoint for user-defined sensors to be registered
-    register_sensors();
+    registerSensors();
 
 }
 
 // To be user-defined else no-op
-__weak int register_sensors (void) { return 0; }
+__weak int registerSensors (void) { return 0; }
