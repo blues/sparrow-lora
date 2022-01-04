@@ -44,6 +44,8 @@ extern int8_t wireReceiveRSSI;
 extern int8_t wireReceiveSNR;
 extern int8_t wireTransmitDb;
 
+typedef struct sensorConfig_c sensorConfig;
+
 // appinit.c
 #define SKU_UNKNOWN     0
 #define SKU_CORE        1
@@ -172,6 +174,7 @@ void schedDisable(int sensorID);
 void schedActivateNow(int sensorID);
 bool schedActivateNowFromISR(int sensorID, bool interruptIfActive, int nextState);
 void schedSendingRequest(bool responseRequested);
+int schedRegisterSensor(sensorConfig *sensorToRegister);
 void schedResponseCompleted(J *rsp);
 void schedRequestResponseTimeout(void);
 void schedRequestResponseTimeoutCheck(void);

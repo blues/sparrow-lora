@@ -38,4 +38,10 @@ void initSensors()
     pingInit();
 #endif
 
+    // Entrypoint for user-defined sensors to be registered
+    registerSensors();
+
 }
+
+// To be user-defined else no-op
+__weak int registerSensors (void) { return 0; }
