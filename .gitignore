@@ -1,9 +1,13 @@
-# Sub-modules
-###################
+# STM32CubeIDE Artifacts #
+##########################
 Application/STM32CubeIDE/Debug*
 Application/STM32CubeIDE/Release*
 Application/STM32CubeIDE/.settings
 Application/STM32CubeIDE/sparrow.launch
+
+# Sub-modules #
+###############
+note-c/
 
 # Compiled source #
 ###################
@@ -17,8 +21,8 @@ Application/STM32CubeIDE/sparrow.launch
 *.a
 *.pbi
 
-# auto- generated files #
-######################
+# Auto-generated files #
+########################
 *~
 \#*\#
 .DS_Store
