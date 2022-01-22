@@ -58,8 +58,10 @@ void MX_AppMain(void)
 
     // Conditionally enable or disable trace
     if (appIsGateway) {
+        APP_PRINTF("GATEWAY MODE\r\n");
         MX_DBG_Enable();
     } else {
+        APP_PRINTF("SENSOR MODE\r\n");
         if (!buttonHeldAtBoot && !MX_DBG_Active()) {
             APP_PRINTF("CONSOLE TRACE DISABLED\r\n");
             MX_DBG_Disable();
@@ -83,6 +85,7 @@ void MX_AppMain(void)
     // Blink LED until the time is available, because the sensors depend
     // upon the fact thst the gateway knows what time it is.
     if (appIsGateway) {
+        APP_PRINTF("Waiting for time from Notecard\r\n");
         ledReset();
         while ( !NoteTimeValidST() || !gatewayEnvVarsLoaded() ) {
             if (ledButtonCheck() == BUTTON_HELD) {
@@ -91,11 +94,13 @@ void MX_AppMain(void)
             ledWalk();
             HAL_Delay(750);
         }
+        APP_PRINTF("Waiting up to 30 sec for time zone from Notecard\r\n");
         for (int i=0; i<60 && !NoteRegion(NULL, NULL, NULL, NULL); i++) {
             ledWalk();
             HAL_Delay(500);
         }
         gatewayBootTime = NoteTimeST();
+        APP_PRINTF("Time: %d\r\n", gatewayBootTime);
     }
     ledReset();
 
