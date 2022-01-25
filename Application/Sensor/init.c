@@ -14,8 +14,8 @@
 #define USE_PING_TEST               false
 #endif
 
-// Initialize sensors
-void initSensors()
+// Initialize sensors (enable external project override)
+__weak void initSensors()
 {
 
     // Handles the Bosch BME280 temp/humidity/pressure sensor
@@ -38,10 +38,4 @@ void initSensors()
     pingInit();
 #endif
 
-    // Entrypoint for user-defined sensors to be registered
-    registerSensors();
-
 }
-
-// To be user-defined else no-op
-__weak int registerSensors (void) { return 0; }
