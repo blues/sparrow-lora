@@ -13,9 +13,10 @@ jobs:
       - name: Checkout Code
         id: checkout
         uses: actions/checkout@v2
+
       - name: Checkout note-c
-        run: rm -rf note-c && git clone https://github.com/blues/note-c
+        run: git clone https://github.com/blues/note-c.git
+
       - name: Build in Container
         id: build
         uses: ./.github/actions/build
-

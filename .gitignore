@@ -5,6 +5,10 @@ Application/STM32CubeIDE/Release*
 Application/STM32CubeIDE/.settings
 Application/STM32CubeIDE/sparrow.launch
 
+# CMake Artifacts #
+###################
+/build
+
 # Sub-modules #
 ###############
 note-c/
@@ -32,8 +36,3 @@ note-c/
 .Trashes
 ehthumbs.db
 Thumbs.db
-<<<<<<< HEAD
-.vscode/
-=======
-cmake-build-*
->>>>>>> 8b0041c (feat: first pass at a cmake build)
