@@ -2,6 +2,9 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
+#include <stddef.h>
+#include <stdint.h>
+
 #include "main.h"
 #include "board.h"
 #include "app.h"
@@ -294,7 +297,7 @@ bool gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
 
         // Now, loop over all sensors, updating them
         uint32_t notesUpdated = 0;
-        for (int i=0; i<cachedSensors; i++) {
+        for (size_t i=0; i<cachedSensors; i++) {
 
             // Get the info
             uint8_t sensorAddress[ADDRESS_LEN];
@@ -359,7 +362,7 @@ bool gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
             // Update error/success counts, or reset them
             if (var_gateway_sensordb_reset_counts != 0
                     && time_var_gateway_sensordb_reset_counts != 0
-                    && JGetInt(body, SENSORDB_FIELD_WHEN) < time_var_gateway_sensordb_reset_counts) {
+                    && (size_t)JGetInt(body, SENSORDB_FIELD_WHEN) < time_var_gateway_sensordb_reset_counts) {
                 JDeleteItemFromObject(body, SENSORDB_FIELD_RECEIVED);
                 JAddNumberToObject(body, SENSORDB_FIELD_RECEIVED, 0);
                 JDeleteItemFromObject(body, SENSORDB_FIELD_LOST);
@@ -376,7 +379,7 @@ bool gatewayHousekeeping(bool sensorsChanged, uint32_t cachedSensors)
             }
 
             // Update signal strength and quality
-            if (lastReceivedTime != JGetInt(body, SENSORDB_FIELD_WHEN)) {
+            if (lastReceivedTime != (size_t)JGetInt(body, SENSORDB_FIELD_WHEN)) {
                 JDeleteItemFromObject(body, SENSORDB_FIELD_WHEN);
                 JAddNumberToObject(body, SENSORDB_FIELD_WHEN, lastReceivedTime);
                 if (gatewayRSSI != 0 || gatewaySNR != 0) {

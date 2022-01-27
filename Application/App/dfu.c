@@ -80,7 +80,7 @@ bool noteFirmwareUpdateIfAvailable()
     // just an infinitely loop is simply defensive programming.  If for some odd reason
     // we don't enter DFU mode, we'll eventually come back here on the next DFU poll.
     bool inDFUMode = false;
-    int beganDFUModeCheckTime = NoteTimeST();
+    JTIME beganDFUModeCheckTime = NoteTimeST();
     while (!inDFUMode && NoteTimeST() < beganDFUModeCheckTime + (2*60)) {
         J *rsp = NoteRequestResponse(NoteNewRequest("dfu.get"));
         if (rsp != NULL) {

@@ -2,6 +2,9 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
+#include <stddef.h>
+#include <stdint.h>
+
 #include "board.h"
 #include "main.h"
 #include "app.h"
@@ -100,7 +103,7 @@ uint32_t FLASH_Init()
 // returns 0 (success) or -1 (failure)
 bool FLASH_write_at(uint32_t address, uint64_t *pData, uint32_t datalen)
 {
-    int i;
+    size_t i;
     bool success = false;
 
     __disable_irq();
@@ -277,7 +280,7 @@ void flashConfigFactoryReset()
 // Find a peer, returning true if found
 bool flashConfigFindPeerByType(uint16_t peertype, uint8_t *retAddress, uint8_t *retKey, char *retName)
 {
-    for (int i=0; i<config.peers; i++) {
+    for (size_t i=0; i<config.peers; i++) {
         if ((peer[i].type & peertype) != 0) {
             if (retAddress != NULL) {
                 memcpy(retAddress, peer[i].address, ADDRESS_LEN);
@@ -297,7 +300,7 @@ bool flashConfigFindPeerByType(uint16_t peertype, uint8_t *retAddress, uint8_t *
 // Find a peer by Address, returning true if found
 bool flashConfigFindPeerByAddress(uint8_t *address, uint16_t *retPeerType, uint8_t *retKey, char *retName)
 {
-    for (int i=0; i<config.peers; i++) {
+    for (size_t i=0; i<config.peers; i++) {
         if (memcmp(address, peer[i].address, ADDRESS_LEN) == 0) {
             if (retPeerType != NULL) {
                 *retPeerType = peer->type;
@@ -318,7 +321,7 @@ bool flashConfigFindPeerByAddress(uint8_t *address, uint16_t *retPeerType, uint8
 // of the address specified, and return true if it is found and if it was changed.
 bool flashConfigUpdatePeerName(uint8_t *address, uint8_t addressLen, char *name)
 {
-    for (int i=0; i<config.peers; i++) {
+    for (size_t i=0; i<config.peers; i++) {
         if (memcmp(address, peer[i].address, addressLen) == 0) {
             if (strcmp(name, peer[i].name) == 0) {
                 return false;
@@ -342,7 +345,7 @@ bool flashConfigUpdatePeer(uint16_t peertype, uint8_t *address, uint8_t *key)
 
     // Find the peer
     peerConfig *entry = NULL;
-    for (int i=0; i<config.peers; i++) {
+    for (size_t i=0; i<config.peers; i++) {
         if (memcmp(address, peer[i].address, ADDRESS_LEN) == 0) {
             entry = &peer[i];
             memcpy(newEntry.name, entry->name, sizeof(newEntry.name));
