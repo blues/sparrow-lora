@@ -54,4 +54,24 @@ typedef struct {
 
 // init.c
 void schedAppInit(void);
+
+// sched.c
+void schedActivateNow(int appID);
+bool schedActivateNowFromISR(int appID, bool interruptIfActive, int nextState);
+const char *schedAppName(int appID);
+void schedDisable(int appID);
+void schedDispatchISR(uint16_t pins);
+void schedDispatchResponse(J *rsp);
+int schedGetState(int appID);
+void schedInit(void);
+bool schedIsActive(int appID);
+uint32_t schedPoll(void);
 int schedRegisterApp(schedAppConfig *sensorToRegister);
+void schedRequestCompleted(void);
+void schedRequestResponseTimeout(void);
+void schedRequestResponseTimeoutCheck(void);
+void schedResponseCompleted(J *rsp);
+void schedSendingRequest(bool responseRequested);
+void schedSetCompletionState(int appID, int successState, int errorState);
+void schedSetState(int appID, int newstate, const char *why);
+char *schedStateName(int state);

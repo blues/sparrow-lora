@@ -166,26 +166,6 @@ void extractNameComponents(char *in, char *namebuf, char *olcbuf, uint32_t olcbu
 // auth.c
 J *authRequest(uint8_t *sensorAddress, char *sensorName, char *sensorLocationOLC, J *req);
 
-// sched.c
-void schedInit(void);
-void schedDispatchISR(uint16_t pins);
-void schedDispatchResponse(J *rsp);
-uint32_t schedPoll(void);
-bool schedIsActive(int appID);
-void schedDisable(int appID);
-void schedActivateNow(int appID);
-bool schedActivateNowFromISR(int appID, bool interruptIfActive, int nextState);
-void schedSendingRequest(bool responseRequested);
-void schedResponseCompleted(J *rsp);
-void schedRequestResponseTimeout(void);
-void schedRequestResponseTimeoutCheck(void);
-void schedRequestCompleted(void);
-void schedSetCompletionState(int appID, int successState, int errorState);
-void schedSetState(int appID, int newstate, const char *why);
-int schedGetState(int appID);
-char *schedStateName(int state);
-const char *schedAppName(int appID);
-
 // dfuload.c
 void dfuLoader(uint8_t *dst, uint8_t *src, uint32_t pages);
 
