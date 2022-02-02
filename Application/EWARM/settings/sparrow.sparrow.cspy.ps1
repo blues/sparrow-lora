@@ -23,9 +23,9 @@
 
 if ($debugfile -eq "")
 {
-& "C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "C:\Users\ray\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.general.xcl" --backend -f "C:\Users\ray\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.driver.xcl" 
+& "C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.general.xcl" --backend -f "C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.driver.xcl" 
 }
 else
 {
-& "C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "C:\Users\ray\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\ray\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.driver.xcl" 
+& "C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.general.xcl" --debug_file=$debugfile --backend -f "C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.driver.xcl" 
 }

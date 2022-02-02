@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "app.h"
+#include "framework.h"
 
 // Convert a byte to 2 hex digits, null-terminating it
 void utilHTOA8(unsigned char n, char *p)

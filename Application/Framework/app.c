@@ -9,7 +9,7 @@
 #include "stm32_seq.h"
 #include "utilities_def.h"
 #include "main.h"
-#include "app.h"
+#include "framework.h"
 
 // Task state
 States_t CurrentStateCore = LOWPOWER;

@@ -3,7 +3,7 @@
 // copyright holder including that found in the LICENSE file.
 
 #include <math.h>
-#include "sensor.h"
+#include "app.h"
 #include "main.h"
 #include "bme280/bme280.h"
 

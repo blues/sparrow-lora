@@ -2,8 +2,8 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-// Sensor Scheduler
-#include "sensor.h"
+// Sensor App Scheduler
+#include "app.h"
 
 // Current operational state of a sensor
 typedef struct {
@@ -32,8 +32,8 @@ uint32_t nextActivationDueSecs(int i);
 void schedInit()
 {
 
-    // Initialize all sensors
-    initSensors();
+    // Initialize all sensor apps
+    initApps();
 
     // Start the sensor timer so that we get called back to schedule
     sensorTimerStart();

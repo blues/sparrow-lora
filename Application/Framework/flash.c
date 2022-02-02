@@ -7,7 +7,7 @@
 
 #include "board.h"
 #include "main.h"
-#include "app.h"
+#include "framework.h"
 
 // Flash config device descriptor
 typedef struct __attribute__((__packed__))

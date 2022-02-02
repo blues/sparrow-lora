@@ -39,7 +39,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths.1827580495" name="Include paths (-I)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../.."/>
-									<listOptionValue builtIn="false" value="../../App"/>
+									<listOptionValue builtIn="false" value="../../Framework"/>
 									<listOptionValue builtIn="false" value="../../Core/Inc"/>
 									<listOptionValue builtIn="false" value="../../Core/Radio"/>
 									<listOptionValue builtIn="false" value="../../Sensor"/>

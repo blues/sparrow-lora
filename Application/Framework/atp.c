@@ -26,7 +26,7 @@
 //      loss checks directly as we're about to decrease power as opposed to at the top
 
 #include "main.h"
-#include "app.h"
+#include "framework.h"
 #include "radio.h"
 
 // Everything in this source file deals with power levels in terms

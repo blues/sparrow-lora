@@ -13,7 +13,7 @@
 
 // Internal Headers
 #include "board.h"
-#include "app.h"
+#include "framework.h"
 
 // If TRUE, we're in survey mode in which the button is used to send
 // pings that include RSSI/SNR transmitted at full power, and all
@@ -69,7 +69,7 @@ struct sensorConfig_c {
 };
 
 // init.c
-void initSensors(void);
+void initApps(void);
 
 // Sensor init methods
 bool bmeInit(void);

@@ -2,7 +2,7 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include "sensor.h"
+#include "app.h"
 
 // States for the local state machine
 #define STATE_BUTTON                0

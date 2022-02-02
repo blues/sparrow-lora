@@ -4,7 +4,7 @@
 
 #include "main.h"
 #include "stm32_timer.h"
-#include "app.h"
+#include "framework.h"
 
 // Sensor Sleep Timer
 #define sensorSleepMaxSecs          (60*60)         // Wake up at least hourly

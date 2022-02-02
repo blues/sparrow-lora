@@ -3,7 +3,7 @@
 // copyright holder including that found in the LICENSE file.
 
 #include "main.h"
-#include "app.h"
+#include "framework.h"
 #include "radio.h"
 
 // Global radio data

@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "C:\Users\ray\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.general.xcl" --backend -f "C:\Users\ray\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.general.xcl" --backend -f "C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "C:\Users\ray\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\ray\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.driver.xcl" 
+"C:\Program Files\IAR Systems\Embedded Workbench 9.0\common\bin\cspybat" -f "C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\settings\sparrow.sparrow.driver.xcl" 
 
 @echo off 
 :end

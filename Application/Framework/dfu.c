@@ -3,7 +3,7 @@
 // copyright holder including that found in the LICENSE file.
 
 #include "main.h"
-#include "app.h"
+#include "framework.h"
 
 // Check to see if a firmware update is available, and perform the update if it is.  If
 // the update isn't available, return false.  If the update was available but the update

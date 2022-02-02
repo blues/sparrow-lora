@@ -5,7 +5,7 @@
 #include "main.h"
 #include "stm32_seq.h"
 #include "utilities_def.h"
-#include "app.h"
+#include "framework.h"
 
 // App Role
 bool appIsGateway = false;

@@ -144,79 +144,79 @@
 			<locationURI>PARENT-2-PROJECT_LOC/note-c/n_ua.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/app.c</name>
+			<name>Application/Framework/app.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/app.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/app.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/appinit.c</name>
+			<name>Application/Framework/appinit.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/appinit.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/appinit.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/atp.c</name>
+			<name>Application/Framework/atp.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/atp.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/atp.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/dfu.c</name>
+			<name>Application/Framework/dfu.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/dfu.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/dfu.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/dfuload.c</name>
+			<name>Application/Framework/dfuload.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/dfuload.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/dfuload.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/flash.c</name>
+			<name>Application/Framework/flash.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/flash.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/flash.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/gateway.c</name>
+			<name>Application/Framework/gateway.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/gateway.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/gateway.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/led.c</name>
+			<name>Application/Framework/led.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/led.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/led.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/note.c</name>
+			<name>Application/Framework/note.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/note.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/note.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/post.c</name>
+			<name>Application/Framework/post.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/post.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/post.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/radioinit.c</name>
+			<name>Application/Framework/radioinit.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/radioinit.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/radioinit.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/sched.c</name>
+			<name>Application/Framework/sched.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/sched.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/sched.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/sensor.c</name>
+			<name>Application/Framework/sensor.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/sensor.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/sensor.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/trace.c</name>
+			<name>Application/Framework/trace.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/trace.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/trace.c</locationURI>
 		</link>
 		<link>
-			<name>Application/App/util.c</name>
+			<name>Application/Framework/util.c</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/App/util.c</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/Framework/util.c</locationURI>
 		</link>
 		<link>
 			<name>Application/Core/debug.c</name>
@@ -297,11 +297,6 @@
 			<name>Application/Sensor/pir.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Sensor/pir.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Sensor/sensor.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Sensor/sensor.h</locationURI>
 		</link>
 		<link>
 			<name>Drivers/STM32WLxx_HAL_Driver/stm32wlxx_hal.c</name>

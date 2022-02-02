@@ -338,7 +338,7 @@
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$/../</state>
                     <state>$PROJ_DIR$/../Core/Inc</state>
-                    <state>$PROJ_DIR$/../App</state>
+                    <state>$PROJ_DIR$/../Framework</state>
                     <state>$PROJ_DIR$/../Sensor</state>
                     <state>$PROJ_DIR$/../Core/Radio</state>
                     <state>$PROJ_DIR$/../../note-c</state>
@@ -1074,9 +1074,9 @@
     <group>
         <name>Application</name>
         <group>
-            <name>App</name>
+            <name>Framework</name>
             <file>
-                <name>$PROJ_DIR$\..\App\app.c</name>
+                <name>$PROJ_DIR$\..\Framework\app.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -1211,7 +1211,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
                                 <state>$PROJ_DIR$/../../Drivers/STM32WLxx_HAL_Driver/Inc</state>
@@ -1337,7 +1337,7 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\appinit.c</name>
+                <name>$PROJ_DIR$\..\Framework\appinit.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -1472,7 +1472,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
                                 <state>$PROJ_DIR$/../../Drivers/STM32WLxx_HAL_Driver/Inc</state>
@@ -1598,7 +1598,7 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\atp.c</name>
+                <name>$PROJ_DIR$\..\Framework\atp.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -1733,7 +1733,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Sensor</state>
                                 <state>$PROJ_DIR$/../Core/Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
@@ -1859,10 +1859,10 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\dfu.c</name>
+                <name>$PROJ_DIR$\..\Framework\dfu.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\dfuload.c</name>
+                <name>$PROJ_DIR$\..\Framework\dfuload.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -1997,7 +1997,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Sensor</state>
                                 <state>$PROJ_DIR$/../Core/Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
@@ -2122,7 +2122,7 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\flash.c</name>
+                <name>$PROJ_DIR$\..\Framework\flash.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -2257,7 +2257,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
                                 <state>$PROJ_DIR$/../../Drivers/STM32WLxx_HAL_Driver/Inc</state>
@@ -2383,7 +2383,7 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\gateway.c</name>
+                <name>$PROJ_DIR$\..\Framework\gateway.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -2518,7 +2518,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
                                 <state>$PROJ_DIR$/../../Drivers/STM32WLxx_HAL_Driver/Inc</state>
@@ -2644,7 +2644,7 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\led.c</name>
+                <name>$PROJ_DIR$\..\Framework\led.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -2779,7 +2779,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
                                 <state>$PROJ_DIR$/../../Drivers/STM32WLxx_HAL_Driver/Inc</state>
@@ -2905,7 +2905,7 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\note.c</name>
+                <name>$PROJ_DIR$\..\Framework\note.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -3040,7 +3040,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
                                 <state>$PROJ_DIR$/../../Drivers/STM32WLxx_HAL_Driver/Inc</state>
@@ -3166,10 +3166,10 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\post.c</name>
+                <name>$PROJ_DIR$\..\Framework\post.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\radioinit.c</name>
+                <name>$PROJ_DIR$\..\Framework\radioinit.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -3304,7 +3304,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
                                 <state>$PROJ_DIR$/../../Drivers/STM32WLxx_HAL_Driver/Inc</state>
@@ -3430,7 +3430,7 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\sched.c</name>
+                <name>$PROJ_DIR$\..\Framework\sched.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -3565,7 +3565,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Sensor</state>
                                 <state>$PROJ_DIR$/../Core/Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
@@ -3692,7 +3692,7 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\sensor.c</name>
+                <name>$PROJ_DIR$\..\Framework\sensor.c</name>
                 <configuration>
                     <name>sparrow</name>
                     <settings>
@@ -3827,7 +3827,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
                                 <state>$PROJ_DIR$/../../Drivers/STM32WLxx_HAL_Driver/Inc</state>
@@ -3953,10 +3953,10 @@
                 </configuration>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\trace.c</name>
+                <name>$PROJ_DIR$\..\Framework\trace.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\..\App\util.c</name>
+                <name>$PROJ_DIR$\..\Framework\util.c</name>
             </file>
         </group>
         <group>
@@ -4097,7 +4097,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Sensor</state>
                                 <state>$PROJ_DIR$/../Core/Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
@@ -4358,7 +4358,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
                                 <state>$PROJ_DIR$/../../Drivers/STM32WLxx_HAL_Driver/Inc</state>
@@ -4622,7 +4622,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Sensor</state>
                                 <state>$PROJ_DIR$/../Core/Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
@@ -4882,7 +4882,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Sensor</state>
                                 <state>$PROJ_DIR$/../Core/Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
@@ -5142,7 +5142,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Sensor</state>
                                 <state>$PROJ_DIR$/../Core/Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
@@ -5464,7 +5464,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Sensor</state>
                                 <state>$PROJ_DIR$/../Core/Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
@@ -5733,7 +5733,7 @@
                                 <name>CCIncludePath2</name>
                                 <state>$PROJ_DIR$/../</state>
                                 <state>$PROJ_DIR$/../Core/Inc</state>
-                                <state>$PROJ_DIR$/../App</state>
+                                <state>$PROJ_DIR$/../Framework</state>
                                 <state>$PROJ_DIR$/../Sensor</state>
                                 <state>$PROJ_DIR$/../Core/Radio</state>
                                 <state>$PROJ_DIR$/../../note-c</state>
@@ -6114,7 +6114,7 @@
                             <name>CCIncludePath2</name>
                             <state>$PROJ_DIR$/../</state>
                             <state>$PROJ_DIR$/../Core/Inc</state>
-                            <state>$PROJ_DIR$/../App</state>
+                            <state>$PROJ_DIR$/../Framework</state>
                             <state>$PROJ_DIR$/../Sensor</state>
                             <state>$PROJ_DIR$/../Core/Radio</state>
                             <state>$PROJ_DIR$/../../note-c</state>
