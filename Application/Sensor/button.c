@@ -2,7 +2,8 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include "appdefs.h"
+#include "button.h"
+#include "sched.h"
 
 // States for the local state machine
 #define STATE_BUTTON                0
