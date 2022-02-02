@@ -2,7 +2,19 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include "appdefs.h"
+#include "framework.h"
+
+// App defs
+#includde "bme.h"
+#includde "pir.h"
+#includde "button.h"
+#includde "ping.h"
+
+// Enable/disable configured apps
+#define USE_BME                     true    // true for Reference sensor
+#define USE_PIR                     true    // true for Reference sensor
+#define USE_BUTTON                  true    // button-press sends a message
+#define USE_PING_TEST               false   // for testing & locating sensors
 
 // Initialize applications to be scheduled (enable external project override)
 __weak void schedAppInit()

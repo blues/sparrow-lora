@@ -5,7 +5,8 @@
 #include <math.h>
 #include "main.h"
 #include "bme280/bme280.h"
-#include "appdefs.h"
+#include "sched.h"
+#include "bme.h"
 
 // Special request IDs
 #define REQUESTID_TEMPLATE          1

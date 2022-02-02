@@ -2,7 +2,8 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include "appdefs.h"
+#include "pir.h"
+#include "sched.h"
 #include "main.h"
 
 // Addresses of the BME sensor used to identify
