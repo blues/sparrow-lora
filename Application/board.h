@@ -5,11 +5,6 @@
 // Board/pin definitions (also see board_radio.h)
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
 #include "config_sys.h"
 #include "stm32wlxx_hal.h"
 #include "stm32wlxx_hal_exti.h"

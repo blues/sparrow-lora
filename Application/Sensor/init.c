@@ -2,13 +2,14 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include "framework.h"
+#include "sched.h"
+#include "stm32wlxx_hal_def.h"
 
 // App defs
-#includde "bme.h"
-#includde "pir.h"
-#includde "button.h"
-#includde "ping.h"
+#include "bme.h"
+#include "pir.h"
+#include "button.h"
+#include "ping.h"
 
 // Enable/disable configured apps
 #define USE_BME                     true    // true for Reference sensor

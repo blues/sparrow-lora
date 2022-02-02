@@ -2,11 +2,20 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include <math.h>
-#include "main.h"
-#include "bme280/bme280.h"
-#include "sched.h"
 #include "bme.h"
+
+#include <math.h>
+#include <stdbool.h>
+#include <stdint.h>
+
+#include <bme280/bme280.h>
+#include <note.h>
+
+#include "appio.h"
+#include "board.h"
+#include "framework.h"
+#include "main.h"
+#include "sched.h"
 
 // Special request IDs
 #define REQUESTID_TEMPLATE          1

@@ -2,10 +2,12 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include <stdbool.h>
-#include "note.h"
-
 #pragma once
+
+#include <stdbool.h>
+#include <stdint.h>
+
+typedef struct J J;
 
 // Called when time to activate; return false to cancel this activation.
 // Note that this method must not send messages to the gateway; it's only

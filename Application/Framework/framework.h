@@ -9,13 +9,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "timer_if.h"
+
+#include <note.h>
+
+#include "board.h"
 #include "config_sys.h"
 #include "config_radio.h"
 #include "config_notecard.h"
-#include "board.h"
 #include "sched.h"
-#include "note.h"
+#include "timer_if.h"
 
 // Task state management
 typedef enum {

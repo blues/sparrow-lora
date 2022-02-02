@@ -3,8 +3,17 @@
 // copyright holder including that found in the LICENSE file.
 
 #include "pir.h"
-#include "sched.h"
+
+#include <stdbool.h>
+#include <stdint.h>
+
+#include <note.h>
+
+#include "appio.h"
+#include "board.h"
+#include "framework.h"
 #include "main.h"
+#include "sched.h"
 
 // Addresses of the BME sensor used to identify
 // the Sparrow Reference Sensor Board
