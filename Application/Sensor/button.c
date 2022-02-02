@@ -3,6 +3,15 @@
 // copyright holder including that found in the LICENSE file.
 
 #include "button.h"
+
+#include <stdbool.h>
+#include <stdint.h>
+
+#include <note.h>
+
+#include "appio.h"
+#include "board.h"
+#include "framework.h"
 #include "sched.h"
 
 // States for the local state machine

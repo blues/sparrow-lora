@@ -2,10 +2,12 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include <stdbool.h>
-#include "note.h"
-
 #pragma once
+
+#include <stdbool.h>
+#include <stdint.h>
+
+typedef struct J J;
 
 // Called when time to activate; return false to cancel this activation.
 // Note that this method must not send messages to the gateway; it's only
@@ -54,4 +56,24 @@ typedef struct {
 
 // init.c
 void schedAppInit(void);
+
+// sched.c
+void schedActivateNow(int appID);
+bool schedActivateNowFromISR(int appID, bool interruptIfActive, int nextState);
+const char *schedAppName(int appID);
+void schedDisable(int appID);
+void schedDispatchISR(uint16_t pins);
+void schedDispatchResponse(J *rsp);
+int schedGetState(int appID);
+void schedInit(void);
+bool schedIsActive(int appID);
+uint32_t schedPoll(void);
 int schedRegisterApp(schedAppConfig *sensorToRegister);
+void schedResponseCompleted(J *rsp);
+void schedRequestResponseTimeout(void);
+void schedRequestResponseTimeoutCheck(void);
+void schedRequestCompleted(void);
+void schedSendingRequest(bool responseRequested);
+void schedSetCompletionState(int appID, int successState, int errorState);
+void schedSetState(int appID, int newstate, const char *why);
+char *schedStateName(int state);
