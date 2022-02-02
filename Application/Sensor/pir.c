@@ -2,7 +2,7 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include "app.h"
+#include "appdefs.h"
 #include "main.h"
 
 // States for the local state machine
@@ -24,23 +24,23 @@ static bool templateRegistered = false;
 static uint32_t motionEvents = 0;
 static uint32_t motionEventsTotal = 0;
 
-// Our sensor ID
-static int sensorID = -1;
+// Our scheduled app's ID
+static int appID = -1;
 
 // Forwards
-static void pirISR(int sensorID, uint16_t pins);
-static void pirPoll(int sensorID, int state);
-static void pirResponse(int sensorID, J *rsp);
+static void pirISR(int appID, uint16_t pins);
+static void pirPoll(int appID, int state);
+static void pirResponse(int appID, J *rsp);
 static void addNote(bool immediate);
 static bool registerNotefileTemplate(void);
 static void resetInterrupt(void);
 
-// Sensor One-Time Init
+// Scheduled App One-Time Init
 bool pirInit()
 {
 
-    // Register the sensor
-    sensorConfig config = {
+    // Register the app
+    schedAppConfig config = {
         .name = "pir",
         .activationPeriodSecs = 60 * 60,
         .pollIntervalSecs = 15,
@@ -49,8 +49,8 @@ bool pirInit()
         .pollFn = pirPoll,
         .responseFn = pirResponse,
     };
-    sensorID = schedRegisterSensor(&config);
-    if (sensorID < 0) {
+    appID = schedRegisterApp(&config);
+    if (appID < 0) {
         return false;
     }
 
@@ -208,13 +208,13 @@ void resetInterrupt()
 }
 
 // Poller
-void pirPoll(int sensorID, int state)
+void pirPoll(int appID, int state)
 {
 
     // Disable if this isn't a reference sensor
     if (appSKU() != SKU_REFERENCE) {
         HAL_NVIC_DisableIRQ(PIR_DIRECT_LINK_EXTI_IRQn);
-        schedDisable(sensorID);
+        schedDisable(appID);
         return;
     }
 
@@ -224,7 +224,7 @@ void pirPoll(int sensorID, int state)
     case STATE_ACTIVATED:
         if (!templateRegistered) {
             registerNotefileTemplate();
-            schedSetCompletionState(sensorID, STATE_ACTIVATED, STATE_MOTION_CHECK);
+            schedSetCompletionState(appID, STATE_ACTIVATED, STATE_MOTION_CHECK);
             APP_PRINTF("pir: template registration request\r\n");
             break;
         }
@@ -233,12 +233,12 @@ void pirPoll(int sensorID, int state)
 
     case STATE_MOTION_CHECK:
         if (motionEvents == 0) {
-            schedSetState(sensorID, STATE_DEACTIVATED, "pir: completed");
+            schedSetState(appID, STATE_DEACTIVATED, "pir: completed");
             break;
         }
         APP_PRINTF("pir: %d motion events sensed\r\n", motionEvents);
         addNote(true);
-        schedSetCompletionState(sensorID, STATE_MOTION_CHECK, STATE_MOTION_CHECK);
+        schedSetCompletionState(appID, STATE_MOTION_CHECK, STATE_MOTION_CHECK);
         APP_PRINTF("pir: note queued\r\n");
         break;
 
@@ -288,7 +288,7 @@ static bool registerNotefileTemplate()
 }
 
 // Gateway Response handler
-void pirResponse(int sensorID, J *rsp)
+void pirResponse(int appID, J *rsp)
 {
 
     // If this is a response timeout, indicate as such
@@ -352,7 +352,7 @@ static void addNote(bool immediate)
 }
 
 // Interrupt handler
-void pirISR(int sensorID, uint16_t pins)
+void pirISR(int appID, uint16_t pins)
 {
 
     // Set the state to 'motion' and immediately schedule
@@ -360,8 +360,8 @@ void pirISR(int sensorID, uint16_t pins)
         motionEvents++;
         motionEventsTotal++;
         resetInterrupt();
-        if (!schedIsActive(sensorID)) {
-            schedActivateNowFromISR(sensorID, true, STATE_MOTION_CHECK);
+        if (!schedIsActive(appID)) {
+            schedActivateNowFromISR(appID, true, STATE_MOTION_CHECK);
         }
         return;
     }

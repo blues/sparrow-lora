@@ -2,20 +2,10 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include "app.h"
+#include "appdefs.h"
 
-// Enable/disable configured sensors
-#if SURVEY_MODE
-#define USE_PING_TEST               true
-#else
-#define USE_BME                     true    // true for Reference Sensor
-#define USE_PIR                     true    // true for Reference Sensor
-#define USE_BUTTON                  true    // button-press sends a message
-#define USE_PING_TEST               false
-#endif
-
-// Initialize sensor applications (enable external project override)
-__weak void initApps()
+// Initialize applications to be scheduled (enable external project override)
+__weak void schedAppInit()
 {
 
     // Handles the Bosch BME280 temp/humidity/pressure sensor

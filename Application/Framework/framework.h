@@ -13,6 +13,8 @@
 #include "config_sys.h"
 #include "config_radio.h"
 #include "config_notecard.h"
+#include "board.h"
+#include "sched.h"
 #include "note.h"
 
 // Task state management
@@ -135,12 +137,12 @@ void radioSetTxPower(int8_t powerLevel);
 void radioSetTxPowerUnknown(void);
 
 // sensor.c
+void sensorCmd(char *cmd);
 void sensorTimerCancel(void);
 void sensorTimerStart(void);
 void sensorPoll(void);
 void sensorInterrupt(uint16_t interruptType);
 void sensorTimerWakeFromISR(void);
-void sensorCmd(char *cmd);
 
 // gateway.c
 bool gatewayProcessSensorRequest(uint8_t *sensorAddress, uint8_t *req, uint32_t reqLen, uint8_t **rsp, uint32_t *rspLen);
@@ -169,21 +171,20 @@ void schedInit(void);
 void schedDispatchISR(uint16_t pins);
 void schedDispatchResponse(J *rsp);
 uint32_t schedPoll(void);
-bool schedIsActive(int sensorID);
-void schedDisable(int sensorID);
-void schedActivateNow(int sensorID);
-bool schedActivateNowFromISR(int sensorID, bool interruptIfActive, int nextState);
+bool schedIsActive(int appID);
+void schedDisable(int appID);
+void schedActivateNow(int appID);
+bool schedActivateNowFromISR(int appID, bool interruptIfActive, int nextState);
 void schedSendingRequest(bool responseRequested);
-int schedRegisterSensor(sensorConfig *sensorToRegister);
 void schedResponseCompleted(J *rsp);
 void schedRequestResponseTimeout(void);
 void schedRequestResponseTimeoutCheck(void);
 void schedRequestCompleted(void);
-void schedSetCompletionState(int sensorID, int successState, int errorState);
-void schedSetState(int sensorID, int newstate, const char *why);
-int schedGetState(int sensorID);
+void schedSetCompletionState(int appID, int successState, int errorState);
+void schedSetState(int appID, int newstate, const char *why);
+int schedGetState(int appID);
 char *schedStateName(int state);
-const char *schedSensorName(int sensorID);
+const char *schedAppName(int appID);
 
 // dfuload.c
 void dfuLoader(uint8_t *dst, uint8_t *src, uint32_t pages);

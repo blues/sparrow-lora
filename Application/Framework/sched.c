@@ -2,10 +2,10 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-// Sensor App Scheduler
-#include "app.h"
+// App Scheduler
+#include "framework.h"
 
-// Current operational state of a sensor
+// Current operational state of a scheduled app
 typedef struct {
     bool disabled;
     bool active;
@@ -18,103 +18,103 @@ typedef struct {
     int currentState;
     int completionSuccessState;
     int completionErrorState;
-} sensorState;
+} schedAppState;
 
-static sensorState *state = NULL;
-static sensorConfig *sensor = NULL;
-static int sensors = 0;
+static schedAppState *state = NULL;
+static schedAppConfig *config = NULL;
+static int apps = 0;
 
 // Forwards
 uint32_t secsUntilDue(uint32_t alignmentBaseSecs, uint32_t nowSecs, uint32_t lastSecs, uint32_t periodSecs);
 uint32_t nextActivationDueSecs(int i);
 
-// Init the sensor package
+// Init the app scheduler
 void schedInit()
 {
 
-    // Initialize all sensor apps
-    initApps();
+    // Initialize all scheduled apps
+    schedAppInit();
 
-    // Start the sensor timer so that we get called back to schedule
+    // Start the sensor utility timer so that we get called back to schedule
     sensorTimerStart();
 
 }
 
-// Register a sensor, returning sensor ID (or -1 if failure)
-int schedRegisterSensor(sensorConfig *sensorToRegister)
+// Register an app to be scheduled, returning app ID (or -1 if failure)
+int schedRegisterApp(schedAppConfig *appToRegister)
 {
-    int newSensorID = -1;
+    int newAppID = -1;
 
-    // Allocate a new sensor and state table
-    sensorConfig *newConfig = malloc((sensors+1)*sizeof(sensorConfig));
+    // Allocate a new config and state table
+    schedAppConfig *newConfig = malloc((apps+1)*sizeof(schedAppConfig));
     if (newConfig == NULL) {
-        return newSensorID;
+        return newAppID;
     }
-    sensorState *newState = malloc((sensors+1)*sizeof(sensorState));
+    schedAppState *newState = malloc((apps+1)*sizeof(schedAppState));
     if (newState == NULL) {
         free(newConfig);
-        return newSensorID;
+        return newAppID;
     }
 
     // switch to, and initialize, new config and state
-    if (sensors) {
-        memcpy(newConfig, sensor, sensors * sizeof(sensorConfig));
-        free(sensor);
-        memcpy(newState, state, sensors * sizeof(sensorState));
+    if (apps) {
+        memcpy(newConfig, config, apps * sizeof(schedAppConfig));
+        free(config);
+        memcpy(newState, state, apps * sizeof(schedAppState));
         free(state);
     }
-    newSensorID = sensors;
-    memcpy(&newConfig[newSensorID], sensorToRegister, sizeof(sensorConfig));
-    sensor = newConfig;
-    memset(&newState[newSensorID], 0, sizeof(sensorConfig));
+    newAppID = apps;
+    memcpy(&newConfig[newAppID], appToRegister, sizeof(schedAppConfig));
+    config = newConfig;
+    memset(&newState[newAppID], 0, sizeof(schedAppConfig));
     state = newState;
-    state[newSensorID].currentState = STATE_ONCE;
-    state[newSensorID].completionSuccessState = STATE_UNDEFINED;
-    state[newSensorID].completionErrorState = STATE_UNDEFINED;
+    state[newAppID].currentState = STATE_ONCE;
+    state[newAppID].completionSuccessState = STATE_UNDEFINED;
+    state[newAppID].completionErrorState = STATE_UNDEFINED;
 
     // We now have coherent config and state tables
-    sensors++;
+    apps++;
 
     // Done
-    return newSensorID;
+    return newAppID;
 }
 
-// Get the sensor name
-const char *schedSensorName(int sensorID)
+// Get the name of the scheduled app
+const char *schedAppName(int appID)
 {
-    return sensor[sensorID].name;
+    return config[appID].name;
 }
 
 // Activate ASAP, as if from an ISR
-bool schedActivateNowFromISR(int sensorID, bool interruptIfActive, int nextState)
+bool schedActivateNowFromISR(int appID, bool interruptIfActive, int nextState)
 {
-    if (sensorID < 0) {
+    if (appID < 0) {
         return false;
     }
-    if (state[sensorID].active && !interruptIfActive) {
+    if (state[appID].active && !interruptIfActive) {
         return false;
     }
-    state[sensorID].currentState = nextState;
-    state[sensorID].lastActivatedTime = 0;
+    state[appID].currentState = nextState;
+    state[appID].lastActivatedTime = 0;
     sensorTimerWakeFromISR();
     return true;
 }
 
-// Disable this sensor permanently, for example in case of hardware failure
-void schedDisable(int sensorID)
+// Disable this app permanently, for example in case of hardware failure
+void schedDisable(int appID)
 {
-    if (!state[sensorID].disabled) {
-        state[sensorID].disabled = true;
-        APP_PRINTF("%s PERMANENTLY DISABLED\r\n", sensor[sensorID].name);
+    if (!state[appID].disabled) {
+        state[appID].disabled = true;
+        APP_PRINTF("%s PERMANENTLY DISABLED\r\n", config[appID].name);
     }
 }
 
-// Dispatch the interrupt to all sensors' ISRs
+// Dispatch the interrupt to all apps' ISRs
 void schedDispatchISR(uint16_t pins)
 {
-    for (int i=0; i<sensors; i++) {
-        if (!state[i].disabled && sensor[i].interruptFn != NULL) {
-            sensor[i].interruptFn(i, pins);
+    for (int i=0; i<apps; i++) {
+        if (!state[i].disabled && config[i].interruptFn != NULL) {
+            config[i].interruptFn(i, pins);
         }
     }
 }
@@ -141,24 +141,24 @@ char *schedStateName(int state)
     return other;
 }
 
-// See if the sensor is currently active
-bool schedIsActive(int sensorID)
+// See if the app is currently active
+bool schedIsActive(int appID)
 {
-    return state[sensorID].active;
+    return state[appID].active;
 }
 
-// Get the current state for a sensor
-int schedGetState(int sensorID)
+// Get the current state for an app
+int schedGetState(int appID)
 {
-    return state[sensorID].currentState;
+    return state[appID].currentState;
 }
 
-// Set the current state for a sensor
-void schedSetState(int sensorID, int newstate, const char *why)
+// Set the current state for an app
+void schedSetState(int appID, int newstate, const char *why)
 {
-    if (state[sensorID].currentState != newstate) {
-        state[sensorID].currentState = newstate;
-        APP_PRINTF("%s now %s", sensor[sensorID].name, schedStateName(newstate));
+    if (state[appID].currentState != newstate) {
+        state[appID].currentState = newstate;
+        APP_PRINTF("%s now %s", config[appID].name, schedStateName(newstate));
         if (why != NULL) {
             APP_PRINTF(" (%s)\r\n", why);
         } else {
@@ -168,20 +168,20 @@ void schedSetState(int sensorID, int newstate, const char *why)
 }
 
 // Set the state that should be assumed after request or response completion
-void schedSetCompletionState(int sensorID, int successstate, int errorstate)
+void schedSetCompletionState(int appID, int successstate, int errorstate)
 {
-    if (state[sensorID].completionSuccessState != successstate || state[sensorID].completionErrorState != errorstate) {
-        state[sensorID].completionSuccessState = successstate;
-        state[sensorID].completionErrorState = errorstate;
+    if (state[appID].completionSuccessState != successstate || state[appID].completionErrorState != errorstate) {
+        state[appID].completionSuccessState = successstate;
+        state[appID].completionErrorState = errorstate;
         APP_PRINTF("%s state will be set to %s on success, or %s on error\r\n",
-                   sensor[sensorID].name, schedStateName(successstate), schedStateName(errorstate));
+                   config[appID].name, schedStateName(successstate), schedStateName(errorstate));
     }
 }
 
 // Note that we're sending a request, so we can change the state
 void schedSendingRequest(bool responseRequested)
 {
-    for (int i=0; i<sensors; i++) {
+    for (int i=0; i<apps; i++) {
         if (!state[i].disabled && state[i].active) {
             state[i].requestSentTime = NoteTimeST();
             state[i].requestSentTimeValid = NoteTimeValidST();
@@ -198,7 +198,7 @@ void schedSendingRequest(bool responseRequested)
 // Notify that a request has been completed
 void schedRequestCompleted(void)
 {
-    for (int i=0; i<sensors; i++) {
+    for (int i=0; i<apps; i++) {
         if (!state[i].disabled && state[i].active) {
             if (state[i].requestPending) {
                 state[i].requestPending = false;
@@ -213,16 +213,16 @@ void schedRequestCompleted(void)
     }
 }
 
-// Dispatch a gateway response to the active sensor's processing method
+// Dispatch a gateway response to the active app's processing method
 void schedResponseCompleted(J *rsp)
 {
-    for (int i=0; i<sensors; i++) {
+    for (int i=0; i<apps; i++) {
         if (!state[i].disabled && state[i].active) {
             if (state[i].responsePending) {
                 state[i].responsePending = false;
                 schedSetState(i, state[i].completionSuccessState, "response completed");
-                if (sensor[i].responseFn != NULL) {
-                    sensor[i].responseFn(i, rsp);
+                if (config[i].responseFn != NULL) {
+                    config[i].responseFn(i, rsp);
                 }
             }
         }
@@ -232,7 +232,7 @@ void schedResponseCompleted(J *rsp)
 // Process a request or response timeout
 void schedRequestResponseTimeout(void)
 {
-    for (int i=0; i<sensors; i++) {
+    for (int i=0; i<apps; i++) {
         if (!state[i].disabled && state[i].active) {
             if (state[i].requestPending || state[i].responsePending) {
                 schedSetState(i, state[i].completionErrorState, "error/timeout");
@@ -253,7 +253,7 @@ void schedRequestResponseTimeoutCheck(void)
     }
 
     // See if any of the pending responses have timed out
-    for (int i=0; i<sensors; i++) {
+    for (int i=0; i<apps; i++) {
         if (!state[i].disabled && state[i].active) {
             if (state[i].requestPending || state[i].responsePending) {
                 if (!state[i].requestSentTimeValid) {
@@ -315,12 +315,12 @@ uint32_t secsUntilDue(uint32_t alignmentBaseSecs, uint32_t nowSecs, uint32_t las
 
 }
 
-// Find the next activation time for a sensor
+// Find the next activation time for an app
 uint32_t nextActivationDueSecs(int i)
 {
     uint32_t now = NoteTimeST();
 
-    // The time when this sensor was first activated after having a valid time
+    // The time when this app was first activated after having a valid time
     if (state[i].activationBaseTime == 0 && NoteTimeValidST()) {
         state[i].activationBaseTime = now;
     }
@@ -333,14 +333,14 @@ uint32_t nextActivationDueSecs(int i)
     }
 
     // Compute the next period
-    return secsUntilDue(state[i].activationBaseTime, now, state[i].lastActivatedTime, sensor[i].activationPeriodSecs);
+    return secsUntilDue(state[i].activationBaseTime, now, state[i].lastActivatedTime, config[i].activationPeriodSecs);
 
 }
 
 // Primary scheduler poller, returns the time of next scheduling (or 0 to be called back immediately)
 uint32_t schedPoll()
 {
-    static int lastActiveSensor = -1;
+    static int lastActiveApp = -1;
     uint32_t now = NoteTimeST();
 
     // Don't poll if we're pairing or if we can't do any work because
@@ -349,13 +349,13 @@ uint32_t schedPoll()
         return NoteTimeST() + (60*60*24);
     }
 
-    // Poll the active sensor
-    for (int i=0; i<sensors; i++) {
-        if (!state[i].disabled && state[i].active && sensor[i].pollFn != NULL) {
-            sensor[i].pollFn(i, state[i].currentState);
+    // Poll the active app
+    for (int i=0; i<apps; i++) {
+        if (!state[i].disabled && state[i].active && config[i].pollFn != NULL) {
+            config[i].pollFn(i, state[i].currentState);
             if (state[i].currentState == STATE_ONCE) {
                 state[i].currentState = STATE_ACTIVATED;
-                sensor[i].pollFn(i, state[i].currentState);
+                config[i].pollFn(i, state[i].currentState);
             }
             if (state[i].currentState == STATE_DEACTIVATED) {
 
@@ -363,72 +363,72 @@ uint32_t schedPoll()
                 // state can be overridden by an ISR that wakes it for some other reason.
                 state[i].active = false;
                 state[i].currentState = STATE_ACTIVATED;
-                APP_PRINTF("%s deactivated\r\n", sensor[i].name);
+                APP_PRINTF("%s deactivated\r\n", config[i].name);
                 break;
 
             }
-            return (now + sensor[i].pollIntervalSecs);
+            return (now + config[i].pollIntervalSecs);
         }
     }
 
-    // There are no active sensors, so see what's available to activate
+    // There are no active apps, so see what's available to activate
     while (true) {
 
-        // Nothing is active, so we will loop to find the next active sensor.  However,
+        // Nothing is active, so we will loop to find the next active app.  However,
         // to be fair, we process them in a round-robin manner by starting with the
-        // sensor immediately after the last-activated sensor, and by remembering
+        // app immediately after the last-activated app, and by remembering
         // the first one in the case where multiple are due at the same time.
         uint32_t earliestDueSecs = 0;
-        int earliestDueSensor = -1;
-        int nextSensor = lastActiveSensor;
-        for (int s=0; s<sensors; s++) {
-            int i = (++nextSensor) % sensors;
+        int earliestDueApp = -1;
+        int nextApp = lastActiveApp;
+        for (int s=0; s<apps; s++) {
+            int i = (++nextApp) % apps;
             if (!state[i].disabled) {
                 uint32_t thisDueSecs = nextActivationDueSecs(i);
-                if (earliestDueSensor == -1 || thisDueSecs < earliestDueSecs) {
+                if (earliestDueApp == -1 || thisDueSecs < earliestDueSecs) {
                     earliestDueSecs = thisDueSecs;
-                    earliestDueSensor = i;
+                    earliestDueApp = i;
                 }
             }
         }
 
         // Something should be schedulable, even if it's a long time out.  This
         // is just defensive coding to ensure that we have some kind of wakeup.
-        if (earliestDueSensor == -1) {
-            APP_PRINTF("*** no sensors enabled ***\r\n");
+        if (earliestDueApp == -1) {
+            APP_PRINTF("*** no apps enabled ***\r\n");
             return now + 60*60;
         }
 
         // If something is due but not ready to activate, return the time when it's due.  We
         // add 1 to increase the chance that it will actually be ready when the timer expires.
         if (earliestDueSecs > 0) {
-            APP_PRINTF("%s next up in %ds\r\n", sensor[earliestDueSensor].name, earliestDueSecs);
+            APP_PRINTF("%s next up in %ds\r\n", config[earliestDueApp].name, earliestDueSecs);
             return now + earliestDueSecs + 1;
         }
 
-        // Mark this as the last sensor activated, even if the sensor
+        // Mark this as the last app activated, even if the app
         // refuses activation below.  This ensures round-robin behavior.
-        lastActiveSensor = earliestDueSensor;
-        state[lastActiveSensor].lastActivatedTime = now;
-        state[lastActiveSensor].active = true;
+        lastActiveApp = earliestDueApp;
+        state[lastActiveApp].lastActivatedTime = now;
+        state[lastActiveApp].active = true;
 
-        // A sensor is due now.  Activate it and come back quickly.
-        if (sensor[lastActiveSensor].activateFn == NULL) {
+        // An app is due now.  Activate it and come back quickly.
+        if (config[lastActiveApp].activateFn == NULL) {
             break;
         }
-        if (sensor[lastActiveSensor].activateFn(lastActiveSensor)) {
+        if (config[lastActiveApp].activateFn(lastActiveApp)) {
             break;
         }
 
         // The activation failed, so just move on to the next one
-        state[lastActiveSensor].active = false;
-        APP_PRINTF("%s declined activation\r\n", sensor[lastActiveSensor].name);
+        state[lastActiveApp].active = false;
+        APP_PRINTF("%s declined activation\r\n", config[lastActiveApp].name);
 
     }
 
-    // Mark the sensor as active
+    // Mark the app as active
     APP_PRINTF("%s activated with %ds activation period and %ds poll interval\r\n",
-               sensor[lastActiveSensor].name, sensor[lastActiveSensor].activationPeriodSecs, sensor[lastActiveSensor].pollIntervalSecs);
+               config[lastActiveApp].name, config[lastActiveApp].activationPeriodSecs, config[lastActiveApp].pollIntervalSecs);
     return now;
 
 }

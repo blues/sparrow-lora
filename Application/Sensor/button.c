@@ -2,7 +2,7 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include "app.h"
+#include "appdefs.h"
 
 // States for the local state machine
 #define STATE_BUTTON                0
@@ -10,21 +10,21 @@
 // Special request IDs
 #define REQUESTID_MANUAL_PING       1
 
-// Our sensor ID
-static int sensorID = -1;
+// Our scheduled app ID
+static int appID = -1;
 
 // Forwards
-static void buttonISR(int sensorID, uint16_t pins);
-static void buttonPoll(int sensorID, int state);
-static void buttonResponse(int sensorID, J *rsp);
+static void buttonISR(int appID, uint16_t pins);
+static void buttonPoll(int appID, int state);
+static void buttonResponse(int appID, J *rsp);
 static bool sendHealthLogMessage(bool immediate);
 
-// Sensor One-Time Init
+// Scheduled App One-Time Init
 bool buttonInit()
 {
 
     // Register the sensor
-    sensorConfig config = {
+    schedAppConfig config = {
         .name = "button",
         .activationPeriodSecs = 60 * 24,
         .pollIntervalSecs = 15,
@@ -33,8 +33,8 @@ bool buttonInit()
         .pollFn = buttonPoll,
         .responseFn = buttonResponse,
     };
-    sensorID = schedRegisterSensor(&config);
-    if (sensorID < 0) {
+    appID = schedRegisterApp(&config);
+    if (appID < 0) {
         return false;
     }
 
@@ -44,7 +44,7 @@ bool buttonInit()
 }
 
 // Poller
-void buttonPoll(int sensorID, int state)
+void buttonPoll(int appID, int state)
 {
 
     // Switch based upon state
@@ -52,7 +52,7 @@ void buttonPoll(int sensorID, int state)
 
     // Immediately deactivate - nothing to do
     case STATE_ACTIVATED:
-        schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
+        schedSetCompletionState(appID, STATE_DEACTIVATED, STATE_DEACTIVATED);
         break;
 
     // When a button is pressed, send a log message
@@ -65,7 +65,7 @@ void buttonPoll(int sensorID, int state)
         atpMaximizePowerLevel();
         ledIndicateAck(1);
         sendHealthLogMessage(true);
-        schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
+        schedSetCompletionState(appID, STATE_DEACTIVATED, STATE_DEACTIVATED);
         APP_PRINTF("button: sent health update\r\n");
         break;
 
@@ -74,12 +74,12 @@ void buttonPoll(int sensorID, int state)
 }
 
 // Interrupt handler
-void buttonISR(int sensorID, uint16_t pins)
+void buttonISR(int appID, uint16_t pins)
 {
 
     // Set the state to button, and immediately schedule
     if ((pins & BUTTON1_Pin) != 0) {
-        schedActivateNowFromISR(sensorID, true, STATE_BUTTON);
+        schedActivateNowFromISR(appID, true, STATE_BUTTON);
         return;
     }
 
@@ -147,7 +147,7 @@ bool sendHealthLogMessage(bool immediate)
 }
 
 // Gateway Response handler
-void buttonResponse(int sensorID, J *rsp)
+void buttonResponse(int appID, J *rsp)
 {
 
     // If this is a response timeout, indicate as such

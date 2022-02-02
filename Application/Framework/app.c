@@ -1562,7 +1562,7 @@ void appGatewayProcess()
         break;
     }
 
-        // Expected wait
+    // Expected wait
     case RX_TIMEOUT:
         if (ListenPhaseBeforeTalk) {
             lbtTalk();

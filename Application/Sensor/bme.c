@@ -3,9 +3,9 @@
 // copyright holder including that found in the LICENSE file.
 
 #include <math.h>
-#include "app.h"
 #include "main.h"
 #include "bme280/bme280.h"
+#include "appdefs.h"
 
 // Special request IDs
 #define REQUESTID_TEMPLATE          1
@@ -37,8 +37,8 @@ static uint8_t bme_dev_addr = 0;
 // Whether or not the next note should sync
 static bool syncNow = false;
 
-// Our sensor ID
-static int sensorID = -1;
+// Our scheduled app's ID
+static int appID = -1;
 
 // Forwards
 static bool bme280_read(struct bme280_dev *dev, struct bme280_data *comp_data);
@@ -48,15 +48,15 @@ static int8_t bme280_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32
 static bool addNote(void);
 static bool registerNotefileTemplate(void);
 static bool bmeUpdate(void);
-static void bmePoll(int sensorID, int state);
-static void bmeResponse(int sensorID, J *rsp);
+static void bmePoll(int appID, int state);
+static void bmeResponse(int appID, J *rsp);
 
-// Sensor One-Time Init
+// Scheduled App One-Time Init
 bool bmeInit()
 {
 
-    // Register the sensor
-    sensorConfig config = {
+    // Register the app
+    schedAppConfig config = {
         .name = "bme",
         .activationPeriodSecs = 60 * 60,
         .pollIntervalSecs = 15,
@@ -65,8 +65,8 @@ bool bmeInit()
         .pollFn = bmePoll,
         .responseFn = bmeResponse,
     };
-    sensorID = schedRegisterSensor(&config);
-    if (sensorID < 0) {
+    appID = schedRegisterApp(&config);
+    if (appID < 0) {
         return false;
     }
 
@@ -92,12 +92,12 @@ bool bmeInit()
 }
 
 // Poller
-void bmePoll(int sensorID, int state)
+void bmePoll(int appID, int state)
 {
 
     // Disable if this isn't a reference sensor
     if (appSKU() != SKU_REFERENCE) {
-        schedDisable(sensorID);
+        schedDisable(appID);
         return;
     }
 
@@ -107,14 +107,14 @@ void bmePoll(int sensorID, int state)
     case STATE_ACTIVATED:
         if (!templateRegistered) {
             registerNotefileTemplate();
-            schedSetCompletionState(sensorID, STATE_ACTIVATED, STATE_DEACTIVATED);
+            schedSetCompletionState(appID, STATE_ACTIVATED, STATE_DEACTIVATED);
             APP_PRINTF("bme: template registration request\r\n");
             break;
         }
         if (!addNote()) {
-            schedSetState(sensorID, STATE_DEACTIVATED, "bme: update failure");
+            schedSetState(appID, STATE_DEACTIVATED, "bme: update failure");
         } else {
-            schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
+            schedSetCompletionState(appID, STATE_DEACTIVATED, STATE_DEACTIVATED);
             APP_PRINTF("bme: note queued\r\n");
         }
         break;
@@ -167,7 +167,7 @@ static bool registerNotefileTemplate()
 }
 
 // Gateway Response handler
-void bmeResponse(int sensorID, J *rsp)
+void bmeResponse(int appID, J *rsp)
 {
 
     // If this is a response timeout, indicate as such

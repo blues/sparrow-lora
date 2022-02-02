@@ -6,10 +6,10 @@
 #include "stm32_timer.h"
 #include "framework.h"
 
-// Sensor Sleep Timer
+// App Scheduler Sleep Timer
 #define sensorSleepMaxSecs          (60*60)         // Wake up at least hourly
 static UTIL_TIMER_Object_t sensorSleepTimer;
-uint32_t sensorWorkDueTime = 0;                     // Time of next work that is due for sensor data
+uint32_t sensorWorkDueTime = 0;                     // Time of next work that is due for the app
 
 // Forwards
 void sensorTimerEvent(void *context);
@@ -50,7 +50,7 @@ void sensorTimerStart()
         }
     }
 
-    // Minimize the sleep based on how often we should do sensor data-related work
+    // Minimize the sleep based on how often we should do data-related work
     uint32_t now = NoteTimeST();
     uint32_t sensorWakeupSecs = 1;
     if (sensorWorkDueTime >= now) {
@@ -83,7 +83,7 @@ void sensorTimerStart()
 
 }
 
-// Cancel any pending sensor timer
+// Cancel any pending scheduled app timer
 void sensorTimerCancel()
 {
     UTIL_TIMER_Stop(&sensorSleepTimer);
@@ -96,7 +96,7 @@ void sensorPoll()
     // Time-out any requests or responses that may have been pending
     schedRequestResponseTimeoutCheck();
 
-    // Poll the sensor scheduler and restart the timer
+    // Poll the scheduled app scheduler and restart the timer
     // be used in setTime
     sensorWorkDueTime = schedPoll();
     sensorTimerStart();
@@ -109,7 +109,7 @@ void sensorPoll()
 
 }
 
-// Execute console command
+// Execute console command for a sensor
 void sensorCmd(char *cmd)
 {
     APP_PRINTF("??\r\n");

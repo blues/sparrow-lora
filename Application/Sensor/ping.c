@@ -2,7 +2,12 @@
 // Use of this source code is governed by licenses granted by the
 // copyright holder including that found in the LICENSE file.
 
-#include "app.h"
+#include "appdefs.h"
+
+// If TRUE, we're in survey mode in which the button is used to send
+// pings that include RSSI/SNR transmitted at full power, and all
+// scheduled activities are disabled.
+#define SURVEY_MODE                 false
 
 // States for the local state machine
 #define STATE_BUTTON                0
@@ -22,25 +27,25 @@
 static bool templateRegistered = false;
 #endif
 
-// Our sensor ID
-static int sensorID = -1;
+// Our scheduled app's ID
+static int appID = -1;
 
 // Forwards
-static void pingISR(int sensorID, uint16_t pins);
-static void pingPoll(int sensorID, int state);
-static void pingResponse(int sensorID, J *rsp);
+static void pingISR(int appID, uint16_t pins);
+static void pingPoll(int appID, int state);
+static void pingResponse(int appID, J *rsp);
 static bool sendHealthLogMessage(bool immediate);
 #if !SURVEY_MODE
 static void addNote(uint32_t count);
 static bool registerNotefileTemplate(void);
 #endif
 
-// Sensor One-Time Init
+// Scheduled App One-Time Init
 bool pingInit()
 {
 
-    // Register the sensor
-    sensorConfig config = {
+    // Register the app
+    schedAppConfig config = {
         .name = "ping",
         .activationPeriodSecs = 60 * 15,
         .pollIntervalSecs = 15,
@@ -49,8 +54,8 @@ bool pingInit()
         .pollFn = pingPoll,
         .responseFn = pingResponse,
     };
-    sensorID = schedRegisterSensor(&config);
-    if (sensorID < 0) {
+    appID = schedRegisterApp(&config);
+    if (appID < 0) {
         return false;
     }
 
@@ -60,20 +65,20 @@ bool pingInit()
 }
 
 // Poller
-void pingPoll(int sensorID, int state)
+void pingPoll(int appID, int state)
 {
 
     // Switch based upon state
     switch (state) {
 
-    // Sensor was just activated, so simulate the
+    // App was just activated, so simulate the
     // sensor sampling something and adding a note
     // to the notefile.
     case STATE_ACTIVATED:
 
 #if SURVEY_MODE
 
-        schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
+        schedSetCompletionState(appID, STATE_DEACTIVATED, STATE_DEACTIVATED);
         break;
 
 #else
@@ -81,7 +86,7 @@ void pingPoll(int sensorID, int state)
         // If the template isn't registered, do so
         if (!templateRegistered) {
             registerNotefileTemplate();
-            schedSetCompletionState(sensorID, STATE_ACTIVATED, STATE_DEACTIVATED);
+            schedSetCompletionState(appID, STATE_ACTIVATED, STATE_DEACTIVATED);
             APP_PRINTF("ping: template registration request\r\n");
             break;
         }
@@ -89,7 +94,7 @@ void pingPoll(int sensorID, int state)
         // Add a note to the file
         static int notecount = 0;
         addNote(++notecount);
-        schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
+        schedSetCompletionState(appID, STATE_DEACTIVATED, STATE_DEACTIVATED);
         APP_PRINTF("ping: note queued\r\n");
         break;
 
@@ -105,7 +110,7 @@ void pingPoll(int sensorID, int state)
         atpMaximizePowerLevel();
         ledIndicateAck(1);
         sendHealthLogMessage(true);
-        schedSetCompletionState(sensorID, STATE_DEACTIVATED, STATE_DEACTIVATED);
+        schedSetCompletionState(appID, STATE_DEACTIVATED, STATE_DEACTIVATED);
         APP_PRINTF("ping: sent health update\r\n");
         break;
 
@@ -114,12 +119,12 @@ void pingPoll(int sensorID, int state)
 }
 
 // Interrupt handler
-void pingISR(int sensorID, uint16_t pins)
+void pingISR(int appID, uint16_t pins)
 {
 
     // Set the state to button, and immediately schedule
     if ((pins & BUTTON1_Pin) != 0) {
-        schedActivateNowFromISR(sensorID, true, STATE_BUTTON);
+        schedActivateNowFromISR(appID, true, STATE_BUTTON);
         return;
     }
 
@@ -264,7 +269,7 @@ static void addNote(uint32_t count)
 #endif
 
 // Gateway Response handler
-void pingResponse(int sensorID, J *rsp)
+void pingResponse(int appID, J *rsp)
 {
 
     // If this is a response timeout, indicate as such
