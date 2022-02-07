@@ -13,7 +13,9 @@
 #define BOARD_NUCLEO    0           // NUCLEO-WL55JC1
 #define BOARD_V1        1           // v1.0 spin of board
 #define BOARD_V2        2           // v1.1 adds i2c2 pullups, fixes switch pullups
-#define CURRENT_BOARD   BOARD_V1
+#ifndef CURRENT_BOARD
+  #define CURRENT_BOARD BOARD_V2
+#endif
 
 // All pins on the STM32WLE5 UFQFPN48 package
 #define PB3     1                   // RFSEL_0
