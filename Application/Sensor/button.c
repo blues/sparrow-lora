@@ -26,7 +26,7 @@ bool buttonInit()
     // Register the sensor
     schedAppConfig config = {
         .name = "button",
-        .activationPeriodSecs = 60 * 24,
+        .deactivationPeriodSecs = 60 * 24,
         .pollIntervalSecs = 15,
         .activateFn = NULL,
         .interruptFn = buttonISR,

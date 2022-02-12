@@ -39,7 +39,7 @@ typedef struct {
     const char *name;
 
     // How often we get activated
-    uint32_t activationPeriodSecs;
+    uint32_t deactivationPeriodSecs;
 
     // While app is active, how often it's polled
     uint32_t pollIntervalSecs;

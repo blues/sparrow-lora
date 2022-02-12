@@ -47,7 +47,7 @@ bool pingInit()
     // Register the app
     schedAppConfig config = {
         .name = "ping",
-        .activationPeriodSecs = 60 * 15,
+        .deactivationPeriodSecs = 60 * 15,
         .pollIntervalSecs = 15,
         .activateFn = NULL,
         .interruptFn = pingISR,

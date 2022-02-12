@@ -42,7 +42,7 @@ bool pirInit()
     // Register the app
     schedAppConfig config = {
         .name = "pir",
-        .activationPeriodSecs = 60 * 60,
+        .deactivationPeriodSecs = 60 * 60,
         .pollIntervalSecs = 15,
         .activateFn = NULL,
         .interruptFn = pirISR,

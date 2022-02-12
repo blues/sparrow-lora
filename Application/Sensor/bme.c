@@ -58,7 +58,7 @@ bool bmeInit()
     // Register the app
     schedAppConfig config = {
         .name = "bme",
-        .activationPeriodSecs = 60 * 60,
+        .deactivationPeriodSecs = 60 * 60,
         .pollIntervalSecs = 15,
         .activateFn = NULL,
         .interruptFn = NULL,

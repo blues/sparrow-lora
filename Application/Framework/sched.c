@@ -333,7 +333,7 @@ uint32_t nextActivationDueSecs(int i)
     }
 
     // Compute the next period
-    return secsUntilDue(state[i].activationBaseTime, now, state[i].lastActivatedTime, config[i].activationPeriodSecs);
+    return secsUntilDue(state[i].activationBaseTime, now, state[i].lastActivatedTime, config[i].deactivationPeriodSecs);
 
 }
 
@@ -427,8 +427,8 @@ uint32_t schedPoll()
     }
 
     // Mark the app as active
-    APP_PRINTF("%s activated with %ds activation period and %ds poll interval\r\n",
-               config[lastActiveApp].name, config[lastActiveApp].activationPeriodSecs, config[lastActiveApp].pollIntervalSecs);
+    APP_PRINTF("%s activated after %ds deactivation period with %ds poll interval\r\n",
+               config[lastActiveApp].name, config[lastActiveApp].deactivationPeriodSecs, config[lastActiveApp].pollIntervalSecs);
     return now;
 
 }
