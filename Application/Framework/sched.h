@@ -42,7 +42,7 @@ typedef struct {
     uint32_t activationPeriodSecs;
 
     // While app is active, how often it's polled
-    uint32_t pollIntervalSecs;
+    uint32_t pollPeriodSecs;
 
     // Handlers
     schedActivateFunc activateFn;

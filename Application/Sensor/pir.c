@@ -43,7 +43,7 @@ bool pirInit()
     schedAppConfig config = {
         .name = "pir",
         .activationPeriodSecs = 60 * 60,
-        .pollIntervalSecs = 15,
+        .pollPeriodSecs = 15,
         .activateFn = NULL,
         .interruptFn = pirISR,
         .pollFn = pirPoll,
