@@ -367,7 +367,7 @@ uint32_t schedPoll()
                 break;
 
             }
-            return (now + config[i].pollIntervalSecs);
+            return (now + config[i].pollPeriodSecs);
         }
     }
 
@@ -428,7 +428,7 @@ uint32_t schedPoll()
 
     // Mark the app as active
     APP_PRINTF("%s activated with %ds activation period and %ds poll interval\r\n",
-               config[lastActiveApp].name, config[lastActiveApp].activationPeriodSecs, config[lastActiveApp].pollIntervalSecs);
+               config[lastActiveApp].name, config[lastActiveApp].activationPeriodSecs, config[lastActiveApp].pollPeriodSecs);
     return now;
 
 }
