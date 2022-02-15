@@ -31,9 +31,9 @@ static bool templateRegistered = false;
 static int appID = -1;
 
 // Forwards
-static void pingISR(int appID, uint16_t pins);
-static void pingPoll(int appID, int state);
-static void pingResponse(int appID, J *rsp);
+static void pingISR(int appID, uint16_t pins, void *appContext);
+static void pingPoll(int appID, int state, void *appContext);
+static void pingResponse(int appID, J *rsp, void *appContext);
 static bool sendHealthLogMessage(bool immediate);
 #if !SURVEY_MODE
 static void addNote(uint32_t count);
@@ -53,6 +53,7 @@ bool pingInit()
         .interruptFn = pingISR,
         .pollFn = pingPoll,
         .responseFn = pingResponse,
+        .appContext = NULL,
     };
     appID = schedRegisterApp(&config);
     if (appID < 0) {
@@ -65,7 +66,7 @@ bool pingInit()
 }
 
 // Poller
-void pingPoll(int appID, int state)
+void pingPoll(int appID, int state, void *appContext)
 {
 
     // Switch based upon state
@@ -119,7 +120,7 @@ void pingPoll(int appID, int state)
 }
 
 // Interrupt handler
-void pingISR(int appID, uint16_t pins)
+void pingISR(int appID, uint16_t pins, void *appContext)
 {
 
     // Set the state to button, and immediately schedule
@@ -269,7 +270,7 @@ static void addNote(uint32_t count)
 #endif
 
 // Gateway Response handler
-void pingResponse(int appID, J *rsp)
+void pingResponse(int appID, J *rsp, void *appContext)
 {
 
     // If this is a response timeout, indicate as such
