@@ -50,7 +50,9 @@ static int8_t lowestLevel = initialLevel;
 // Total number of packets, and packet losses, per power level
 static uint32_t packetsSent[RBO_LEVELS] = {0};
 static uint32_t packetsLost[RBO_LEVELS] = {0};
+#if ATP_ENABLED
 static uint32_t failResets[RBO_LEVELS] = {0};
+#endif
 
 // Recent history, for computing average
 uint8_t pastSamples = 0;
@@ -93,6 +95,7 @@ void atpGatewayMessageReceived(int8_t rssi, int8_t snr, int8_t rssiGateway, int8
 // Update the transmit power based on current knowledge
 void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
 {
+#if ATP_ENABLED
     bool mustIncreaseTxPower = false;
     bool mustNotDecreaseTxPower = false;
     bool shouldIncreaseTxPower = false;
@@ -221,7 +224,6 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
     }
 
     // Bump the level as appropriate
-#if ATP_ENABLED
     if (currentLevel < (RBO_LEVELS-1) && (mustIncreaseTxPower || shouldIncreaseTxPower)) {
         currentLevel++;
         pastSamples = 0;
@@ -404,9 +406,9 @@ void atpMaximizePowerLevel()
 // Get the current power level
 int8_t atpPowerLevel()
 {
-#ifdef ATP_DISABLED_POWER_LEVEL
-    return ATP_DISABLED_POWER_LEVEL;
-#else
+#if ATP_ENABLED
     return currentLevel + RBO_MIN;
+#else
+    return (RBO_LEVELS - 1);
 #endif
 }
