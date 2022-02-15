@@ -48,7 +48,6 @@ bool pirInit()
         .interruptFn = pirISR,
         .pollFn = pirPoll,
         .responseFn = pirResponse,
-        .appContext = NULL,
     };
     appID = schedRegisterApp(&config);
     if (appID < 0) {

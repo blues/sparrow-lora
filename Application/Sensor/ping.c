@@ -53,7 +53,6 @@ bool pingInit()
         .interruptFn = pingISR,
         .pollFn = pingPoll,
         .responseFn = pingResponse,
-        .appContext = NULL,
     };
     appID = schedRegisterApp(&config);
     if (appID < 0) {

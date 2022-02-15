@@ -64,7 +64,6 @@ bool bmeInit()
         .interruptFn = NULL,
         .pollFn = bmePoll,
         .responseFn = bmeResponse,
-        .appContext = NULL,
     };
     appID = schedRegisterApp(&config);
     if (appID < 0) {

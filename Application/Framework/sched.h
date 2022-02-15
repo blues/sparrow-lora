@@ -50,8 +50,12 @@ typedef struct {
     schedPollFunc pollFn;
     schedResponseFunc responseFn;
 
-    // Application Context
+    // Application Context must be a single
+	// malloc'ed object that the scheduler is
+	// free to move as desired.  It must not
+	// contain any pointers within it.
     void *appContext;
+	uint32_t appContextLen;
 
 } schedAppConfig;
 

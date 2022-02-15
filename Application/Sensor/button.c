@@ -32,7 +32,6 @@ bool buttonInit()
         .interruptFn = buttonISR,
         .pollFn = buttonPoll,
         .responseFn = buttonResponse,
-        .appContext = NULL,
     };
     appID = schedRegisterApp(&config);
     if (appID < 0) {
