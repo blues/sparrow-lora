@@ -28,9 +28,9 @@ static uint32_t motionEventsTotal = 0;
 static int appID = -1;
 
 // Forwards
-static void pirISR(int appID, uint16_t pins);
-static void pirPoll(int appID, int state);
-static void pirResponse(int appID, J *rsp);
+static void pirISR(int appID, uint16_t pins, void *appContext);
+static void pirPoll(int appID, int state, void *appContext);
+static void pirResponse(int appID, J *rsp, void *appContext);
 static void addNote(bool immediate);
 static bool registerNotefileTemplate(void);
 static void resetInterrupt(void);
@@ -48,6 +48,7 @@ bool pirInit()
         .interruptFn = pirISR,
         .pollFn = pirPoll,
         .responseFn = pirResponse,
+        .appContext = NULL,
     };
     appID = schedRegisterApp(&config);
     if (appID < 0) {
@@ -208,7 +209,7 @@ void resetInterrupt()
 }
 
 // Poller
-void pirPoll(int appID, int state)
+void pirPoll(int appID, int state, void *appContext)
 {
 
     // Disable if this isn't a reference sensor
@@ -288,7 +289,7 @@ static bool registerNotefileTemplate()
 }
 
 // Gateway Response handler
-void pirResponse(int appID, J *rsp)
+void pirResponse(int appID, J *rsp, void *appContext)
 {
 
     // If this is a response timeout, indicate as such
@@ -352,7 +353,7 @@ static void addNote(bool immediate)
 }
 
 // Interrupt handler
-void pirISR(int appID, uint16_t pins)
+void pirISR(int appID, uint16_t pins, void *appContext)
 {
 
     // Set the state to 'motion' and immediately schedule

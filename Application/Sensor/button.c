@@ -14,9 +14,9 @@
 static int appID = -1;
 
 // Forwards
-static void buttonISR(int appID, uint16_t pins);
-static void buttonPoll(int appID, int state);
-static void buttonResponse(int appID, J *rsp);
+static void buttonISR(int appID, uint16_t pins, void *appContext);
+static void buttonPoll(int appID, int state, void *appContext);
+static void buttonResponse(int appID, J *rsp, void *appContext);
 static bool sendHealthLogMessage(bool immediate);
 
 // Scheduled App One-Time Init
@@ -32,6 +32,7 @@ bool buttonInit()
         .interruptFn = buttonISR,
         .pollFn = buttonPoll,
         .responseFn = buttonResponse,
+        .appContext = NULL,
     };
     appID = schedRegisterApp(&config);
     if (appID < 0) {
@@ -44,7 +45,7 @@ bool buttonInit()
 }
 
 // Poller
-void buttonPoll(int appID, int state)
+void buttonPoll(int appID, int state, void *appContext)
 {
 
     // Switch based upon state
@@ -74,7 +75,7 @@ void buttonPoll(int appID, int state)
 }
 
 // Interrupt handler
-void buttonISR(int appID, uint16_t pins)
+void buttonISR(int appID, uint16_t pins, void *appContext)
 {
 
     // Set the state to button, and immediately schedule
@@ -147,7 +148,7 @@ bool sendHealthLogMessage(bool immediate)
 }
 
 // Gateway Response handler
-void buttonResponse(int appID, J *rsp)
+void buttonResponse(int appID, J *rsp, void *appContext)
 {
 
     // If this is a response timeout, indicate as such

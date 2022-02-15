@@ -114,7 +114,7 @@ void schedDispatchISR(uint16_t pins)
 {
     for (int i=0; i<apps; i++) {
         if (!state[i].disabled && config[i].interruptFn != NULL) {
-            config[i].interruptFn(i, pins);
+            config[i].interruptFn(i, pins, config[i].appContext);
         }
     }
 }
@@ -222,7 +222,7 @@ void schedResponseCompleted(J *rsp)
                 state[i].responsePending = false;
                 schedSetState(i, state[i].completionSuccessState, "response completed");
                 if (config[i].responseFn != NULL) {
-                    config[i].responseFn(i, rsp);
+                    config[i].responseFn(i, rsp, config[i].appContext);
                 }
             }
         }
@@ -352,10 +352,10 @@ uint32_t schedPoll()
     // Poll the active app
     for (int i=0; i<apps; i++) {
         if (!state[i].disabled && state[i].active && config[i].pollFn != NULL) {
-            config[i].pollFn(i, state[i].currentState);
+            config[i].pollFn(i, state[i].currentState, config[i].appContext);
             if (state[i].currentState == STATE_ONCE) {
                 state[i].currentState = STATE_ACTIVATED;
-                config[i].pollFn(i, state[i].currentState);
+                config[i].pollFn(i, state[i].currentState, config[i].appContext);
             }
             if (state[i].currentState == STATE_DEACTIVATED) {
 
@@ -416,7 +416,7 @@ uint32_t schedPoll()
         if (config[lastActiveApp].activateFn == NULL) {
             break;
         }
-        if (config[lastActiveApp].activateFn(lastActiveApp)) {
+        if (config[lastActiveApp].activateFn(lastActiveApp, config[lastActiveApp].appContext)) {
             break;
         }
 

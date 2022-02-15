@@ -10,7 +10,7 @@
 // Called when time to activate; return false to cancel this activation.
 // Note that this method must not send messages to the gateway; it's only
 // allowed to do local operations.
-typedef bool (*schedActivateFunc) (int appID);
+typedef bool (*schedActivateFunc) (int appID, void *appContext);
 
 // Called repeatedly while activate; set to STATE_INACTIVE to deactivate.
 // This function implements the app's state machine, where negative
@@ -22,15 +22,15 @@ typedef bool (*schedActivateFunc) (int appID);
 #define STATE_DEACTIVATED           -4
 #define STATE_SENDING_REQUEST       -5
 #define STATE_RECEIVING_RESPONSE    -6
-typedef void (*schedPollFunc) (int appID, int state);
+typedef void (*schedPollFunc) (int appID, int state, void *appContext);
 
 // Called when an app does a notecard request and asynchronously receives
 // a reply.  This will be called when a response comes back or when it
 // times out; if timeout the "rsp" field will be null.
-typedef void (*schedResponseFunc) (int appID, J *rsp);
+typedef void (*schedResponseFunc) (int appID, J *rsp, void *appContext);
 
 // An ISR that is called on ANY+ALL interrupts; pins indicates exti lines that changed.
-typedef void (*schedInterruptFunc) (int appID, uint16_t pins);
+typedef void (*schedInterruptFunc) (int appID, uint16_t pins, void *appContext);
 
 // App Configuration definition
 typedef struct {
@@ -49,6 +49,9 @@ typedef struct {
     schedInterruptFunc interruptFn;
     schedPollFunc pollFn;
     schedResponseFunc responseFn;
+
+    // Application Context
+    void *appContext;
 
 } schedAppConfig;
 

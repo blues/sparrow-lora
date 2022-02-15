@@ -48,8 +48,8 @@ static int8_t bme280_i2c_write(uint8_t reg_addr, const uint8_t *reg_data, uint32
 static bool addNote(void);
 static bool registerNotefileTemplate(void);
 static bool bmeUpdate(void);
-static void bmePoll(int appID, int state);
-static void bmeResponse(int appID, J *rsp);
+static void bmePoll(int appID, int state, void *appContext);
+static void bmeResponse(int appID, J *rsp, void *appContext);
 
 // Scheduled App One-Time Init
 bool bmeInit()
@@ -64,6 +64,7 @@ bool bmeInit()
         .interruptFn = NULL,
         .pollFn = bmePoll,
         .responseFn = bmeResponse,
+        .appContext = NULL,
     };
     appID = schedRegisterApp(&config);
     if (appID < 0) {
@@ -92,7 +93,7 @@ bool bmeInit()
 }
 
 // Poller
-void bmePoll(int appID, int state)
+void bmePoll(int appID, int state, void *appContext)
 {
 
     // Disable if this isn't a reference sensor
@@ -167,7 +168,7 @@ static bool registerNotefileTemplate()
 }
 
 // Gateway Response handler
-void bmeResponse(int appID, J *rsp)
+void bmeResponse(int appID, J *rsp, void *appContext)
 {
 
     // If this is a response timeout, indicate as such
