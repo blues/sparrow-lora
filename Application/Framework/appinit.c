@@ -61,7 +61,7 @@ void MX_AppMain(void)
         APP_PRINTF("GATEWAY MODE\r\n");
         MX_DBG_Enable();
     } else {
-        APP_PRINTF("SENSOR MODE\r\n");
+        APP_PRINTF("APPLICATION HOST MODE\r\n");
         if (!buttonHeldAtBoot && !MX_DBG_Active()) {
             APP_PRINTF("CONSOLE TRACE DISABLED\r\n");
             MX_DBG_Disable();
