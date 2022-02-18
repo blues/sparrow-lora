@@ -240,7 +240,7 @@ static bool addNote()
                (int) lastBME.humidity, (int) (fabs(lastBME.humidity*100)) % 100);
 
     // Add the voltage, just for convenient reference
-#if (SPARROW_BOARD != BOARD_NUCLEO)
+#if (SPARROW_DEVICE != BOARD_NUCLEO)
     JAddNumberToObject(body, "voltage", MX_ADC_A0_Voltage());
 #endif
 
