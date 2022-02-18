@@ -87,7 +87,7 @@ char *postTest(uint32_t whatToTest)
         }
 
         if (appSKU() != SKU_REFERENCE) {
-#if CURRENT_BOARD == BOARD_V1
+#if CURRENT_BOARD == BOARD_SPARROW_V1_0
             if (!pinIsFloat("I2C2_SDA", I2C2_SDA_GPIO_Port, I2C2_SDA_Pin)) {
                 return err;
             }
