@@ -43,7 +43,7 @@
 #define RF_FREQUENCY_ERROR          ((int32_t) 0)
 
 // Voltage of TCXO's VDD supply
-#if (SPARROW_DEVICE == BOARD_NUCLEO)
+#if (CURRENT_BOARD == BOARD_NUCLEO)
 #define TCXO_CTRL_VOLTAGE           TCXO_CTRL_1_7V        // NT2016SF-32M-END5875A
 #else
 #define TCXO_CTRL_VOLTAGE           TCXO_CTRL_3_0V        // TYETBCSANF-32.000000

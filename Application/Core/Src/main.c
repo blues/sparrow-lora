@@ -376,7 +376,7 @@ void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *hadc)
 //  2018-08-05 5.5v was measured as 5.39862984, and 2.5v was measured at 2.28016664
 double calibrateVoltage(double v)
 {
-#if (SPARROW_DEVICE != BOARD_NUCLEO)
+#if (CURRENT_BOARD != BOARD_NUCLEO)
 
     // If the dev supplies 3.3v directly to the QUIIC connector, it will work but
     // by bypassing the voltage regulator we can't read the voltage from the regulator's
@@ -402,7 +402,7 @@ double calibrateVoltage(double v)
 double MX_ADC_A0_Voltage()
 {
 
-#if (SPARROW_DEVICE == BOARD_NUCLEO)
+#if (CURRENT_BOARD == BOARD_NUCLEO)
 
     return 0.0;
 

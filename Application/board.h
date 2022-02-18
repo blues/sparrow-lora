@@ -13,8 +13,8 @@
 #define BOARD_NUCLEO        0           // NUCLEO-WL55JC1
 #define BOARD_SPARROW_V1_0  1           // v1.0 spin of board
 #define BOARD_SPARROW_V1_1  2           // v1.1 adds i2c2 pullups, fixes switch pullups
-#ifndef SPARROW_DEVICE
-  #define SPARROW_DEVICE    BOARD_SPARROW_V1_1
+#ifndef CURRENT_BOARD
+  #define CURRENT_BOARD     BOARD_SPARROW_V1_1
 #endif
 
 // All pins on the STM32WLE5 UFQFPN48 package
@@ -199,7 +199,7 @@
 #define BME_POWER_GPIO_Port             GPIOA
 
 // LEDs
-#if (SPARROW_DEVICE != BOARD_NUCLEO)
+#if (CURRENT_BOARD != BOARD_NUCLEO)
 #define LED_BLUE_Pin                    GPIO_PIN_1          // PA1
 #define LED_BLUE_GPIO_Port              GPIOA
 #define LED_GREEN_Pin                   GPIO_PIN_12         // PB12
@@ -215,7 +215,7 @@
 #define LED_RED_GPIO_Port               GPIOB
 #endif
 
-#if (SPARROW_DEVICE != BOARD_NUCLEO)
+#if (CURRENT_BOARD != BOARD_NUCLEO)
 #define BUTTON1_ACTIVE_HIGH             false
 #define BUTTON1_Pin                     GPIO_PIN_13         // PC13
 #define BUTTON1_GPIO_Port               GPIOC
@@ -248,7 +248,7 @@
 #endif // Radio GPIO debugging
 
 // Radio front-end control, whose pins are selected based on board type
-#if (SPARROW_DEVICE != BOARD_NUCLEO)
+#if (CURRENT_BOARD != BOARD_NUCLEO)
 #define FE_CTRL1_Pin                 GPIO_PIN_8             // PA8
 #define FE_CTRL1_GPIO_Port           GPIOA
 #define FE_CTRL2_Pin                 GPIO_PIN_9             // PA9
@@ -289,6 +289,6 @@
 
 // Value of analog reference voltage connected to supply Vdda (mV)
 #define VDDA_APPLI          (3300U)
-#if (SPARROW_DEVICE != BOARD_NUCLEO)
+#if (CURRENT_BOARD != BOARD_NUCLEO)
 #define BATMON_ADJUSTMENT   3           // Multiplier for RP605Z333B used by Sparrow
 #endif

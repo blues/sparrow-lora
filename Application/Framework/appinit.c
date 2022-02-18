@@ -192,7 +192,7 @@ void ioInit(void)
     // the most common plans globally, but the developer can feel free to reassign
     // these as is appropriate for their product or market.
     uint32_t freq = 915000000;
-#if (SPARROW_DEVICE != BOARD_NUCLEO)
+#if (CURRENT_BOARD != BOARD_NUCLEO)
     gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_init_structure.Pull = GPIO_NOPULL;
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_LOW;
