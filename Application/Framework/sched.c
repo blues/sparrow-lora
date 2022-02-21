@@ -345,7 +345,7 @@ uint32_t schedPoll()
 
     // Don't poll if we're pairing or if we can't do any work because
     // we don't yet know the gateway's address
-    if (ledIsPairInProgress()) {
+    if (ledIsPairInProgress() || ledIsPairMandatory()) {
         return NoteTimeST() + (60*60*24);
     }
 
