@@ -79,9 +79,11 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
         if (HAL_DMA_Init(&hdma_adc) != HAL_OK) {
             Error_Handler();
         }
+#if defined(STM32WL55xx)
         if (HAL_DMA_ConfigChannelAttributes(&hdma_adc, DMA_CHANNEL_NPRIV) != HAL_OK) {
             Error_Handler();
         }
+#endif
         __HAL_LINKDMA(hadc, DMA_Handle, hdma_adc);
 
         // Enable interrupts
@@ -495,9 +497,11 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
         if (HAL_DMA_Init(&hdma_usart1_tx) != HAL_OK) {
             Error_Handler();
         }
+#if defined(STM32WL55xx)
         if (HAL_DMA_ConfigChannelAttributes(&hdma_usart1_tx, DMA_CHANNEL_NPRIV) != HAL_OK) {
             Error_Handler();
         }
+#endif
         __HAL_LINKDMA(uartHandle,hdmatx,hdma_usart1_tx);
 
         // USART1_RX Init
@@ -556,9 +560,11 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
         if (HAL_DMA_Init(&hdma_usart2_tx) != HAL_OK) {
             Error_Handler();
         }
+#if defined(STM32WL55xx)
         if (HAL_DMA_ConfigChannelAttributes(&hdma_usart2_tx, DMA_CHANNEL_NPRIV) != HAL_OK) {
             Error_Handler();
         }
+#endif
         __HAL_LINKDMA(uartHandle,hdmatx,hdma_usart2_tx);
 
         // USART2_RX Init

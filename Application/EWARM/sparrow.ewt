@@ -1423,6 +1423,57 @@
     <group>
         <name>Application</name>
         <group>
+            <name>Core</name>
+            <file>
+                <name>$PROJ_DIR$\..\Core\Src\debug.c</name>
+                <configuration>
+                    <name>sparrow</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Core\Src\main.c</name>
+                <configuration>
+                    <name>sparrow</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Core\Radio\radio_board_if.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Core\Src\stm32_lpm_if.c</name>
+                <configuration>
+                    <name>sparrow</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Core\Src\stm32wlxx_hal_msp.c</name>
+                <configuration>
+                    <name>sparrow</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Core\Src\stm32wlxx_it.c</name>
+                <configuration>
+                    <name>sparrow</name>
+                </configuration>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Core\Src\timer_if.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Core\Src\usart_if.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\Core\Src\util_if.c</name>
+            </file>
+        </group>
+        <group>
+            <name>EWARM</name>
+            <file>
+                <name>$PROJ_DIR$\startup_stm32wle5xx.s</name>
+            </file>
+        </group>
+        <group>
             <name>Framework</name>
             <file>
                 <name>$PROJ_DIR$\..\Framework\app.c</name>
@@ -1501,57 +1552,6 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\Framework\util.c</name>
-            </file>
-        </group>
-        <group>
-            <name>Core</name>
-            <file>
-                <name>$PROJ_DIR$\..\Core\Src\debug.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Core\Src\main.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Core\Radio\radio_board_if.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Core\Src\stm32_lpm_if.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Core\Src\stm32wlxx_hal_msp.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Core\Src\stm32wlxx_it.c</name>
-                <configuration>
-                    <name>sparrow</name>
-                </configuration>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Core\Src\timer_if.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Core\Src\usart_if.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\..\Core\Src\util_if.c</name>
-            </file>
-        </group>
-        <group>
-            <name>EWARM</name>
-            <file>
-                <name>$PROJ_DIR$\startup_stm32wl55xx_cm4.s</name>
             </file>
         </group>
         <group>

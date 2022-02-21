@@ -12,7 +12,7 @@
 
 "--semihosting" 
 
-"--device=STM32WL55JC_M4" 
+"--device=STM32WLE5CC" 
 
 "--drv_interface=SWD" 
 

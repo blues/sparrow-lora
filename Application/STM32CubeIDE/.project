@@ -144,6 +144,56 @@
 			<locationURI>PARENT-2-PROJECT_LOC/note-c/n_ua.c</locationURI>
 		</link>
 		<link>
+			<name>Application/Core/debug.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/debug.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Core/main.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/main.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Core/radio_board_if.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Radio/radio_board_if.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Core/stm32_lpm_if.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32_lpm_if.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Core/stm32wlxx_hal_msp.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32wlxx_hal_msp.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Core/stm32wlxx_it.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32wlxx_it.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Core/system_stm32wlxx.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/system_stm32wlxx.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Core/timer_if.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/timer_if.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Core/usart_if.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/usart_if.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Core/util_if.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/util_if.c</locationURI>
+		</link>
+		<link>
 			<name>Application/Framework/app.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Framework/app.c</locationURI>
@@ -217,56 +267,6 @@
 			<name>Application/Framework/util.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Framework/util.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Core/debug.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/debug.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Core/main.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/main.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Core/radio_board_if.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Radio/radio_board_if.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Core/stm32_lpm_if.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32_lpm_if.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Core/stm32wlxx_hal_msp.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32wlxx_hal_msp.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Core/stm32wlxx_it.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/stm32wlxx_it.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Core/system_stm32wlxx.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/system_stm32wlxx.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Core/timer_if.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/timer_if.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Core/usart_if.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/usart_if.c</locationURI>
-		</link>
-		<link>
-			<name>Application/Core/util_if.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/util_if.c</locationURI>
 		</link>
 		<link>
 			<name>Application/Gateway/auth.c</name>
