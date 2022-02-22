@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# IAR ELF Linker V9.20.2.320/W64 for ARM                  21/Feb/2022  16:33:39
+# IAR ELF Linker V9.20.2.320/W64 for ARM                  22/Feb/2022  14:52:14
 # Copyright 2007-2021 IAR Systems AB.
 #
 #    Output file  =
@@ -147,8 +147,8 @@ initialize by copy { rw };
   .dfuloader           ro code   0x800'0800     0x1b4  dfuload.o [3]
                                - 0x800'09b4     0x1b4
 
-"P1":                                        0x1'9902
-  ROM_CONTENT                    0x800'1000  0x1'9902  <Block>
+"P1":                                        0x1'991a
+  ROM_CONTENT                    0x800'1000  0x1'991a  <Block>
     .rodata            const     0x800'1000       0xc  app.o [3]
     .rodata            const     0x800'100c       0xc  app.o [3]
     .rodata            const     0x800'1018      0x10  app.o [3]
@@ -558,33 +558,27 @@ initialize by copy { rw };
     .text              ro code   0x801'6e54      0x20  xlocale_c.o [12]
     .text              ro code   0x801'6e74     0x718  bme.o [5]
     .text              ro code   0x801'758c     0x42c  pir.o [5]
-    .text              ro code   0x801'79b8     0x22c  button.o [5]
-    .text              ro code   0x801'7be4     0x8f6  n_md5.o [11]
-    .text              ro code   0x801'84dc      0xc8  n_b64.o [11]
-    .text              ro code   0x801'85a4      0x14  exit.o [15]
-    .text              ro code   0x801'85b8       0x2  n_ua.o [11]
-    .text              ro code   0x801'85bc     0x1b0  stm32wlxx_hal_rcc_ex.o [8]
-    .text              ro code   0x801'876c      0xfc  radio_board_if.o [1]
-    .text              ro code   0x801'8868     0x9ea  bme280.o [6]
-    .text              ro code   0x801'9254     0x2d0  n_i2c.o [11]
-    .text              ro code   0x801'9524    0x1091  radio.o [9]
-    .text              ro code   0x801'a5b8      0x10  startup_stm32wle5xx.o [2]
-    .text              ro code   0x801'a5c8      0x4a  stm32_lpm_if.o [1]
-    .text              ro code   0x801'a614      0x10  stm32wlxx_hal.o [8]
-    .text              ro code   0x801'a624      0x10  stm32wlxx_hal.o [8]
-    .text              ro code   0x801'a634       0x2  system_stm32wlxx.o [7]
-    .text              ro code   0x801'a638      0x1c  cstartup_M.o [14]
-    .text              ro code   0x801'a654      0x1e  cmain.o [14]
-    .text              ro code   0x801'a672       0x4  low_level_init.o [12]
-    .text              ro code   0x801'a678      0x28  data_init.o [14]
-    .text              ro code   0x801'a6a0       0x4  exit.o [12]
-    .text              ro code   0x801'a6a4       0xa  cexit.o [14]
-    .text              ro code   0x801'a6ae       0x4  startup_stm32wle5xx.o [2]
-    .text              ro code   0x801'a6b2       0x4  startup_stm32wle5xx.o [2]
-    .text              ro code   0x801'a6b6       0x4  startup_stm32wle5xx.o [2]
-    .text              ro code   0x801'a6ba       0x4  startup_stm32wle5xx.o [2]
-    .text              ro code   0x801'a6be       0x4  startup_stm32wle5xx.o [2]
-    .text              ro code   0x801'a6c2       0x4  startup_stm32wle5xx.o [2]
+    .text              ro code   0x801'79b8     0x244  button.o [5]
+    .text              ro code   0x801'7bfc     0x8f6  n_md5.o [11]
+    .text              ro code   0x801'84f4      0xc8  n_b64.o [11]
+    .text              ro code   0x801'85bc      0x14  exit.o [15]
+    .text              ro code   0x801'85d0       0x2  n_ua.o [11]
+    .text              ro code   0x801'85d4     0x1b0  stm32wlxx_hal_rcc_ex.o [8]
+    .text              ro code   0x801'8784      0xfc  radio_board_if.o [1]
+    .text              ro code   0x801'8880     0x9ea  bme280.o [6]
+    .text              ro code   0x801'926c     0x2d0  n_i2c.o [11]
+    .text              ro code   0x801'953c    0x1091  radio.o [9]
+    .text              ro code   0x801'a5d0      0x10  startup_stm32wle5xx.o [2]
+    .text              ro code   0x801'a5e0      0x4a  stm32_lpm_if.o [1]
+    .text              ro code   0x801'a62c      0x10  stm32wlxx_hal.o [8]
+    .text              ro code   0x801'a63c      0x10  stm32wlxx_hal.o [8]
+    .text              ro code   0x801'a64c       0x2  system_stm32wlxx.o [7]
+    .text              ro code   0x801'a650      0x1c  cstartup_M.o [14]
+    .text              ro code   0x801'a66c      0x1e  cmain.o [14]
+    .text              ro code   0x801'a68a       0x4  low_level_init.o [12]
+    .text              ro code   0x801'a690      0x28  data_init.o [14]
+    .text              ro code   0x801'a6b8       0x4  exit.o [12]
+    .text              ro code   0x801'a6bc       0xa  cexit.o [14]
     .text              ro code   0x801'a6c6       0x4  startup_stm32wle5xx.o [2]
     .text              ro code   0x801'a6ca       0x4  startup_stm32wle5xx.o [2]
     .text              ro code   0x801'a6ce       0x4  startup_stm32wle5xx.o [2]
@@ -611,14 +605,20 @@ initialize by copy { rw };
     .text              ro code   0x801'a722       0x4  startup_stm32wle5xx.o [2]
     .text              ro code   0x801'a726       0x4  startup_stm32wle5xx.o [2]
     .text              ro code   0x801'a72a       0x4  startup_stm32wle5xx.o [2]
-    .text              ro code   0x801'a72e      0x32  usart_if.o [1]
-    .text              ro code   0x801'a760      0x38  zero_init3.o [14]
-    .text              ro code   0x801'a798      0x78  lz77_init_single.o [14]
-    .iar.init_table    const     0x801'a810      0x20  - Linker created -
-    .rodata            const     0x801'a830       0x0  zero_init3.o [14]
-    .rodata            const     0x801'a830       0x0  lz77_init_single.o [14]
-    Initializer bytes  const     0x801'a830      0xd2  <for P2-1>
-                               - 0x801'a902  0x1'9902
+    .text              ro code   0x801'a72e       0x4  startup_stm32wle5xx.o [2]
+    .text              ro code   0x801'a732       0x4  startup_stm32wle5xx.o [2]
+    .text              ro code   0x801'a736       0x4  startup_stm32wle5xx.o [2]
+    .text              ro code   0x801'a73a       0x4  startup_stm32wle5xx.o [2]
+    .text              ro code   0x801'a73e       0x4  startup_stm32wle5xx.o [2]
+    .text              ro code   0x801'a742       0x4  startup_stm32wle5xx.o [2]
+    .text              ro code   0x801'a746      0x32  usart_if.o [1]
+    .text              ro code   0x801'a778      0x38  zero_init3.o [14]
+    .text              ro code   0x801'a7b0      0x78  lz77_init_single.o [14]
+    .iar.init_table    const     0x801'a828      0x20  - Linker created -
+    .rodata            const     0x801'a848       0x0  zero_init3.o [14]
+    .rodata            const     0x801'a848       0x0  lz77_init_single.o [14]
+    Initializer bytes  const     0x801'a848      0xd2  <for P2-1>
+                               - 0x801'a91a  0x1'991a
 
 "P2", part 1 of 4:                              0x3e6
   P2-1                          0x2000'0000     0x3e6  <Init block>
@@ -818,7 +818,7 @@ Unused ranges:
 
          From           To      Size
          ----           --      ----
-   0x801'a902   0x803'ffff  0x2'56fe
+   0x801'a91a   0x803'ffff  0x2'56e6
   0x2000'03e6  0x2000'03e7       0x2
 
 
@@ -834,7 +834,7 @@ Zero (__iar_zero_init3)
 
 Copy/lz77 (__iar_lz77_init_single3)
     1 source range, total size 0xd2 (21% of destination):
-           0x801'a830    0xd2
+           0x801'a848    0xd2
     1 destination range, total size 0x3e6:
           0x2000'0000   0x3e6
 
@@ -894,11 +894,11 @@ C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Gatew
 
 C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor: [5]
     bme.o                       1'816      128      152
-    button.o                      556        8
+    button.o                      580        8
     init.o                         18
     pir.o                       1'068       84       24
     ---------------------------------------------------
-    Total:                      3'458      220      176
+    Total:                      3'482      220      176
 
 C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\bme280: [6]
     bme280.o                    2'538
@@ -1033,7 +1033,7 @@ shb_l.a: [15]
     Gaps                           43               128
     Linker created                          32   55'608
 -------------------------------------------------------
-    Grand Total:               96'856    8'598   65'533
+    Grand Total:               96'880    8'598   65'533
 
 
 *******************************************************************************
@@ -1042,9 +1042,9 @@ shb_l.a: [15]
 
 Entry                       Address   Size  Type      Object
 -----                       -------   ----  ----      ------
-.iar.init_table$$Base    0x801'a810          --   Gb  - Linker created -
-.iar.init_table$$Limit   0x801'a830          --   Gb  - Linker created -
-?main                    0x801'a655         Code  Gb  cmain.o [14]
+.iar.init_table$$Base    0x801'a828          --   Gb  - Linker created -
+.iar.init_table$$Limit   0x801'a848          --   Gb  - Linker created -
+?main                    0x801'a66d         Code  Gb  cmain.o [14]
 ADC_ConversionStop       0x800'f811   0x4e  Code  Gb  stm32wlxx_hal_adc.o [8]
 ADC_DMAConvCplt          0x800'f9b5   0x82  Code  Lc  stm32wlxx_hal_adc.o [8]
 ADC_DMAError             0x800'fa49   0x1e  Code  Lc  stm32wlxx_hal_adc.o [8]
@@ -1058,7 +1058,7 @@ AESIV_CTR               0x2000'0114   0x10  Data  Lc  main.o [1]
 AES_IRQHandler           0x800'ed4f    0xa  Code  Gb  stm32wlxx_it.o [1]
 AHBPrescTable            0x800'2f98   0x40  Data  Gb  system_stm32wlxx.o [7]
 APBPrescTable            0x800'3018   0x20  Data  Gb  system_stm32wlxx.o [7]
-Bandwidths               0x801'a5ac    0x4  Data  Gb  radio.o [9]
+Bandwidths               0x801'a5c4    0x4  Data  Gb  radio.o [9]
 BusFault_Handler         0x800'ec83    0xc  Code  Gb  stm32wlxx_it.o [1]
 ButtonEventOccurred     0x2000'26ab    0x1  Data  Gb  app.o [3]
 CRYP_AESCCM_Process_IT   0x801'202d  0x156  Code  Lc  stm32wlxx_hal_cryp.o [8]
@@ -1225,7 +1225,7 @@ HAL_PWR_EnableBkUpAccess
                          0x801'5b39    0xc  Code  Gb  stm32wlxx_hal_pwr.o [8]
 HAL_PWR_EnterSLEEPMode   0x801'5b45   0x3a  Code  Gb  stm32wlxx_hal_pwr.o [8]
 HAL_RCCEx_PeriphCLKConfig
-                         0x801'85f9  0x162  Code  Gb  stm32wlxx_hal_rcc_ex.o [8]
+                         0x801'8611  0x162  Code  Gb  stm32wlxx_hal_rcc_ex.o [8]
 HAL_RCC_ClockConfig      0x800'e8a5  0x182  Code  Gb  stm32wlxx_hal_rcc.o [8]
 HAL_RCC_GetHCLKFreq      0x800'eafb   0x12  Code  Gb  stm32wlxx_hal_rcc.o [8]
 HAL_RCC_GetPCLK1Freq     0x800'eb17   0x10  Code  Gb  stm32wlxx_hal_rcc.o [8]
@@ -1261,7 +1261,7 @@ HAL_RTC_Init             0x801'2869   0x96  Code  Gb  stm32wlxx_hal_rtc.o [8]
 HAL_RTC_MspInit          0x801'5789   0x66  Code  Gb  stm32wlxx_hal_msp.o [1]
 HAL_RTC_SetAlarm_IT      0x801'28ff   0x84  Code  Gb  stm32wlxx_hal_rtc.o [8]
 HAL_RTC_WaitForSynchro   0x801'2aeb   0x2e  Code  Gb  stm32wlxx_hal_rtc.o [8]
-HAL_ResumeTick           0x801'a625   0x10  Code  Wk  stm32wlxx_hal.o [8]
+HAL_ResumeTick           0x801'a63d   0x10  Code  Wk  stm32wlxx_hal.o [8]
 HAL_SPI_DeInit           0x801'0f7d   0x24  Code  Gb  stm32wlxx_hal_spi.o [8]
 HAL_SPI_IRQHandler       0x801'0fad  0x102  Code  Gb  stm32wlxx_hal_spi.o [8]
 HAL_SPI_MspDeInit        0x801'5681   0x52  Code  Gb  stm32wlxx_hal_msp.o [1]
@@ -1296,7 +1296,7 @@ HAL_SUBGHZ_TxCpltCallback
 HAL_SUBGHZ_WriteBuffer   0x801'1351   0x4c  Code  Gb  stm32wlxx_hal_subghz.o [8]
 HAL_SUBGHZ_WriteRegisters
                          0x801'11b7   0x5c  Code  Gb  stm32wlxx_hal_subghz.o [8]
-HAL_SuspendTick          0x801'a615   0x10  Code  Wk  stm32wlxx_hal.o [8]
+HAL_SuspendTick          0x801'a62d   0x10  Code  Wk  stm32wlxx_hal.o [8]
 HAL_TIMEx_RemapConfig    0x801'2801   0x64  Code  Gb  stm32wlxx_hal_tim_ex.o [8]
 HAL_TIM_Base_Init        0x801'273d   0x1a  Code  Gb  stm32wlxx_hal_tim.o [8]
 HAL_TIM_Base_MspInit     0x801'53bd   0x18  Code  Gb  stm32wlxx_hal_msp.o [1]
@@ -1371,8 +1371,8 @@ JAddStringToObject       0x800'9d99    0xc  Code  Gb  n_cjson.o [11]
 JAllocString             0x800'9153   0x26  Code  Gb  n_cjson_helpers.o [11]
 JAtoI                    0x800'911b   0x38  Code  Gb  n_cjson_helpers.o [11]
 JAtoN                    0x801'3e81  0x1fc  Code  Gb  n_atof.o [11]
-JB64Decode               0x801'8501   0x78  Code  Gb  n_b64.o [11]
-JB64DecodeLen            0x801'84dd   0x24  Code  Gb  n_b64.o [11]
+JB64Decode               0x801'8519   0x78  Code  Gb  n_b64.o [11]
+JB64DecodeLen            0x801'84f5   0x24  Code  Gb  n_b64.o [11]
 JContainsString          0x800'908f   0x36  Code  Gb  n_cjson_helpers.o [11]
 JCreateBool              0x800'9dfd   0x14  Code  Gb  n_cjson.o [11]
 JCreateNumber            0x800'9e11   0x3a  Code  Gb  n_cjson.o [11]
@@ -1483,7 +1483,7 @@ LL_LPUART_IsActiveFlag_BUSY
 LL_LPUART_IsActiveFlag_REACK
                          0x800'7285    0xa  Code  Lc  main.o [1]
 LL_PWR_ClearFlag_C1STOP_C1STB
-                         0x801'a5c9    0x8  Code  Lc  stm32_lpm_if.o [1]
+                         0x801'a5e1    0x8  Code  Lc  stm32_lpm_if.o [1]
 LL_RCC_EnableRTC         0x801'52f9    0xe  Code  Lc  stm32wlxx_hal_msp.o [1]
 LL_RCC_GetAHB3Prescaler
                          0x800'e405    0xe  Code  Lc  stm32wlxx_hal_rcc.o [8]
@@ -1492,11 +1492,11 @@ LL_RCC_LSE_SetDriveCapability
 LL_RCC_SetClkAfterWakeFromStop
                          0x800'720d   0x10  Code  Lc  main.o [1]
 LL_RCC_SetI2CClockSource
-                         0x801'85cb   0x14  Code  Lc  stm32wlxx_hal_rcc_ex.o [8]
+                         0x801'85e3   0x14  Code  Lc  stm32wlxx_hal_rcc_ex.o [8]
 LL_RCC_SetLPTIMClockSource
-                         0x801'85e5   0x14  Code  Lc  stm32wlxx_hal_rcc_ex.o [8]
+                         0x801'85fd   0x14  Code  Lc  stm32wlxx_hal_rcc_ex.o [8]
 LL_RCC_SetUSARTClockSource
-                         0x801'85bd    0xe  Code  Lc  stm32wlxx_hal_rcc_ex.o [8]
+                         0x801'85d5    0xe  Code  Lc  stm32wlxx_hal_rcc_ex.o [8]
 LPUART1_IRQHandler       0x800'ed3b    0xa  Code  Gb  stm32wlxx_it.o [1]
 LastRequestID           0x2000'2594    0x4  Data  Gb  app.o [3]
 ListenPhaseBeforeTalk   0x2000'26aa    0x1  Data  Gb  app.o [3]
@@ -1584,13 +1584,13 @@ NoteLocalTimeST::lastInfoIsKnown
                         0x2000'0149    0x1  Data  Lc  n_helpers.o [11]
 NoteLockI2C              0x800'd9c1    0xc  Code  Gb  n_hooks.o [11]
 NoteLockNote             0x800'd9d9    0xc  Code  Gb  n_hooks.o [11]
-NoteMD5Final             0x801'7cb7   0x82  Code  Gb  n_md5.o [11]
-NoteMD5Hash              0x801'8441   0x26  Code  Gb  n_md5.o [11]
-NoteMD5HashString        0x801'8467   0x40  Code  Gb  n_md5.o [11]
-NoteMD5HashToString      0x801'84a7   0x34  Code  Gb  n_md5.o [11]
-NoteMD5Init              0x801'7c19   0x2a  Code  Gb  n_md5.o [11]
-NoteMD5Transform         0x801'7d41  0x5ee  Code  Gb  n_md5.o [11]
-NoteMD5Update            0x801'7c43   0x74  Code  Gb  n_md5.o [11]
+NoteMD5Final             0x801'7ccf   0x82  Code  Gb  n_md5.o [11]
+NoteMD5Hash              0x801'8459   0x26  Code  Gb  n_md5.o [11]
+NoteMD5HashString        0x801'847f   0x40  Code  Gb  n_md5.o [11]
+NoteMD5HashToString      0x801'84bf   0x34  Code  Gb  n_md5.o [11]
+NoteMD5Init              0x801'7c31   0x2a  Code  Gb  n_md5.o [11]
+NoteMD5Transform         0x801'7d59  0x5ee  Code  Gb  n_md5.o [11]
+NoteMD5Update            0x801'7c5b   0x74  Code  Gb  n_md5.o [11]
 NoteMalloc               0x800'd9a7    0xe  Code  Gb  n_hooks.o [11]
 NoteMemAvailable         0x800'8ab3   0x38  Code  Gb  n_helpers.o [11]
 NoteNewCommand           0x800'cbfd   0x16  Code  Gb  n_request.o [11]
@@ -1624,21 +1624,21 @@ OnRxTimeout              0x800'8e15   0x22  Code  Lc  radioinit.o [3]
 OnTxDone                 0x800'8e5d   0x1c  Code  Lc  radioinit.o [3]
 OnTxTimeout              0x800'8df9   0x1c  Code  Lc  radioinit.o [3]
 OperatingMode           0x2000'25d0    0x1  Data  Lc  radio_driver.o [9]
-PWR_EnterOffMode         0x801'a5d5    0x2  Code  Gb  stm32_lpm_if.o [1]
-PWR_EnterSleepMode       0x801'a5fb   0x10  Code  Gb  stm32_lpm_if.o [1]
-PWR_EnterStopMode        0x801'a5d9   0x16  Code  Gb  stm32_lpm_if.o [1]
-PWR_ExitOffMode          0x801'a5d7    0x2  Code  Gb  stm32_lpm_if.o [1]
-PWR_ExitSleepMode        0x801'a60b    0x8  Code  Gb  stm32_lpm_if.o [1]
-PWR_ExitStopMode         0x801'a5ef    0xc  Code  Gb  stm32_lpm_if.o [1]
+PWR_EnterOffMode         0x801'a5ed    0x2  Code  Gb  stm32_lpm_if.o [1]
+PWR_EnterSleepMode       0x801'a613   0x10  Code  Gb  stm32_lpm_if.o [1]
+PWR_EnterStopMode        0x801'a5f1   0x16  Code  Gb  stm32_lpm_if.o [1]
+PWR_ExitOffMode          0x801'a5ef    0x2  Code  Gb  stm32_lpm_if.o [1]
+PWR_ExitSleepMode        0x801'a623    0x8  Code  Gb  stm32_lpm_if.o [1]
+PWR_ExitStopMode         0x801'a607    0xc  Code  Gb  stm32_lpm_if.o [1]
 PacketType              0x2000'25d8    0x1  Data  Lc  radio_driver.o [9]
 PendSV_Handler           0x800'ec9b    0x2  Code  Gb  stm32wlxx_it.o [1]
-RBI_ConfigRFSwitch       0x801'8801   0x48  Code  Gb  radio_board_if.o [1]
-RBI_DeInit               0x801'87d1   0x20  Code  Gb  radio_board_if.o [1]
-RBI_GetTxConfig          0x801'8859    0x4  Code  Gb  radio_board_if.o [1]
-RBI_GetWakeUpTime        0x801'885d    0x4  Code  Gb  radio_board_if.o [1]
-RBI_Init                 0x801'876d   0x5a  Code  Gb  radio_board_if.o [1]
-RBI_IsDCDC               0x801'8865    0x4  Code  Gb  radio_board_if.o [1]
-RBI_IsTCXO               0x801'8861    0x4  Code  Gb  radio_board_if.o [1]
+RBI_ConfigRFSwitch       0x801'8819   0x48  Code  Gb  radio_board_if.o [1]
+RBI_DeInit               0x801'87e9   0x20  Code  Gb  radio_board_if.o [1]
+RBI_GetTxConfig          0x801'8871    0x4  Code  Gb  radio_board_if.o [1]
+RBI_GetWakeUpTime        0x801'8875    0x4  Code  Gb  radio_board_if.o [1]
+RBI_Init                 0x801'8785   0x5a  Code  Gb  radio_board_if.o [1]
+RBI_IsDCDC               0x801'887d    0x4  Code  Gb  radio_board_if.o [1]
+RBI_IsTCXO               0x801'8879    0x4  Code  Gb  radio_board_if.o [1]
 RCC_SetFlashLatency::FLASH_CLK_SRC_RANGE_VOS1
                          0x800'ec18    0x8  Data  Lc  stm32wlxx_hal_rcc.o [8]
 RCC_SetFlashLatency::FLASH_CLK_SRC_RANGE_VOS2
@@ -1650,62 +1650,62 @@ RCC_SetFlashLatencyFromMSIRange
 RNG_IRQHandler           0x800'ed59    0xa  Code  Gb  stm32wlxx_it.o [1]
 RNG_RecoverSeedError     0x801'26ad   0x90  Code  Gb  stm32wlxx_hal_rng.o [8]
 ROM_CONTENT$$Base        0x800'1000          --   Gb  - Linker created -
-ROM_CONTENT$$Limit       0x801'a902         Data  Gb  - Linker created -
+ROM_CONTENT$$Limit       0x801'a91a         Data  Gb  - Linker created -
 RTC_Alarm_IRQHandler     0x800'ed45    0xa  Code  Gb  stm32wlxx_it.o [1]
 RTC_ByteToBcd2           0x801'2bbd   0x16  Code  Gb  stm32wlxx_hal_rtc.o [8]
 RTC_EnterInitMode        0x801'2b19   0x42  Code  Gb  stm32wlxx_hal_rtc.o [8]
 RTC_ExitInitMode         0x801'2b5b   0x4c  Code  Gb  stm32wlxx_hal_rtc.o [8]
 RTC_Initialized         0x2000'25e8    0x1  Data  Lc  timer_if.o [1]
 Radio                    0x800'2b44   0x84  Data  Gb  radio.o [9]
-RadioCheckRfFrequency    0x801'9e75    0x4  Code  Lc  radio.o [9]
-RadioDeInit              0x801'98db   0x34  Code  Lc  radio.o [9]
-RadioDeepSleep           0x801'a127    0x8  Code  Lc  radio.o [9]
+RadioCheckRfFrequency    0x801'9e8d    0x4  Code  Lc  radio.o [9]
+RadioDeInit              0x801'98f3   0x34  Code  Lc  radio.o [9]
+RadioDeepSleep           0x801'a13f    0x8  Code  Lc  radio.o [9]
 RadioEvents             0x2000'104c    0x4  Data  Lc  radio.o [9]
 RadioEvents             0x2000'23f4   0x1c  Data  Lc  radioinit.o [3]
 RadioGetFskBandwidthRegValue
-                         0x801'983b   0x2c  Code  Lc  radio.o [9]
-RadioGetStatus           0x801'9929   0x24  Code  Lc  radio.o [9]
-RadioGetWakeupTime       0x801'a2a5    0xa  Code  Lc  radio.o [9]
-RadioInit                0x801'9867   0x74  Code  Lc  radio.o [9]
-RadioIrqProcess          0x801'a3e5  0x108  Code  Lc  radio.o [9]
-RadioIsChannelFree       0x801'9997   0xe8  Code  Lc  radio.o [9]
-RadioOnDioIrq            0x801'a2d1  0x108  Code  Lc  radio.o [9]
+                         0x801'9853   0x2c  Code  Lc  radio.o [9]
+RadioGetStatus           0x801'9941   0x24  Code  Lc  radio.o [9]
+RadioGetWakeupTime       0x801'a2bd    0xa  Code  Lc  radio.o [9]
+RadioInit                0x801'987f   0x74  Code  Lc  radio.o [9]
+RadioIrqProcess          0x801'a3fd  0x108  Code  Lc  radio.o [9]
+RadioIsChannelFree       0x801'99af   0xe8  Code  Lc  radio.o [9]
+RadioOnDioIrq            0x801'a2e9  0x108  Code  Lc  radio.o [9]
 RadioOnDioIrqCb         0x2000'25d4    0x4  Data  Lc  radio_driver.o [9]
-RadioOnRxTimeoutIrq      0x801'a2c1   0x10  Code  Lc  radio.o [9]
-RadioOnTxTimeoutIrq      0x801'a2b1   0x10  Code  Lc  radio.o [9]
-RadioRandom              0x801'9a7f   0x1c  Code  Lc  radio.o [9]
-RadioRead                0x801'a235    0x4  Code  Lc  radio.o [9]
-RadioReadRegisters       0x801'a23d    0x4  Code  Lc  radio.o [9]
-RadioRssi                0x801'a22d    0x4  Code  Lc  radio.o [9]
-RadioRx                  0x801'a143   0x30  Code  Lc  radio.o [9]
-RadioRxBoosted           0x801'a18d   0x30  Code  Lc  radio.o [9]
+RadioOnRxTimeoutIrq      0x801'a2d9   0x10  Code  Lc  radio.o [9]
+RadioOnTxTimeoutIrq      0x801'a2c9   0x10  Code  Lc  radio.o [9]
+RadioRandom              0x801'9a97   0x1c  Code  Lc  radio.o [9]
+RadioRead                0x801'a24d    0x4  Code  Lc  radio.o [9]
+RadioReadRegisters       0x801'a255    0x4  Code  Lc  radio.o [9]
+RadioRssi                0x801'a245    0x4  Code  Lc  radio.o [9]
+RadioRx                  0x801'a15b   0x30  Code  Lc  radio.o [9]
+RadioRxBoosted           0x801'a1a5   0x30  Code  Lc  radio.o [9]
 RadioRxPayload          0x2000'1050  0x100  Data  Lc  radio.o [9]
-RadioSend                0x801'9fa1  0x16a  Code  Lc  radio.o [9]
-RadioSetChannel          0x801'9993    0x4  Code  Lc  radio.o [9]
+RadioSend                0x801'9fb9  0x16a  Code  Lc  radio.o [9]
+RadioSetChannel          0x801'99ab    0x4  Code  Lc  radio.o [9]
 RadioSetMaxPayloadLength
-                         0x801'a241   0x24  Code  Lc  radio.o [9]
-RadioSetModem            0x801'994d   0x46  Code  Lc  radio.o [9]
-RadioSetPublicNetwork    0x801'a269   0x3c  Code  Lc  radio.o [9]
-RadioSetRxConfig         0x801'9a9b  0x23e  Code  Lc  radio.o [9]
-RadioSetRxDutyCycle      0x801'a1c9   0x1e  Code  Lc  radio.o [9]
+                         0x801'a259   0x24  Code  Lc  radio.o [9]
+RadioSetModem            0x801'9965   0x46  Code  Lc  radio.o [9]
+RadioSetPublicNetwork    0x801'a281   0x3c  Code  Lc  radio.o [9]
+RadioSetRxConfig         0x801'9ab3  0x23e  Code  Lc  radio.o [9]
+RadioSetRxDutyCycle      0x801'a1e1   0x1e  Code  Lc  radio.o [9]
 RadioSetRxGenericConfig
-                         0x801'9525  0x192  Code  Lc  radio.o [9]
-RadioSetTxConfig         0x801'9d21  0x148  Code  Lc  radio.o [9]
+                         0x801'953d  0x192  Code  Lc  radio.o [9]
+RadioSetTxConfig         0x801'9d39  0x148  Code  Lc  radio.o [9]
 RadioSetTxContinuousWave
-                         0x801'a1f9   0x34  Code  Lc  radio.o [9]
+                         0x801'a211   0x34  Code  Lc  radio.o [9]
 RadioSetTxGenericConfig
-                         0x801'96c3  0x178  Code  Lc  radio.o [9]
-RadioSleep               0x801'a113    0x8  Code  Lc  radio.o [9]
-RadioStandby             0x801'a13d    0x6  Code  Lc  radio.o [9]
-RadioStartCad            0x801'a1e7   0x12  Code  Lc  radio.o [9]
-RadioTimeOnAir           0x801'9e79  0x126  Code  Lc  radio.o [9]
-RadioTxCw                0x801'a583   0x12  Code  Lc  radio.o [9]
-RadioTxPrbs              0x801'a53b   0x24  Code  Lc  radio.o [9]
-RadioWrite               0x801'a231    0x4  Code  Lc  radio.o [9]
-RadioWriteRegisters      0x801'a239    0x4  Code  Lc  radio.o [9]
+                         0x801'96db  0x178  Code  Lc  radio.o [9]
+RadioSleep               0x801'a12b    0x8  Code  Lc  radio.o [9]
+RadioStandby             0x801'a155    0x6  Code  Lc  radio.o [9]
+RadioStartCad            0x801'a1ff   0x12  Code  Lc  radio.o [9]
+RadioTimeOnAir           0x801'9e91  0x126  Code  Lc  radio.o [9]
+RadioTxCw                0x801'a59b   0x12  Code  Lc  radio.o [9]
+RadioTxPrbs              0x801'a553   0x24  Code  Lc  radio.o [9]
+RadioWrite               0x801'a249    0x4  Code  Lc  radio.o [9]
+RadioWriteRegisters      0x801'a251    0x4  Code  Lc  radio.o [9]
 Radio_SMPS_Set           0x801'6ad9   0x28  Code  Lc  radio_driver.o [9]
-Region$$Table$$Base      0x801'a810          --   Gb  - Linker created -
-Region$$Table$$Limit     0x801'a830          --   Gb  - Linker created -
+Region$$Table$$Base      0x801'a828          --   Gb  - Linker created -
+Region$$Table$$Limit     0x801'a848          --   Gb  - Linker created -
 RtcTimerContext         0x2000'25ec    0x4  Data  Lc  timer_if.o [1]
 RxTimeoutTimer          0x2000'1168   0x18  Data  Gb  radio.o [9]
 SEQ_BitPosition          0x800'56d1   0x34  Code  Gb  stm32_seq.o [10]
@@ -1785,7 +1785,7 @@ SuperMask               0x2000'0320    0x4  Data  Lc  stm32_seq.o [10]
 SysTick_Handler          0x800'ec9d    0x8  Code  Gb  stm32wlxx_it.o [1]
 SystemClock_Config       0x800'72eb   0x9a  Code  Gb  main.o [1]
 SystemCoreClock         0x2000'033c    0x4  Data  Gb  system_stm32wlxx.o [7]
-SystemInit               0x801'a635    0x2  Code  Gb  system_stm32wlxx.o [7]
+SystemInit               0x801'a64d    0x2  Code  Gb  system_stm32wlxx.o [7]
 TAMP_STAMP_LSECSS_SSRU_IRQHandler
                          0x800'eca5    0xa  Code  Gb  stm32wlxx_it.o [1]
 TIMER_IF_BkUp_Read_MSBticks
@@ -1890,7 +1890,7 @@ UTIL_TIMER_Stop          0x800'85f5   0x56  Code  Gb  stm32_timer.o [10]
 UTIL_TimerDriver         0x800'3038   0x2c  Data  Gb  timer_if.o [1]
 UTIL_TraceDriver         0x800'3090   0x10  Data  Gb  usart_if.o [1]
 UsageFault_Handler       0x800'ec8f    0x8  Code  Gb  stm32wlxx_it.o [1]
-_DelayIO                 0x801'9255    0x6  Code  Lc  n_i2c.o [11]
+_DelayIO                 0x801'926d    0x6  Code  Lc  n_i2c.o [11]
 _LocaleC_isupper         0x801'6e55    0x2  Code  Gb  xlocale_c.o [12]
 _LocaleC_tolower         0x801'6e61    0xc  Code  Gb  xlocale_c.o [12]
 __NVIC_SetPriority       0x800'ee4d   0x1a  Code  Lc  stm32wlxx_hal_cortex.o [8]
@@ -1920,31 +1920,31 @@ __aeabi_memmove8         0x800'd589         Code  Gb  ABImemmove.o [14]
 __aeabi_memset           0x800'5715         Code  Gb  ABImemset.o [14]
 __aeabi_ui2d             0x800'fb05         Code  Gb  U32ToDbl.o [13]
 __aeabi_ul2d             0x801'6e0d         Code  Gb  U64ToDbl.o [13]
-__cmain                  0x801'a655         Code  Gb  cmain.o [14]
+__cmain                  0x801'a66d         Code  Gb  cmain.o [14]
 __data_GetMemChunk       0x801'5155   0x2c  Code  Gb  xgetmemchunk.o [12]
 __data_GetMemChunk::start
                         0x2000'2698    0x4  Data  Lc  xgetmemchunk.o [12]
-__exit                   0x801'85a5   0x14  Code  Gb  exit.o [15]
+__exit                   0x801'85bd   0x14  Code  Gb  exit.o [15]
 __iar_Memset             0x800'5715         Code  Gb  ABImemset.o [14]
 __iar_Memset4_word       0x801'6b11         Code  Gb  ABImemset48.o [14]
 __iar_Memset8_word       0x801'6b11         Code  Gb  ABImemset48.o [14]
 __iar_Memset_word        0x800'571d         Code  Gb  ABImemset.o [14]
 __iar_Strchr             0x801'3e0d         Code  Gb  strchr.o [14]
-__iar_data_init3         0x801'a679   0x28  Code  Gb  data_init.o [14]
+__iar_data_init3         0x801'a691   0x28  Code  Gb  data_init.o [14]
 __iar_dlfree             0x800'c663  0x52c  Code  Gb  dlmalloc.o [12]
 __iar_dlmalloc           0x800'b74d  0xf16  Code  Gb  dlmalloc.o [12]
 __iar_globLocale        0x2000'0398   0x48  Data  Lc  xlocale_c.o [12]
 __iar_global_Locale      0x801'6e6d    0x4  Code  Gb  xlocale_c.o [12]
 __iar_lz77_init_single3
-                         0x801'a799   0x78  Code  Gb  lz77_init_single.o [14]
-__iar_program_start      0x801'a639         Code  Gb  cstartup_M.o [14]
+                         0x801'a7b1   0x78  Code  Gb  lz77_init_single.o [14]
+__iar_program_start      0x801'a651         Code  Gb  cstartup_M.o [14]
 __iar_small_ldivmod      0x801'3cc1         Code  Gb  I64DivMod_small.o [14]
 __iar_small_uldivmod     0x801'3d05         Code  Gb  I64DivMod_small.o [14]
-__iar_zero_init3         0x801'a761   0x38  Code  Gb  zero_init3.o [14]
-__low_level_init         0x801'a673    0x4  Code  Gb  low_level_init.o [12]
+__iar_zero_init3         0x801'a779   0x38  Code  Gb  zero_init3.o [14]
+__low_level_init         0x801'a68b    0x4  Code  Gb  low_level_init.o [12]
 __vector_table           0x800'0000         Data  Gb  startup_stm32wle5xx.o [2]
-_call_main               0x801'a661         Code  Gb  cmain.o [14]
-_exit                    0x801'a6a5         Code  Gb  cexit.o [14]
+_call_main               0x801'a679         Code  Gb  cmain.o [14]
+_exit                    0x801'a6bd         Code  Gb  cexit.o [14]
 _gm_                    0x2000'0e1c  0x1d8  Data  Lc  dlmalloc.o [12]
 abort                    0x801'514f    0x6  Code  Gb  abort.o [12]
 adcDMACompleted         0x2000'26c0    0x1  Data  Gb  main.o [1]
@@ -1980,7 +1980,7 @@ appTraceWakeup           0x800'30db   0x14  Code  Gb  app.o [3]
 appTransmitWindowWaitMaxSecs
                          0x800'3571   0x2c  Code  Gb  app.o [3]
 apps                    0x2000'268c    0x4  Data  Lc  sched.o [3]
-are_settings_changed     0x801'9225    0xc  Code  Lc  bme280.o [6]
+are_settings_changed     0x801'923d    0xc  Code  Lc  bme280.o [6]
 atpGatewayMessageLost    0x800'5e2f   0x8a  Code  Gb  atp.o [3]
 atpGatewayMessageReceived
                          0x800'5781   0x8e  Code  Gb  atp.o [3]
@@ -1996,22 +1996,22 @@ authRequest{7}{8}::newMessage
                         0x2000'0000  0x100  Data  Lc  auth.o [4]
 batteryMillivolts       0x2000'269c    0x2  Data  Gb  app.o [3]
 beaconKey               0x2000'23b4   0x20  Data  Gb  app.o [3]
-bme280_compensate_data   0x801'8c81  0x39a  Code  Gb  bme280.o [6]
+bme280_compensate_data   0x801'8c99  0x39a  Code  Gb  bme280.o [6]
 bme280_delay_us          0x801'73fd    0x4  Code  Lc  bme.o [5]
-bme280_get_regs          0x801'89c3   0x44  Code  Gb  bme280.o [6]
-bme280_get_sensor_data   0x801'8bf9   0x58  Code  Gb  bme280.o [6]
-bme280_get_sensor_mode   0x801'8b63   0x26  Code  Gb  bme280.o [6]
+bme280_get_regs          0x801'89db   0x44  Code  Gb  bme280.o [6]
+bme280_get_sensor_data   0x801'8c11   0x58  Code  Gb  bme280.o [6]
+bme280_get_sensor_mode   0x801'8b7b   0x26  Code  Gb  bme280.o [6]
 bme280_i2c_read          0x801'7401    0xc  Code  Lc  bme.o [5]
 bme280_i2c_write         0x801'740d    0xc  Code  Lc  bme.o [5]
-bme280_init              0x801'8869  0x15a  Code  Gb  bme280.o [6]
+bme280_init              0x801'8881  0x15a  Code  Gb  bme280.o [6]
 bme280_parse_sensor_data
-                         0x801'8c51   0x30  Code  Gb  bme280.o [6]
+                         0x801'8c69   0x30  Code  Gb  bme280.o [6]
 bme280_read              0x801'7383   0x78  Code  Lc  bme.o [5]
-bme280_set_regs          0x801'8a07   0x96  Code  Gb  bme280.o [6]
-bme280_set_sensor_mode   0x801'8b03   0x58  Code  Gb  bme280.o [6]
+bme280_set_regs          0x801'8a1f   0x96  Code  Gb  bme280.o [6]
+bme280_set_sensor_mode   0x801'8b1b   0x58  Code  Gb  bme280.o [6]
 bme280_set_sensor_settings
-                         0x801'8a9d   0x5e  Code  Gb  bme280.o [6]
-bme280_soft_reset        0x801'8b89   0x70  Code  Gb  bme280.o [6]
+                         0x801'8ab5   0x5e  Code  Gb  bme280.o [6]
+bme280_soft_reset        0x801'8ba1   0x70  Code  Gb  bme280.o [6]
 bmeInit                  0x801'6e75   0x66  Code  Gb  bme.o [5]
 bmePoll                  0x801'6edb  0x22a  Code  Lc  bme.o [5]
 bmeResponse              0x801'7117   0x52  Code  Lc  bme.o [5]
@@ -2019,9 +2019,9 @@ bmeUpdate                0x801'716d  0x20a  Code  Lc  bme.o [5]
 bme_dev_addr            0x2000'2411    0x1  Data  Lc  bme.o [5]
 buffer_skip_whitespace   0x800'95af   0x28  Code  Lc  n_cjson.o [11]
 buttonHeldAtBoot        0x2000'26b8    0x1  Data  Gb  appinit.o [3]
-buttonISR                0x801'7aa5    0xe  Code  Lc  button.o [5]
+buttonISR                0x801'7aa7    0xe  Code  Lc  button.o [5]
 buttonInit               0x801'79b9   0x1e  Code  Gb  button.o [5]
-buttonPoll               0x801'79d9   0xbc  Code  Lc  button.o [5]
+buttonPoll               0x801'79d9   0xc8  Code  Lc  button.o [5]
 buttonResponse           0x801'7ab5   0x50  Code  Lc  button.o [5]
 c_cmd                   0x2000'0140    0x4  Data  Gb  n_const.o [11]
 c_err                   0x2000'0138    0x4  Data  Gb  n_const.o [11]
@@ -2064,7 +2064,7 @@ envLastUpdateTime       0x2000'2644    0x4  Data  Gb  gateway.o [3]
 envSamples              0x2000'1dd8   0x78  Data  Lc  bme.o [5]
 err                     0x2000'2338   0x30  Data  Lc  post.o [3]
 errDoc                   0x800'cb99   0x30  Code  Lc  n_request.o [11]
-exit                     0x801'a6a1    0x4  Code  Gb  exit.o [12]
+exit                     0x801'a6b9    0x4  Code  Gb  exit.o [12]
 extractNameComponents    0x800'ce47   0x6a  Code  Gb  util.o [3]
 failResets              0x2000'1c54   0xa0  Data  Lc  atp.o [3]
 flashCodeParams          0x800'6997   0x4e  Code  Gb  flash.o [3]
@@ -2139,14 +2139,14 @@ hspi1                   0x2000'1e50   0x64  Data  Gb  main.o [1]
 hsubghz                 0x2000'257c    0xc  Data  Gb  main.o [1]
 htim17                  0x2000'2250   0x4c  Data  Gb  main.o [1]
 htoa16                   0x800'948d   0x1e  Code  Gb  n_cjson.o [11]
-htoa8                    0x801'7bf5   0x24  Code  Gb  n_md5.o [11]
+htoa8                    0x801'7c0d   0x24  Code  Gb  n_md5.o [11]
 huart1                  0x2000'1984   0xc8  Data  Gb  main.o [1]
 huart2                  0x2000'1a4c   0xc8  Data  Gb  main.o [1]
 i2c2IOCompletions       0x2000'2674    0x4  Data  Gb  main.o [1]
 i2cAddress              0x2000'231c    0x4  Data  Gb  n_hooks.o [11]
 i2cMax                  0x2000'2320    0x4  Data  Gb  n_hooks.o [11]
-i2cNoteReset             0x801'9419   0xb0  Code  Gb  n_i2c.o [11]
-i2cNoteTransaction       0x801'925d  0x1b6  Code  Gb  n_i2c.o [11]
+i2cNoteReset             0x801'9431   0xb0  Code  Gb  n_i2c.o [11]
+i2cNoteTransaction       0x801'9275  0x1b6  Code  Gb  n_i2c.o [11]
 init_mparams             0x800'b6e1   0x2c  Code  Lc  dlmalloc.o [12]
 init_top                 0x800'b70d   0x34  Code  Lc  dlmalloc.o [12]
 invalidAddress          0x2000'254c    0xc  Data  Gb  app.o [3]
@@ -2247,13 +2247,13 @@ noteSendToGatewayAsync   0x801'509d   0x2e  Code  Gb  note.o [3]
 noteSetup                0x801'4d6d  0x154  Code  Gb  note.o [3]
 notecardReset           0x2000'2330    0x4  Data  Lc  n_hooks.o [11]
 notecardTransaction     0x2000'2334    0x4  Data  Lc  n_hooks.o [11]
-null_ptr_check           0x801'9231   0x20  Code  Lc  bme280.o [6]
+null_ptr_check           0x801'9249   0x20  Code  Lc  bme280.o [6]
 ourAddress              0x2000'2558    0xc  Data  Gb  app.o [3]
 ourAddressText          0x2000'2390   0x24  Data  Gb  app.o [3]
 pFlash                  0x2000'24c8   0x18  Data  Gb  stm32wlxx_hal_flash.o [8]
 packetsLost             0x2000'1bb4   0xa0  Data  Lc  atp.o [3]
 packetsSent             0x2000'1b14   0xa0  Data  Lc  atp.o [3]
-parse_device_settings    0x801'91b9   0x26  Code  Lc  bme280.o [6]
+parse_device_settings    0x801'91d1   0x26  Code  Lc  bme280.o [6]
 parse_hex4               0x800'9295   0x44  Code  Lc  n_cjson.o [11]
 parse_string             0x800'92d9  0x1b4  Code  Lc  n_cjson.o [11]
 parse_value              0x800'971d  0x26a  Code  Lc  n_cjson.o [11]
@@ -2281,8 +2281,8 @@ print_string_ptr         0x800'94ab  0x104  Code  Lc  n_cjson.o [11]
 print_value              0x800'99cb  0x26e  Code  Lc  n_cjson.o [11]
 probePin                 0x800'6281   0xc4  Code  Gb  trace.o [3]
 processSensorRequest     0x800'3a31  0x14c  Code  Gb  app.o [3]
-put_device_to_sleep      0x801'91df   0x3a  Code  Lc  bme280.o [6]
-putu32                   0x801'7be5   0x10  Code  Lc  n_md5.o [11]
+put_device_to_sleep      0x801'91f7   0x3a  Code  Lc  bme280.o [6]
+putu32                   0x801'7bfd   0x10  Code  Lc  n_md5.o [11]
 radioDeepSleep           0x800'8db7   0x2a  Code  Gb  radioinit.o [3]
 radioDeepWake            0x800'8de1   0x18  Code  Gb  radioinit.o [3]
 radioIOPending          0x2000'26c6    0x1  Data  Gb  radioinit.o [3]
@@ -2358,8 +2358,8 @@ sentMessageCarrierLen   0x2000'26a8    0x2  Data  Gb  app.o [3]
 sentMessageMs           0x2000'2598    0x8  Data  Gb  app.o [3]
 setTime                  0x800'87b9   0x10  Code  Lc  n_helpers.o [11]
 set_filter_standby_settings
-                         0x801'915b   0x36  Code  Lc  bme280.o [6]
-set_osr_settings         0x801'90d1   0x8a  Code  Lc  bme280.o [6]
+                         0x801'9173   0x36  Code  Lc  bme280.o [6]
+set_osr_settings         0x801'90e9   0x8a  Code  Lc  bme280.o [6]
 showReceivedTime         0x800'4e11  0x21a  Code  Gb  app.o [3]
 simple_utoa              0x800'de01   0x2e  Code  Gb  post.o [3]
 state                   0x2000'2684    0x4  Data  Lc  sched.o [3]
@@ -2427,10 +2427,10 @@ var_gateway_sensordb_reset_counts
                         0x2000'265c    0x4  Data  Gb  gateway.o [3]
 var_gateway_sensordb_update_mins
                         0x2000'2658    0x4  Data  Gb  gateway.o [3]
-vcom_DeInit              0x801'a741    0xa  Code  Gb  usart_if.o [1]
-vcom_Init                0x801'a72f   0x12  Code  Gb  usart_if.o [1]
-vcom_ReceiveInit         0x801'a757    0xa  Code  Gb  usart_if.o [1]
-vcom_Trace_DMA           0x801'a74b    0xc  Code  Gb  usart_if.o [1]
+vcom_DeInit              0x801'a759    0xa  Code  Gb  usart_if.o [1]
+vcom_Init                0x801'a747   0x12  Code  Gb  usart_if.o [1]
+vcom_ReceiveInit         0x801'a76f    0xa  Code  Gb  usart_if.o [1]
+vcom_Trace_DMA           0x801'a763    0xc  Code  Gb  usart_if.o [1]
 vector_t                0x2000'1200  0x138  Data  Lc  main.o [1]
 walkState               0x2000'266c    0x4  Data  Gb  led.o [3]
 wildcardAddress         0x2000'2540    0xc  Data  Gb  app.o [3]
@@ -2462,7 +2462,7 @@ zoneStillUnavailable    0x2000'0145    0x1  Data  Lc  n_helpers.o [11]
 [14] = rt7M_tl.a
 [15] = shb_l.a
 
-  96'856 bytes of readonly  code memory
+  96'880 bytes of readonly  code memory
    8'598 bytes of readonly  data memory
   65'533 bytes of readwrite data memory
 
