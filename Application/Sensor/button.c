@@ -52,7 +52,7 @@ void buttonPoll(int appID, int state, void *appContext)
 
     // Immediately deactivate - nothing to do
     case STATE_ACTIVATED:
-        schedSetCompletionState(appID, STATE_DEACTIVATED, STATE_DEACTIVATED);
+        schedSetState(appID, STATE_DEACTIVATED, "button: nothing to do");
         break;
 
     // When a button is pressed, send a log message

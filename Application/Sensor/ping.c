@@ -78,7 +78,7 @@ void pingPoll(int appID, int state, void *appContext)
 
 #if SURVEY_MODE
 
-        schedSetCompletionState(appID, STATE_DEACTIVATED, STATE_DEACTIVATED);
+        schedSetState(appID, STATE_DEACTIVATED, "ping: nothing to do");
         break;
 
 #else
