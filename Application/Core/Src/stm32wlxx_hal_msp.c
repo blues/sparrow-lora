@@ -79,7 +79,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
         if (HAL_DMA_Init(&hdma_adc) != HAL_OK) {
             Error_Handler();
         }
-#if defined(STM32WL55xx)
+#if defined(DMA_CCR_SECM) && defined(DMA_CCR_PRIV)
         if (HAL_DMA_ConfigChannelAttributes(&hdma_adc, DMA_CHANNEL_NPRIV) != HAL_OK) {
             Error_Handler();
         }
@@ -497,7 +497,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
         if (HAL_DMA_Init(&hdma_usart1_tx) != HAL_OK) {
             Error_Handler();
         }
-#if defined(STM32WL55xx)
+#if defined(DMA_CCR_SECM) && defined(DMA_CCR_PRIV)
         if (HAL_DMA_ConfigChannelAttributes(&hdma_usart1_tx, DMA_CHANNEL_NPRIV) != HAL_OK) {
             Error_Handler();
         }
@@ -560,7 +560,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
         if (HAL_DMA_Init(&hdma_usart2_tx) != HAL_OK) {
             Error_Handler();
         }
-#if defined(STM32WL55xx)
+#if defined(DMA_CCR_SECM) && defined(DMA_CCR_PRIV)
         if (HAL_DMA_ConfigChannelAttributes(&hdma_usart2_tx, DMA_CHANNEL_NPRIV) != HAL_OK) {
             Error_Handler();
         }
