@@ -191,7 +191,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
             decreasePowerLevelByDb += 2 * ((averageRSSI - DECREASE_POWER_IF_SIGNAL_ABOVE) / 10);
             if (decreasePowerLevelByDb > currentLevel) {
                 decreasePowerLevelByDb = currentLevel;
-                APP_PRINTF("ATP: would decrease power but it's already bottomed-out at %ddb\r\n", decreasePowerLevelByDb);
+                APP_PRINTF("ATP: would decrease power but it's already bottomed-out at %ddb\r\n", currentLevel+RBO_MIN);
             } else {
                 APP_PRINTF("ATP: should decrease power by %ddb because avg rssi is %ddb\r\n", decreasePowerLevelByDb, averageRSSI);
             }
@@ -204,7 +204,7 @@ void atpUpdate(bool useSignal, int8_t rssi, int8_t snr)
                 decreasePowerLevelByDb = 1;
                 if (decreasePowerLevelByDb > currentLevel) {
                     decreasePowerLevelByDb = currentLevel;
-                    APP_PRINTF("ATP: would decrease power but it's already bottomed-out at %ddb\r\n", averageRSSI);
+                    APP_PRINTF("ATP: would decrease power but it's already bottomed-out at %ddb\r\n", currentLevel+RBO_MIN);
                 } else {
                     APP_PRINTF("ATP: trying to decrease power by %ddb\r\n", decreasePowerLevelByDb);
                 }
