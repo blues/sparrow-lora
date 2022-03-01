@@ -30,7 +30,7 @@
 // LoRa can demodulate signals which are -7.5 dB to -20 dB below the noise floor.
 
 // Adaptive Transmit Power (ATP) Parameters
-#define ATP_ENABLED     true
+#define ATP_ENABLED     false
 #define RBO_INITIAL     (RBO_MIN+(((RBO_MAX)-(RBO_MIN))/3))
 
 // (DETERMINATIVE OF MESSAGE_MAX_BODY)
