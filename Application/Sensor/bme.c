@@ -10,10 +10,8 @@
 // Special request IDs
 #define REQUESTID_TEMPLATE          1
 
-// The filename of the test database.  Note that * is replaced by the
-// gateway with the sensor's ID, while the # is a special character
-// reserved by the notecard and notehub for a Sensor ID that is
-// appended to the device ID within Events.
+// The dynamic filename of the application specific queue.
+// NOTE: The Gateway will replace `*` with the originating node's ID.
 #define SENSORDATA_NOTEFILE         "*#air.qo"
 
 // TRUE if we've successfully registered the template
