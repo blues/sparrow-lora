@@ -65,7 +65,7 @@ bool pirInit()
     init.Pin = PIR_SERIAL_IN_Pin;
     HAL_GPIO_Init(PIR_SERIAL_IN_Port, &init);
     HAL_GPIO_WritePin(PIR_SERIAL_IN_Port, PIR_SERIAL_IN_Pin, GPIO_PIN_RESET);
-    init.Mode = GPIO_MODE_INPUT;
+    init.Mode = GPIO_MODE_IT_RISING;
     init.Pull = GPIO_PULLDOWN;
     init.Speed = GPIO_SPEED_FREQ_HIGH;
     init.Pin = PIR_DIRECT_LINK_Pin;
