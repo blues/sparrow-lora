@@ -78,3 +78,4 @@ void schedSendingRequest(bool responseRequested);
 void schedSetCompletionState(int appID, int successState, int errorState);
 void schedSetState(int appID, int newstate, const char *why);
 char *schedStateName(int state);
+char *schedStateName_r(int state, char *app_specific_state);

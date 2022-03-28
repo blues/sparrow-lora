@@ -122,6 +122,13 @@ void schedDispatchISR(uint16_t pins)
 // Translate a state ID to a state name
 char *schedStateName(int state)
 {
+    static char other[20];
+    return schedStateName_r(state, other);
+}
+
+// Translate a state ID to a state name (reentrant)
+char *schedStateName_r(int state, char *app_specific_state)
+{
     switch (state) {
     case STATE_UNDEFINED:
         return "UNDEFINED";
@@ -135,10 +142,10 @@ char *schedStateName(int state)
         return "SENDING_REQUEST";
     case STATE_RECEIVING_RESPONSE:
         return "RECEIVING_RESPONSE";
+    default:
+        JItoA(state, app_specific_state);
+        return app_specific_state;
     }
-    static char other[20];
-    JItoA(state, other);
-    return other;
 }
 
 // See if the app is currently active
@@ -173,8 +180,10 @@ void schedSetCompletionState(int appID, int successstate, int errorstate)
     if (state[appID].completionSuccessState != successstate || state[appID].completionErrorState != errorstate) {
         state[appID].completionSuccessState = successstate;
         state[appID].completionErrorState = errorstate;
+        char app_specific_state_1[20];
+        char app_specific_state_2[20];
         APP_PRINTF("%s state will be set to %s on success, or %s on error\r\n",
-                   config[appID].name, schedStateName(successstate), schedStateName(errorstate));
+                   config[appID].name, schedStateName_r(successstate, app_specific_state_1), schedStateName_r(errorstate, app_specific_state_2));
     }
 }
 
