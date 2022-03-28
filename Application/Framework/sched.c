@@ -119,15 +119,8 @@ void schedDispatchISR(uint16_t pins)
     }
 }
 
-// Translate a state ID to a state name
-char *schedStateName(int state)
-{
-    static char other[20];
-    return schedStateName_r(state, other);
-}
-
-// Translate a state ID to a state name (reentrant)
-char *schedStateName_r(int state, char *app_specific_state)
+// Translate a state ID to a state name (static)
+const char *schedStateName(int state, const char * default_state)
 {
     switch (state) {
     case STATE_UNDEFINED:
@@ -143,8 +136,7 @@ char *schedStateName_r(int state, char *app_specific_state)
     case STATE_RECEIVING_RESPONSE:
         return "RECEIVING_RESPONSE";
     default:
-        JItoA(state, app_specific_state);
-        return app_specific_state;
+        return default_state;
     }
 }
 
@@ -165,7 +157,9 @@ void schedSetState(int appID, int newstate, const char *why)
 {
     if (state[appID].currentState != newstate) {
         state[appID].currentState = newstate;
-        APP_PRINTF("%s now %s", config[appID].name, schedStateName(newstate));
+        char default_state[20];
+        JItoA(newstate, default_state);
+        APP_PRINTF("%s now %s", config[appID].name, schedStateName(newstate, default_state));
         if (why != NULL) {
             APP_PRINTF(" (%s)\r\n", why);
         } else {
@@ -180,10 +174,12 @@ void schedSetCompletionState(int appID, int successstate, int errorstate)
     if (state[appID].completionSuccessState != successstate || state[appID].completionErrorState != errorstate) {
         state[appID].completionSuccessState = successstate;
         state[appID].completionErrorState = errorstate;
-        char app_specific_state_1[20];
-        char app_specific_state_2[20];
+        char default_success_state[20];
+        JItoA(successstate, default_success_state);
+        char default_error_state[20];
+        JItoA(errorstate, default_error_state);
         APP_PRINTF("%s state will be set to %s on success, or %s on error\r\n",
-                   config[appID].name, schedStateName_r(successstate, app_specific_state_1), schedStateName_r(errorstate, app_specific_state_2));
+                   config[appID].name, schedStateName(successstate, default_success_state), schedStateName(errorstate, default_error_state));
     }
 }
 
