@@ -134,8 +134,11 @@ void MX_AppISR(uint16_t GPIO_Pin)
     // send the interrupt to sensors through a
     // different but compatible path.
     if ((GPIO_Pin & BUTTON1_Pin) != 0) {
-        GPIO_Pin &= ~BUTTON1_Pin;
         appButtonWakeup();
+        GPIO_Pin &= ~BUTTON1_Pin;
+        if (GPIO_Pin == 0) {
+            return;
+        }
     }
 
     // Dispatch the interrupts to all sensors
