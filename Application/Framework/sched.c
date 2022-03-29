@@ -119,24 +119,33 @@ void schedDispatchISR(uint16_t pins)
     }
 }
 
-// Translate a state ID to a state name (static)
-const char *schedStateName(int state, const char * default_state)
+// Translate a state ID to a state name (reentrant)
+void schedStateName(int state, char * state_name)
 {
+    if (!state_name) {return;}
+
     switch (state) {
     case STATE_UNDEFINED:
-        return "UNDEFINED";
+        strcpy(state_name, "UNDEFINED");
+        break;
     case STATE_ONCE:
-        return "ONCE";
+        strcpy(state_name, "ONCE");
+        break;
     case STATE_ACTIVATED:
-        return "ACTIVATED";
+        strcpy(state_name, "ACTIVATED");
+        break;
     case STATE_DEACTIVATED:
-        return "DEACTIVATED";
+        strcpy(state_name, "DEACTIVATED");
+        break;
     case STATE_SENDING_REQUEST:
-        return "SENDING_REQUEST";
+        strcpy(state_name, "SENDING_REQUEST");
+        break;
     case STATE_RECEIVING_RESPONSE:
-        return "RECEIVING_RESPONSE";
+        strcpy(state_name, "RECEIVING_RESPONSE");
+        break;
     default:
-        return default_state;
+        JItoA(state, state_name);
+        break;
     }
 }
 
@@ -157,9 +166,9 @@ void schedSetState(int appID, int newstate, const char *why)
 {
     if (state[appID].currentState != newstate) {
         state[appID].currentState = newstate;
-        char default_state[20];
-        JItoA(newstate, default_state);
-        APP_PRINTF("%s now %s", config[appID].name, schedStateName(newstate, default_state));
+        char state_name[20];
+        schedStateName(newstate, state_name);
+        APP_PRINTF("%s now %s", config[appID].name, state_name);
         if (why != NULL) {
             APP_PRINTF(" (%s)\r\n", why);
         } else {
@@ -174,12 +183,11 @@ void schedSetCompletionState(int appID, int successstate, int errorstate)
     if (state[appID].completionSuccessState != successstate || state[appID].completionErrorState != errorstate) {
         state[appID].completionSuccessState = successstate;
         state[appID].completionErrorState = errorstate;
-        char default_success_state[20];
-        JItoA(successstate, default_success_state);
-        char default_error_state[20];
-        JItoA(errorstate, default_error_state);
+        char success_state_name[20], error_state_name[20];
+        schedStateName(successstate, success_state_name);
+        schedStateName(errorstate, error_state_name);
         APP_PRINTF("%s state will be set to %s on success, or %s on error\r\n",
-                   config[appID].name, schedStateName(successstate, default_success_state), schedStateName(errorstate, default_error_state));
+                   config[appID].name, success_state_name, error_state_name);
     }
 }
 

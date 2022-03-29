@@ -77,4 +77,4 @@ void schedResponseCompleted(J *rsp);
 void schedSendingRequest(bool responseRequested);
 void schedSetCompletionState(int appID, int successState, int errorState);
 void schedSetState(int appID, int newstate, const char *why);
-const char *schedStateName(int state, const char * default_state);
+void schedStateName(int state, char * state_name);
