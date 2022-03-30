@@ -270,12 +270,6 @@ static void addNote(uint32_t count)
 void pingResponse(int appID, J *rsp, void *appContext)
 {
 
-    // If this is a response timeout, indicate as such
-    if (rsp == NULL) {
-        APP_PRINTF("ping: response timeout\r\n");
-        return;
-    }
-
     // See if there's an error
     char *err = JGetString(rsp, "err");
     if (err[0] != '\0') {
