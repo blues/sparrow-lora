@@ -53,6 +53,9 @@ typedef struct {
     // Application Context
     void *appContext;
 
+    // ISR Pin Mask
+    uint16_t interruptPinMask;
+
 } schedAppConfig;
 
 // init.c

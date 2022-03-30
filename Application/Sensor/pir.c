@@ -49,6 +49,7 @@ bool pirInit()
         .pollPeriodSecs = 15,
         .activateFn = NULL,
         .interruptFn = pirISR,
+        .interruptPinMask = PIR_DIRECT_LINK_Pin,
         .pollFn = pirPoll,
         .responseFn = pirResponse,
     };
@@ -353,31 +354,26 @@ void pirISR(int appID, uint16_t pins, void *appContext)
 {
 
     // Set the state to 'motion' and immediately schedule
-    if ((pins & PIR_DIRECT_LINK_Pin) != 0) {
+    // Record the motion event
+    motionEvents++;
+    motionEventsTotal++;
+    resetInterrupt();
 
-        // Record the motion event
-        motionEvents++;
-        motionEventsTotal++;
-        resetInterrupt();
-
-        // See if we're past the suppression interval
-        int64_t nowMs = TIMER_IF_GetTimeMs();
-        if (lastInterruptMs == 0) {
-            lastInterruptMs = nowMs;
-        } else {
-            uint32_t elapsedSecs = (uint32_t) (nowMs - lastInterruptMs) / 1000;
-            lastInterruptMs = nowMs;
-            if (elapsedSecs < (PIR_SUPPRESSION_MINS*60)) {
-                return;
-            }
+    // See if we're past the suppression interval
+    int64_t nowMs = TIMER_IF_GetTimeMs();
+    if (lastInterruptMs == 0) {
+        lastInterruptMs = nowMs;
+    } else {
+        uint32_t elapsedSecs = (uint32_t) (nowMs - lastInterruptMs) / 1000;
+        lastInterruptMs = nowMs;
+        if (elapsedSecs < (PIR_SUPPRESSION_MINS*60)) {
+            return;
         }
+    }
 
-        // Activate the scheduler
-        if (!schedIsActive(appID)) {
-            schedActivateNowFromISR(appID, true, STATE_MOTION_CHECK);
-        }
-
-        return;
+    // Activate the scheduler
+    if (!schedIsActive(appID)) {
+        schedActivateNowFromISR(appID, true, STATE_MOTION_CHECK);
     }
 
 }

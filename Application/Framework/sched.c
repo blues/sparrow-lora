@@ -113,7 +113,7 @@ void schedDisable(int appID)
 void schedDispatchISR(uint16_t pins)
 {
     for (int i=0; i<apps; i++) {
-        if (!state[i].disabled && config[i].interruptFn != NULL) {
+        if (!state[i].disabled && config[i].interruptFn != NULL && (config[i].interruptPinMask & pins)) {
             config[i].interruptFn(i, pins, config[i].appContext);
         }
     }
