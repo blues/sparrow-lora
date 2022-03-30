@@ -49,6 +49,7 @@ bool pingInit()
         .pollPeriodSecs = 15,
         .activateFn = NULL,
         .interruptFn = pingISR,
+        .interruptPinMask = BUTTON1_Pin,
         .pollFn = pingPoll,
         .responseFn = pingResponse,
     };
@@ -121,10 +122,7 @@ void pingISR(int appID, uint16_t pins, void *appContext)
 {
 
     // Set the state to button, and immediately schedule
-    if ((pins & BUTTON1_Pin) != 0) {
-        schedActivateNowFromISR(appID, true, STATE_BUTTON);
-        return;
-    }
+    schedActivateNowFromISR(appID, true, STATE_BUTTON);
 
 }
 
