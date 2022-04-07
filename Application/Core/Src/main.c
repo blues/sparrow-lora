@@ -502,6 +502,10 @@ void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c)
     }
 }
 
+bool MY_I2C2_Ping(uint16_t i2cAddress, uint32_t timeoutMs, uint32_t attempts) {
+    return (HAL_OK == HAL_I2C_IsDeviceReady(&hi2c2, (uint16_t)(i2cAddress << 1), attempts, timeoutMs));
+}
+
 // Receive from a register, and return true for success or false for failure
 bool MY_I2C2_ReadRegister(uint16_t i2cAddress, uint8_t Reg, void *data, uint16_t maxdatalen, uint32_t timeoutMs)
 {
