@@ -440,7 +440,7 @@ void MX_I2C2_Init(void)
 
     // Configure I2C
     hi2c2.Instance = I2C2;
-    hi2c2.Init.Timing = 0x307075B1;     // Same as notecard timing
+    hi2c2.Init.Timing = 0x30F03B23;     // Tuned to 100kHz
     hi2c2.Init.OwnAddress1 = 0;
     hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
     hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
