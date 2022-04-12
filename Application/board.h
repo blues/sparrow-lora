@@ -113,34 +113,55 @@
 #define I2C2_TX_DMA_IRQn                DMA1_Channel6_IRQn
 #define I2C2_TX_DMA_IRQHandler          DMA1_Channel6_IRQHandler
 
-// ADC
+// ADC (VREFINT and A0 are always-on; the others are enabled only if requested)
 #define ADC_DMA_Channel                 DMA1_Channel7
 #define ADC_DMA_IRQn                    DMA1_Channel7_IRQn
 #define ADC_DMA_IRQHandler              DMA1_Channel7_IRQHandler
+
 #define VREFINT_ADC_Channel             ADC_CHANNEL_VREFINT
 #define VREFINT_ADC_RankIndex           0                   // VREFINT will always be first
 #define VREFINT_ADC_Rank                ADC_REGULAR_RANK_1
+
 #define A0_Pin                          GPIO_PIN_4      	// PB4 (A0 is used for battery monitoring)
 #define A0_GPIO_Port                    GPIOB
 #define A0_ADC_Channel                  ADC_CHANNEL_3
 #define A0_ADC_RankIndex                1
 #define A0_ADC_Rank                     ADC_REGULAR_RANK_2
+
 #define A1_Pin                          GPIO_PIN_2			// PB2
 #define A1_GPIO_Port                    GPIOB
+#ifdef  A1_ENABLED
+#define count_A1                        1
 #define A1_ADC_Channel                  ADC_CHANNEL_4
 #define A1_ADC_RankIndex                2
 #define A1_ADC_Rank                     ADC_REGULAR_RANK_3
+#else
+#define count_A1                        0
+#endif
+
 #define A2_Pin                          GPIO_PIN_10         // PA10
 #define A2_GPIO_Port                    GPIOA
+#ifdef A2_ENABLED
+#define count_a2                        1
 #define A2_ADC_Channel                  ADC_CHANNEL_6
 #define A2_ADC_RankIndex                3
 #define A2_ADC_Rank                     ADC_REGULAR_RANK_4
+#else
+#define count_A2                        0
+#endif
+
 #define A3_Pin                          GPIO_PIN_15         // PA15
 #define A3_GPIO_Port                    GPIOA
+#ifdef A3_ENABLED
+#define count_A3                        1
 #define A3_ADC_Channel                  ADC_CHANNEL_11
 #define A3_ADC_RankIndex                4
 #define A3_ADC_Rank                     ADC_REGULAR_RANK_5
-#define ADC_TOTAL                       5                   // # of ADCs
+#else
+#define count_A3                        0
+#endif
+
+#define ADC_TOTAL                       (2 + count_A1 + count_A2 + count_A3)
 #define ADC_COUNT                       (ADC_TOTAL-1)       // # of usable ADCs without VREFINT
 
 // USART1

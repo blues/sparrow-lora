@@ -59,12 +59,18 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
         GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         HAL_GPIO_Init(A0_GPIO_Port, &GPIO_InitStruct);
+#ifdef A1_ENABLED
         GPIO_InitStruct.Pin = A1_Pin;
         HAL_GPIO_Init(A1_GPIO_Port, &GPIO_InitStruct);
+#endif
+#ifdef A2_ENABLED
         GPIO_InitStruct.Pin = A2_Pin;
         HAL_GPIO_Init(A2_GPIO_Port, &GPIO_InitStruct);
+#endif
+#ifdef A3_ENABLED
         GPIO_InitStruct.Pin = A3_Pin;
         HAL_GPIO_Init(A3_GPIO_Port, &GPIO_InitStruct);
+#endif
 
         // DMA
         hdma_adc.Instance = ADC_DMA_Channel;

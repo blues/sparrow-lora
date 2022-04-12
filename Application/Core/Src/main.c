@@ -271,20 +271,26 @@ void MX_ADC_Init(void)
     sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_2;
     HAL_ADC_ConfigChannel(&hadc, &sConfig);
 
+#ifdef A1_ENABLED
     sConfig.Channel = A1_ADC_Channel;
     sConfig.Rank = A1_ADC_Rank;
     sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_2;
     HAL_ADC_ConfigChannel(&hadc, &sConfig);
+#endif
 
+#ifdef A2_ENABLED
     sConfig.Channel = A2_ADC_Channel;
     sConfig.Rank = A2_ADC_Rank;
     sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_2;
     HAL_ADC_ConfigChannel(&hadc, &sConfig);
+#endif
 
+#ifdef A3_ENABLED
     sConfig.Channel = A3_ADC_Channel;
     sConfig.Rank = A3_ADC_Rank;
     sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_2;
     HAL_ADC_ConfigChannel(&hadc, &sConfig);
+#endif
 
     // Enable DMA interrupts
     HAL_NVIC_SetPriority(ADC_DMA_IRQn, 2, 0);
