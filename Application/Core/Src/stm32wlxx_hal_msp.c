@@ -111,9 +111,15 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
 
         // GPIO
         HAL_GPIO_DeInit(A0_GPIO_Port, A0_Pin);
+#ifdef A1_ENABLED
         HAL_GPIO_DeInit(A1_GPIO_Port, A1_Pin);
+#endif
+#ifdef A2_ENABLED
         HAL_GPIO_DeInit(A2_GPIO_Port, A2_Pin);
+#endif
+#ifdef A3_ENABLED
         HAL_GPIO_DeInit(A3_GPIO_Port, A3_Pin);
+#endif
 
         // DMA
         HAL_DMA_DeInit(hadc->DMA_Handle);
