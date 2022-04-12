@@ -18,6 +18,7 @@
 #endif
 
 // All pins on the STM32WLE5 UFQFPN48 package
+#ifdef STM32_PACKAGE_PIN_NUMBERS
 #define PB3     1                   // RFSEL_0
 #define PB4     2                   // A0
 #define PB5     3                   // RFSEL_1
@@ -43,6 +44,7 @@
 #define PC13    38                  // BUTTON1
 #define PA14    42                  // SWCLK
 #define PA15    43                  // A3
+#endif
 
 // Arduino pin definitions on the Nucleo
 #define ARDUINO_TL_1                // XX NC
