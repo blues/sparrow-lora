@@ -5,6 +5,13 @@
 #include "appdefs.h"
 #include "main.h"
 
+// Addresses of the BME sensor used to identify
+// the Sparrow Reference Sensor Board
+#define BME280_I2C_ADDR_PRIM        UINT8_C(0x76)
+#define BME280_I2C_ADDR_SEC         UINT8_C(0x77)
+#define BME280_I2C_TIMEOUT_MS       100
+#define BME280_I2C_RETRY_COUNT      3
+
 // Suppression timer for PIR activity, so that in a high-activity area
 // it isn't continuously sending messages
 #define PIR_SUPPRESSION_MINS        15
@@ -209,11 +216,12 @@ void pirPoll(int appID, int state, void *appContext)
 {
 
     // Disable if this isn't a reference sensor
-    if (appSKU() != SKU_REFERENCE) {
+    if (!MY_I2C2_Ping(BME280_I2C_ADDR_PRIM, BME280_I2C_TIMEOUT_MS, BME280_I2C_RETRY_COUNT)) {
+    } else if (!MY_I2C2_Ping(BME280_I2C_ADDR_SEC, BME280_I2C_TIMEOUT_MS, BME280_I2C_RETRY_COUNT)) {
+    } else {
+        // Not a Sparrow Reference Sensor Board
         APP_PRINTF("pir: [ERROR] Sensor hardware unavailable!\r\n");
         APP_PRINTF("pir: Are you using a Sparrow Reference Sensor Board?\r\n");
-        APP_PRINTF("pir: Hardware discovery performed in the bme application.\r\n");
-        APP_PRINTF("pir: Ensure the bme application is enabled and initialized prior to this application.\r\n");
 
         HAL_NVIC_DisableIRQ(PIR_DIRECT_LINK_EXTI_IRQn);
         schedDisable(appID);
