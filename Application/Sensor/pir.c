@@ -210,6 +210,11 @@ void pirPoll(int appID, int state, void *appContext)
 
     // Disable if this isn't a reference sensor
     if (appSKU() != SKU_REFERENCE) {
+        APP_PRINTF("pir: [ERROR] Sensor hardware unavailable!\r\n");
+        APP_PRINTF("pir: Are you using a Sparrow Reference Sensor Board?\r\n");
+        APP_PRINTF("pir: Hardware discovery performed in the bme application.\r\n");
+        APP_PRINTF("pir: Ensure the bme application is enabled and initialized prior to this application.\r\n");
+
         HAL_NVIC_DisableIRQ(PIR_DIRECT_LINK_EXTI_IRQn);
         schedDisable(appID);
         return;

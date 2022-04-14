@@ -82,6 +82,9 @@ bool bmeInit()
     HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_RESET);
     if (success) {
         appSetSKU(SKU_REFERENCE);
+    } else {
+        APP_PRINTF("bme: [ERROR] Sensor hardware unavailable!\r\n");
+        APP_PRINTF("bme: Are you using a Sparrow Reference Sensor Board?\r\n");
     }
 
     // Done
