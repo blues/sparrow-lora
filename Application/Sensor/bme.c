@@ -53,21 +53,6 @@ static void bmeResponse(int appID, J *rsp, void *appContext);
 bool bmeInit()
 {
 
-    // Register the app
-    schedAppConfig config = {
-        .name = "bme",
-        .activationPeriodSecs = 60 * 60,
-        .pollPeriodSecs = 15,
-        .activateFn = NULL,
-        .interruptFn = NULL,
-        .pollFn = bmePoll,
-        .responseFn = bmeResponse,
-    };
-    appID = schedRegisterApp(&config);
-    if (appID < 0) {
-        return false;
-    }
-
     // Power on the sensor to see if it's here
     GPIO_InitTypeDef init = {0};
     init.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -82,6 +67,23 @@ bool bmeInit()
     HAL_GPIO_WritePin(BME_POWER_GPIO_Port, BME_POWER_Pin, GPIO_PIN_RESET);
     if (success) {
         appSetSKU(SKU_REFERENCE);
+    } else {
+        return false;
+    }
+
+    // Register the app
+    schedAppConfig config = {
+        .name = "bme",
+        .activationPeriodSecs = 60 * 60,
+        .pollPeriodSecs = 15,
+        .activateFn = NULL,
+        .interruptFn = NULL,
+        .pollFn = bmePoll,
+        .responseFn = bmeResponse,
+    };
+    appID = schedRegisterApp(&config);
+    if (appID < 0) {
+        return false;
     }
 
     // Done

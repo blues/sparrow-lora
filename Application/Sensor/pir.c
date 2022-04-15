@@ -5,6 +5,13 @@
 #include "appdefs.h"
 #include "main.h"
 
+// Addresses of the BME sensor used to identify
+// the Sparrow Reference Sensor Board
+#define BME280_I2C_ADDR_PRIM        UINT8_C(0x76)
+#define BME280_I2C_ADDR_SEC         UINT8_C(0x77)
+#define BME280_I2C_TIMEOUT_MS       100
+#define BME280_I2C_RETRY_COUNT      3
+
 // Suppression timer for PIR activity, so that in a high-activity area
 // it isn't continuously sending messages
 #define PIR_SUPPRESSION_MINS        15
@@ -41,6 +48,14 @@ static void resetInterrupt(void);
 // Scheduled App One-Time Init
 bool pirInit()
 {
+
+    // Do not attempt to initialize if this isn't a reference sensor
+    if (!MY_I2C2_Ping(BME280_I2C_ADDR_PRIM, BME280_I2C_TIMEOUT_MS, BME280_I2C_RETRY_COUNT)) {
+    } else if (!MY_I2C2_Ping(BME280_I2C_ADDR_SEC, BME280_I2C_TIMEOUT_MS, BME280_I2C_RETRY_COUNT)) {
+    } else {
+        // Not a Sparrow Reference Sensor Board
+        return false;
+    }
 
     // Register the app
     schedAppConfig config = {
@@ -207,14 +222,6 @@ void resetInterrupt()
 // Poller
 void pirPoll(int appID, int state, void *appContext)
 {
-
-    // Disable if this isn't a reference sensor
-    if (appSKU() != SKU_REFERENCE) {
-        HAL_NVIC_DisableIRQ(PIR_DIRECT_LINK_EXTI_IRQn);
-        schedDisable(appID);
-        return;
-    }
-
     // Switch based upon state
     switch (state) {
 
