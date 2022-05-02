@@ -346,14 +346,15 @@ bool MX_ADC_Values(uint16_t *wordValues, double *voltageValues, double *vref)
         *vref = ((double) VrefInt_mVolt) / 1000;
     }
 
-    // Calculate return array of voltages, skipping the first which is vrefint
-    for (int rankIndex=1; rankIndex<ADC_COUNT; rankIndex++) {
+    // Calculate return array of voltages, noting that the adcValues array is skewed
+    // by 1 because of vrefint being adcValues[0] (see above)
+    for (int i=0; i<ADC_COUNT; i++) {
         if (wordValues != NULL) {
-            wordValues[rankIndex-1] = adcValues[rankIndex] << 4;    // 12-bit to 16-bit scale
+            wordValues[i] = adcValues[i+1] << 4;    // 12-bit to 16-bit scale
         }
         if (voltageValues != NULL) {
-            double v = __LL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, adcValues[rankIndex], LL_ADC_RESOLUTION_12B);
-            voltageValues[rankIndex-1] = ((double) v) / 1000;
+            double v = __LL_ADC_CALC_DATA_TO_VOLTAGE(VDDA_APPLI, adcValues[i+1], LL_ADC_RESOLUTION_12B);
+            voltageValues[i] = ((double) v) / 1000;
         }
     }
 
@@ -384,10 +385,10 @@ double calibrateVoltage(double v)
 {
 #if (CURRENT_BOARD != BOARD_NUCLEO)
 
-    // If the dev supplies 3.3v directly to the QUIIC connector, it will work but
+    // If the dev supplies 3.3v directly to the QWIIC connector, it will work but
     // by bypassing the voltage regulator we can't read the voltage from the regulator's
     // battery monitor.  However, we DO know the voltage because it must be 3.3v
-    // to have been supplied at the QUIIC connector.
+    // to have been supplied at the QWIIC connector.
     if (v < 0.01) {
 
         v = ((double) VDDA_APPLI) / 1000.0;
