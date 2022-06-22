@@ -1,104 +1,104 @@
 ###############################################################################
 #
-# IAR ELF Linker V9.20.2.320/W64 for ARM                  02/May/2022  16:08:28
+# IAR ELF Linker V9.20.2.320/W64 for ARM                  23/Jun/2022  01:28:07
 # Copyright 2007-2021 IAR Systems AB.
 #
 #    Output file  =
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Exe\sparrow.out
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Exe\sparrow.out
 #    Map file     =
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\List\sparrow.map
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\List\sparrow.map
 #    Command line =
 #        -f
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Exe\sparrow.out.rsp
-#        (C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\app.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\appinit.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\atp.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Gateway\auth.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\bme.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\bme280\bme280.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\button.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\debug.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\dfu.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\dfuload.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\flash.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\gateway.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\init.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\led.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\main.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_atof.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_b64.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_cjson.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_cjson_helpers.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_const.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_ftoa.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_helpers.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_hooks.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_i2c.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_md5.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_request.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_serial.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_str.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_ua.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\note.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\ping.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\pir.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\post.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Middlewares\SubGHz_Phy\radio.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\radio_board_if.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Middlewares\SubGHz_Phy\radio_driver.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\radioinit.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\sched.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\sensor.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\EWARM\startup_stm32wle5xx.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_adv_trace.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_lpm.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\stm32_lpm_if.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_mem.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_seq.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_systime.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_timer.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_tiny_vsnprintf.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_adc.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_adc_ex.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_cortex.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_cryp.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_dma.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_dma_ex.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_exti.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_flash.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_flash_ex.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_gpio.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_i2c.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_i2c_ex.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\stm32wlxx_hal_msp.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_pwr.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_pwr_ex.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_rcc.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_rcc_ex.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_rng.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_rtc.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_rtc_ex.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_spi.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_subghz.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_tim.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_tim_ex.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_uart.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_uart_ex.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\stm32wlxx_it.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\CMSIS\system_stm32wlxx.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\timer_if.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\trace.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\usart_if.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\util.o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\util_if.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Exe\sparrow.out.rsp
+#        (C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\app.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\appinit.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\atp.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Gateway\auth.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\bme.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\bme280\bme280.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\button.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\debug.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\dfu.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\dfuload.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\flash.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\gateway.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\init.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\led.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\main.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_atof.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_b64.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_cjson.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_cjson_helpers.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_const.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_ftoa.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_helpers.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_hooks.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_i2c.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_md5.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_request.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_serial.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_str.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c\n_ua.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\note.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\ping.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\pir.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\post.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Middlewares\SubGHz_Phy\radio.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\radio_board_if.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Middlewares\SubGHz_Phy\radio_driver.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\radioinit.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\sched.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\sensor.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\EWARM\startup_stm32wle5xx.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_adv_trace.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_lpm.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\stm32_lpm_if.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_mem.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_seq.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_systime.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_timer.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities\stm32_tiny_vsnprintf.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_adc.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_adc_ex.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_cortex.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_cryp.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_dma.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_dma_ex.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_exti.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_flash.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_flash_ex.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_gpio.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_i2c.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_i2c_ex.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\stm32wlxx_hal_msp.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_pwr.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_pwr_ex.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_rcc.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_rcc_ex.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_rng.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_rtc.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_rtc_ex.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_spi.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_subghz.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_tim.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_tim_ex.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_uart.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver\stm32wlxx_hal_uart_ex.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\stm32wlxx_it.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\CMSIS\system_stm32wlxx.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\timer_if.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\trace.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\usart_if.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework\util.o
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core\util_if.o
 #        --redirect _Printf=_PrintfFull --redirect _Scanf=_ScanfFull
 #        --no_out_extension -o
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Exe\sparrow.out
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Exe\sparrow.out
 #        --map
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\List\sparrow.map
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\List\sparrow.map
 #        --config
-#        C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\stm32wle5xx_flash.icf
+#        C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\stm32wle5xx_flash.icf
 #        --semihosting --entry __iar_program_start --vfe --text_out locale)
 #
 ###############################################################################
@@ -850,7 +850,7 @@ command line/config:
     ---------------------------------------------------
     Total:
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core: [1]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core: [1]
     debug.o                       540               518
     main.o                      3'360      115    2'449
     radio_board_if.o              252
@@ -863,12 +863,12 @@ C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core:
     ---------------------------------------------------
     Total:                      7'360      199    2'975
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\EWARM: [2]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\EWARM: [2]
     startup_stm32wle5xx.o         456
     ---------------------------------------------------
     Total:                        456
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework: [3]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework: [3]
     app.o                       9'500    2'389    2'866
     appinit.o                   1'680      312       18
     atp.o                       2'116      908      499
@@ -887,12 +887,12 @@ C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Frame
     ---------------------------------------------------
     Total:                     28'164    6'548    3'725
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Gateway: [4]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Gateway: [4]
     auth.o                        592       91      276
     ---------------------------------------------------
     Total:                        592       91      276
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor: [5]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor: [5]
     bme.o                       1'776      128      152
     button.o                      544        8
     init.o                         18
@@ -900,17 +900,17 @@ C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Senso
     ---------------------------------------------------
     Total:                      3'374      220      176
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\bme280: [6]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\bme280: [6]
     bme280.o                    2'538
     ---------------------------------------------------
     Total:                      2'538
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\CMSIS: [7]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\CMSIS: [7]
     system_stm32wlxx.o              2      161        4
     ---------------------------------------------------
     Total:                          2      161        4
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver: [8]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver: [8]
     stm32wlxx_hal.o               200        3       12
     stm32wlxx_hal_adc.o         2'912
     stm32wlxx_hal_adc_ex.o        162
@@ -938,13 +938,13 @@ C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx
     ---------------------------------------------------
     Total:                     25'282       99       36
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Middlewares\SubGHz_Phy: [9]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Middlewares\SubGHz_Phy: [9]
     radio.o                     4'241      309      397
     radio_driver.o              2'312                16
     ---------------------------------------------------
     Total:                      6'553      309      413
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities: [10]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities: [10]
     stm32_adv_trace.o             832               792
     stm32_lpm.o                   120                 8
     stm32_mem.o                    14
@@ -954,7 +954,7 @@ C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities: [10]
     ---------------------------------------------------
     Total:                      2'530       88      972
 
-C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c: [11]
+C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c: [11]
     n_atof.o                      508
     n_b64.o                       200      256
     n_cjson.o                   3'428                 8
@@ -2447,17 +2447,17 @@ zoneForceRefresh        0x2000'0146    0x1  Data  Lc  n_helpers.o [11]
 zoneStillUnavailable    0x2000'0145    0x1  Data  Lc  n_helpers.o [11]
 
 
-[1] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core
-[2] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\EWARM
-[3] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework
-[4] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Gateway
-[5] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor
-[6] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\bme280
-[7] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\CMSIS
-[8] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver
-[9] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Middlewares\SubGHz_Phy
-[10] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities
-[11] = C:\Users\rozzie\dev\sparrow-lora\Application\EWARM\sparrow\Obj\note-c
+[1] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Core
+[2] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\EWARM
+[3] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Framework
+[4] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Gateway
+[5] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor
+[6] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Application\Sensor\bme280
+[7] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\CMSIS
+[8] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Drivers\STM32WLxx_HAL_Driver
+[9] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Middlewares\SubGHz_Phy
+[10] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\Utilities
+[11] = C:\Users\jwied\Documents\repositories\sparrow-lora\Application\EWARM\sparrow\Obj\note-c
 [12] = dl7M_tlf.a
 [13] = m7M_tl.a
 [14] = rt7M_tl.a

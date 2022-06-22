@@ -87,21 +87,12 @@ char *postTest(uint32_t whatToTest)
         }
 
         if (appSKU() != SKU_REFERENCE) {
-#if CURRENT_BOARD == BOARD_SPARROW_V1_0
             if (!pinIsFloat("I2C2_SDA", I2C2_SDA_GPIO_Port, I2C2_SDA_Pin)) {
                 return err;
             }
             if (!pinIsFloat("I2C2_SCL", I2C2_SCL_GPIO_Port, I2C2_SCL_Pin)) {
                 return err;
             }
-#else
-            if (!pinIsHigh("I2C2_SDA", I2C2_SDA_GPIO_Port, I2C2_SDA_Pin)) {
-                return err;
-            }
-            if (!pinIsHigh("I2C2_SCL", I2C2_SCL_GPIO_Port, I2C2_SCL_Pin)) {
-                return err;
-            }
-#endif
         }
 
         if (!pinIsHigh("USART1_RX", USART1_RX_GPIO_Port, USART1_RX_Pin)) {

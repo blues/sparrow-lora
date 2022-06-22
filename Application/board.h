@@ -12,7 +12,7 @@
 
 #define BOARD_NUCLEO        0           // NUCLEO-WL55JC1
 #define BOARD_SPARROW_V1_0  1           // v1.0 spin of board
-#define BOARD_SPARROW_V1_1  2           // v1.1 adds i2c2 pullups, fixes switch pullups
+#define BOARD_SPARROW_V1_1  2           // v1.1 fixes switch pullups and adds i2c2 pullups to reference sensor
 #ifndef CURRENT_BOARD
   #define CURRENT_BOARD     BOARD_SPARROW_V1_1
 #endif
