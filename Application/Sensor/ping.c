@@ -273,7 +273,7 @@ void pingResponse(int appID, J *rsp, void *appContext)
     // See if there's an error
     char *err = JGetString(rsp, "err");
     if (err[0] != '\0') {
-        APP_PRINTF("sensor error response: %d\r\n", err);
+        APP_PRINTF("ping: gateway returned ERROR --> %s\r\n", err);
         return;
     }
 
