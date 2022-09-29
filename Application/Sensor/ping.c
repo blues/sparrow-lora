@@ -152,7 +152,7 @@ bool sendHealthLogMessage(bool immediate)
     }
 
     // Format the health message
-    char message[80];
+    char message[80] = {0};
     utilAddressToText(ourAddress, message, sizeof(message));
     if (sensorName[0] != '\0') {
         strlcat(message, " (", sizeof(message));
@@ -273,7 +273,7 @@ void pingResponse(int appID, J *rsp, void *appContext)
     // See if there's an error
     char *err = JGetString(rsp, "err");
     if (err[0] != '\0') {
-        APP_PRINTF("sensor error response: %d\r\n", err);
+        APP_PRINTF("ping: gateway returned error: %s\r\n", err);
         return;
     }
 
