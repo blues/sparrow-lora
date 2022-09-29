@@ -109,7 +109,7 @@ bool sendHealthLogMessage(bool immediate)
     }
 
     // Format the health message
-    char message[80];
+    char message[80] = {0};
     utilAddressToText(ourAddress, message, sizeof(message));
     if (sensorName[0] != '\0') {
         strlcat(message, " (", sizeof(message));
