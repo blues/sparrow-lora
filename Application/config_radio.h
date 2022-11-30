@@ -8,6 +8,22 @@
 #define USE_MODEM_LORA  1
 #define USE_MODEM_FSK   0
 
+// RADIO FREQ
+// The following value shall be used to override ANY hardware
+// related settings with respect to radio frequency.
+// When `RF_FREQ` is either set to zero or left undefined, the
+// configuration will be performed based upon the resisted voltages
+// detected on RFSEL_0_Pin (`PB3`) and RFSEL_1_Pin (`PB5`). The Sparrow
+// developer boards have dedicated DIP switches, which can be used to
+// select a frequency. The frequencies associated with the switches
+// can be found in `Framework/appinit.c:212`, and can even be altered
+// to any desired/compatible values.
+// The developer boards also have exposed pads which allow the DIP
+// switces to be disabled or removed and a fixed voltage to be set.
+// To learn more, check:
+// http://localhost:3001/hardware/sparrow-datasheet#setting-a-frequency-plan
+#define RF_FREQ 0
+
 // RSSI
 // The Received Signal Strength Indication is the received signal power in milliwatts
 // and is measured in dBm. This value can be used as a measurement of how well
@@ -46,21 +62,21 @@
 // Bandwidth, SF, and Coding Rate seems to be a good choice for high penetration based on the document.
 // NOTE: in L.1153 radio.c, if BW=1 and SF=12 it turns on LowDatarateOptimize (LDRO), which is desirable.
 #if (( USE_MODEM_LORA == 1 ) && ( USE_MODEM_FSK == 0 ))
-#define LORA_BANDWIDTH                              1         // [0: 125 kHz, 1: 250 kHz, 2: 500 kHz, 3: Reserved] 
+#define LORA_BANDWIDTH                              1         // [0: 125 kHz, 1: 250 kHz, 2: 500 kHz, 3: Reserved]
 #define LORA_SPREADING_FACTOR                       12        // [SF7..SF12] */
-#define LORA_CODINGRATE                             1         // [1: 4/5, 2: 4/6, 3: 4/7, 4: 4/8] 
-#define LORA_PREAMBLE_LENGTH                        8         // Same for Tx and Rx 
-#define LORA_SYMBOL_TIMEOUT                         5         // Symbols 
+#define LORA_CODINGRATE                             1         // [1: 4/5, 2: 4/6, 3: 4/7, 4: 4/8]
+#define LORA_PREAMBLE_LENGTH                        8         // Same for Tx and Rx
+#define LORA_SYMBOL_TIMEOUT                         5         // Symbols
 #define LORA_FIX_LENGTH_PAYLOAD_ON                  false
 #define LORA_IQ_INVERSION_ON                        false
 
 #elif (( USE_MODEM_LORA == 0 ) && ( USE_MODEM_FSK == 1 ))
 
-#define FSK_FDEV                                    25000     // Hz 
-#define FSK_DATARATE                                50000     // bps 
-#define FSK_BANDWIDTH                               50000     // Hz 
-#define FSK_AFC_BANDWIDTH                           83333     // Hz 
-#define FSK_PREAMBLE_LENGTH                         5         // Same for Tx and Rx 
+#define FSK_FDEV                                    25000     // Hz
+#define FSK_DATARATE                                50000     // bps
+#define FSK_BANDWIDTH                               50000     // Hz
+#define FSK_AFC_BANDWIDTH                           83333     // Hz
+#define FSK_PREAMBLE_LENGTH                         5         // Same for Tx and Rx
 #define FSK_FIX_LENGTH_PAYLOAD_ON                   false
 
 #else
