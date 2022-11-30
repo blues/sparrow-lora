@@ -21,7 +21,7 @@
 // The developer boards also have exposed pads which allow the DIP
 // switces to be disabled or removed and a fixed voltage to be set.
 // To learn more, check:
-// http://localhost:3001/hardware/sparrow-datasheet#setting-a-frequency-plan
+// http://dev.blues.io/hardware/sparrow-datasheet#setting-a-frequency-plan
 #define RF_FREQ 0
 
 // RSSI
