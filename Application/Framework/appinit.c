@@ -187,6 +187,13 @@ void ioInit(void)
 {
     GPIO_InitTypeDef  gpio_init_structure = {0};
 
+#if RF_FREQ != 0
+    // Respect the RF frequency explicitly selected
+    // using `RF_FREQ` from `../config_radio.h`
+    uint32_t freq = RF_FREQ;
+#else
+    uint32_t freq = 915000000;
+#if (CURRENT_BOARD != BOARD_NUCLEO)
     // Compute the RF frequency based on the region switch settings.  Note that
     // we power these pins with LED_RED so that even if the user happens to select
     // an invalid switch combination they aren't a constant current draw on the system.
@@ -194,8 +201,6 @@ void ioInit(void)
     // frequency plans based on the switches.  We have chosen what we view to be the
     // the most common plans globally, but the developer can feel free to reassign
     // these as is appropriate for their product or market.
-    uint32_t freq = 915000000;
-#if (CURRENT_BOARD != BOARD_NUCLEO)
     gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_init_structure.Pull = GPIO_NOPULL;
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_LOW;
@@ -233,13 +238,14 @@ void ioInit(void)
         // 8 OFF  ON OFF  ON
         freq = 433000000;   // EU433
     }
-    radioSetRFFrequency(freq);
 #ifdef DEBUG_RFSEL
     char *s0 = (gpio0 == PINSTATE_FLOAT ? "float" : (gpio0 == PINSTATE_HIGH ? "high" : "low"));
     char *s1 = (gpio1 == PINSTATE_FLOAT ? "float" : (gpio1 == PINSTATE_HIGH ? "high" : "low"));
     APP_PRINTF("*** rfsel %s %s %dMHz ***\r\n", s0, s1, (freq/1000000));
 #endif
 #endif
+#endif
+    radioSetRFFrequency(freq);
 
     // Init LEDs
     gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
