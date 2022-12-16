@@ -193,7 +193,7 @@ void ioInit(void)
     uint32_t freq = RF_FREQ;
 #else
     uint32_t freq = 915000000;
-#if (CURRENT_BOARD != BOARD_NUCLEO)
+#if SPARROW_HARDWARE
     // Compute the RF frequency based on the region switch settings.  Note that
     // we power these pins with LED_RED so that even if the user happens to select
     // an invalid switch combination they aren't a constant current draw on the system.

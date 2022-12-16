@@ -17,6 +17,11 @@
   #define CURRENT_BOARD     BOARD_SPARROW_V1_1
 #endif
 
+#if (CURRENT_BOARD == BOARD_SPARROW_V1_0 \
+  || CURRENT_BOARD == BOARD_SPARROW_V1_1)
+#define SPARROW_HARDWARE    true        // Identify Sparrow Hardware
+#endif
+
 // All pins on the STM32WLE5 UFQFPN48 package
 #ifdef STM32_PACKAGE_PIN_NUMBERS
 #define PB3     1                   // RFSEL_0
@@ -313,6 +318,6 @@
 
 // Value of analog reference voltage connected to supply Vdda (mV)
 #define VDDA_APPLI          (3300U)
-#if (CURRENT_BOARD != BOARD_NUCLEO)
+#if SPARROW_HARDWARE
 #define BATMON_ADJUSTMENT   3           // Multiplier for RP605Z333B used by Sparrow
 #endif
