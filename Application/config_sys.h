@@ -8,6 +8,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+// Disables support for Inboard DFU
+// Used to ensure there is no interference with Outboard DFU
+#define SPARROW_DISABLE_INBOARD_DFU                     false
+
 // Enables trace output and input on an attached serial terminal.  Note that
 // if using LPUART1 this costs xxx nA, and using USART2 it's crazy expensive.
 // Do NOT ship battery powered products with this enabled.

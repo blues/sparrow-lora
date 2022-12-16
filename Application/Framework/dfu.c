@@ -12,7 +12,9 @@
 // return from this call - just reboot.
 bool noteFirmwareUpdateIfAvailable()
 {
-
+#if SPARROW_DISABLE_INBOARD_DFU
+    return false;
+#else
     // Get flash programming parameters
     uint8_t *flashCodeActiveBase, *flashCodeDFUBase;
     uint32_t flashCodeMaxBytes, flashCodeMaxPages;
@@ -238,5 +240,5 @@ bool noteFirmwareUpdateIfAvailable()
 
     // (will not return here)
     return true;
-
+#endif
 }
