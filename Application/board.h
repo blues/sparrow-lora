@@ -222,32 +222,33 @@
 #define BME_POWER_GPIO_Port             GPIOA
 
 // LEDs
-#if (CURRENT_BOARD != BOARD_NUCLEO)
-#define LED_BLUE_Pin                    GPIO_PIN_1          // PA1
-#define LED_BLUE_GPIO_Port              GPIOA
-#define LED_GREEN_Pin                   GPIO_PIN_12         // PB12
-#define LED_GREEN_GPIO_Port             GPIOB
-#define LED_RED_Pin                     GPIO_PIN_0          // PA0
-#define LED_RED_GPIO_Port               GPIOA
-#else
+#if (CURRENT_BOARD == BOARD_NUCLEO)
 #define LED_BLUE_Pin                    GPIO_PIN_15
 #define LED_BLUE_GPIO_Port              GPIOB
 #define LED_GREEN_Pin                   GPIO_PIN_9
 #define LED_GREEN_GPIO_Port             GPIOB
 #define LED_RED_Pin                     GPIO_PIN_11
 #define LED_RED_GPIO_Port               GPIOB
+#else
+#define LED_BLUE_Pin                    GPIO_PIN_1          // PA1
+#define LED_BLUE_GPIO_Port              GPIOA
+#define LED_GREEN_Pin                   GPIO_PIN_12         // PB12
+#define LED_GREEN_GPIO_Port             GPIOB
+#define LED_RED_Pin                     GPIO_PIN_0          // PA0
+#define LED_RED_GPIO_Port               GPIOA
 #endif
 
-#if (CURRENT_BOARD != BOARD_NUCLEO)
-#define BUTTON1_ACTIVE_HIGH             false
-#define BUTTON1_Pin                     GPIO_PIN_13         // PC13
-#define BUTTON1_GPIO_Port               GPIOC
-#define BUTTON1_EXTI_IRQn               EXTI15_10_IRQn
-#else
+// `PAIR` Button
+#if (CURRENT_BOARD == BOARD_NUCLEO)
 #define BUTTON1_ACTIVE_HIGH             false
 #define BUTTON1_Pin                     GPIO_PIN_0          // PA0
 #define BUTTON1_GPIO_Port               GPIOA
 #define BUTTON1_EXTI_IRQn               EXTI0_IRQn
+#else
+#define BUTTON1_ACTIVE_HIGH             false
+#define BUTTON1_Pin                     GPIO_PIN_13         // PC13
+#define BUTTON1_GPIO_Port               GPIOC
+#define BUTTON1_EXTI_IRQn               EXTI15_10_IRQn
 #endif
 
 #define BUTTONx_IT_PRIORITY             15
@@ -271,20 +272,20 @@
 #endif // Radio GPIO debugging
 
 // Radio front-end control, whose pins are selected based on board type
-#if (CURRENT_BOARD != BOARD_NUCLEO)
-#define FE_CTRL1_Pin                 GPIO_PIN_8             // PA8
-#define FE_CTRL1_GPIO_Port           GPIOA
-#define FE_CTRL2_Pin                 GPIO_PIN_9             // PA9
-#define FE_CTRL2_GPIO_Port           GPIOA
-#define FE_CTRL3_Pin                 GPIO_PIN_8             // PB8
-#define FE_CTRL3_GPIO_Port           GPIOB
-#else
+#if (CURRENT_BOARD == BOARD_NUCLEO)
 #define FE_CTRL1_Pin                 GPIO_PIN_4
 #define FE_CTRL1_GPIO_Port           GPIOC
 #define FE_CTRL2_Pin                 GPIO_PIN_5
 #define FE_CTRL2_GPIO_Port           GPIOC
 #define FE_CTRL3_Pin                 GPIO_PIN_3
 #define FE_CTRL3_GPIO_Port           GPIOC
+#else
+#define FE_CTRL1_Pin                 GPIO_PIN_8             // PA8
+#define FE_CTRL1_GPIO_Port           GPIOA
+#define FE_CTRL2_Pin                 GPIO_PIN_9             // PA9
+#define FE_CTRL2_GPIO_Port           GPIOA
+#define FE_CTRL3_Pin                 GPIO_PIN_8             // PB8
+#define FE_CTRL3_GPIO_Port           GPIOB
 #endif
 
 // TXCO control
