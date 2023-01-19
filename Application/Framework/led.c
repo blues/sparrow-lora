@@ -57,27 +57,45 @@ bool ledDisabled()
 // Initialize the LEDs
 void ledSet()
 {
-    HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+#ifdef USE_LED_PAIR
+    HAL_GPIO_WritePin(LED_PAIR_GPIO_Port, LED_PAIR_Pin, LED_PAIR_ON);
+#endif
+#ifdef USE_LED_RX
+    HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, LED_RX_ON);
+#endif
+#ifdef USE_LED_TX
+    HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_ON);
+#endif
 }
 
 // Initialize the LEDs
 void ledReset()
 {
     walkState = 0;
-    HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+#ifdef USE_LED_PAIR
+    HAL_GPIO_WritePin(LED_PAIR_GPIO_Port, LED_PAIR_Pin, LED_PAIR_OFF);
+#endif
+#ifdef USE_LED_RX
+    HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, LED_RX_OFF);
+#endif
+#ifdef USE_LED_TX
+    HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_OFF);
+#endif
 }
 
 // Begin an LED walk
 void ledWalk()
 {
     uint32_t c = (walkState++) % 4;
-    HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, c == 0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, c == 1 || c == 3 ? GPIO_PIN_SET : GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, c == 2 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+#ifdef USE_LED_PAIR
+    HAL_GPIO_WritePin(LED_PAIR_GPIO_Port, LED_PAIR_Pin, c == 0 ? LED_PAIR_ON : LED_PAIR_OFF);
+#endif
+#ifdef USE_LED_RX
+    HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, c == 1 || c == 3 ? LED_RX_ON : LED_RX_OFF);
+#endif
+#ifdef USE_LED_TX
+    HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, c == 2 ? LED_TX_ON : LED_TX_OFF);
+#endif
 }
 
 // Is in progress?
@@ -127,7 +145,9 @@ void ledIndicatePairInProgress(bool on)
     ledStatePair = on;
     ledStatePairBeganTime = on ? NoteTimeST() : 0;
     ledStatePairTimeWasValid = NoteTimeValidST();
-    HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+#ifdef USE_LED_PAIR
+    HAL_GPIO_WritePin(LED_PAIR_GPIO_Port, LED_PAIR_Pin, on ? LED_PAIR_ON : LED_PAIR_OFF);
+#endif
     APP_PRINTF("%s\r\n", on ? "pairing mode ON" : "pairing mode OFF");
 }
 
@@ -140,12 +160,14 @@ bool ledIsReceiveInProgress()
 // Indicate that a receive is in progress
 void ledIndicateReceiveInProgress(bool on)
 {
+#ifdef USE_LED_RX
     ledStateReceive = on;
     if (ledDisabled()) {
-        HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, LED_RX_OFF);
     } else {
-        HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, on ? LED_RX_ON : LED_RX_OFF);
     }
+#endif
 }
 
 // Is in progress?
@@ -157,12 +179,14 @@ bool ledIsTransmitInProgress()
 // Indicate that a transmit is in progress
 void ledIndicateTransmitInProgress(bool on)
 {
+#ifdef USE_LED_TX
     ledStateTransmit = on;
     if (ledDisabled()) {
-        HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_OFF);
     } else {
-        HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, on ? LED_TX_ON : LED_TX_OFF);
     }
+#endif
 }
 
 // Indicate OK
@@ -189,9 +213,15 @@ uint16_t ledButtonCheck()
     ledsEnabledMs = TIMER_IF_GetTimeMs();
 
     // Wait until released
-    bool redWasOn = HAL_GPIO_ReadPin(LED_RED_GPIO_Port, LED_RED_Pin) != GPIO_PIN_RESET;
-    bool greenWasOn = HAL_GPIO_ReadPin(LED_GREEN_GPIO_Port, LED_GREEN_Pin) != GPIO_PIN_RESET;
-    bool blueWasOn = HAL_GPIO_ReadPin(LED_BLUE_GPIO_Port, LED_BLUE_Pin) != GPIO_PIN_RESET;
+#ifdef USE_LED_TX
+    bool txWasOn = (LED_TX_ON == HAL_GPIO_ReadPin(LED_TX_GPIO_Port, LED_TX_Pin));
+#endif
+#ifdef USE_LED_RX
+    bool rxWasOn = (LED_RX_ON == HAL_GPIO_ReadPin(LED_RX_GPIO_Port, LED_RX_Pin));
+#endif
+#ifdef USE_LED_PAIR
+    bool pairWasOn = (LED_PAIR_ON == HAL_GPIO_ReadPin(LED_PAIR_GPIO_Port, LED_PAIR_Pin));
+#endif
     int flashes = 0;
     uint32_t beganSecs = NoteTimeST();
     uint32_t expireSecs = 15;
@@ -199,15 +229,27 @@ uint16_t ledButtonCheck()
     uint32_t prevQuartile = 0;
     while (NoteTimeST() < beganSecs+expireSecs) {
         if (HAL_GPIO_ReadPin(BUTTON1_GPIO_Port, BUTTON1_Pin) == (BUTTON1_ACTIVE_HIGH ? GPIO_PIN_RESET : GPIO_PIN_SET)) {
-            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, redWasOn ? GPIO_PIN_SET : GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, greenWasOn ? GPIO_PIN_SET : GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, blueWasOn ? GPIO_PIN_SET : GPIO_PIN_RESET);
+#ifdef USE_LED_TX
+            HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, txWasOn ? LED_TX_ON : LED_TX_OFF);
+#endif
+#ifdef USE_LED_RX
+            HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, rxWasOn ? LED_RX_ON : LED_RX_OFF);
+#endif
+#ifdef USE_LED_PAIR
+            HAL_GPIO_WritePin(LED_PAIR_GPIO_Port, LED_PAIR_Pin, pairWasOn ? LED_PAIR_ON : LED_PAIR_OFF);
+#endif
             return (flashes < 2) ? BUTTON_PRESSED : BUTTON_HOLD_ABORTED;
         }
         if (flashes >= 1) {
-            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, (flashes & 1) ? GPIO_PIN_SET : GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, (flashes & 1) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-            HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, (flashes & 1) ? GPIO_PIN_SET : GPIO_PIN_RESET);
+#ifdef USE_LED_TX
+            HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, (flashes & 1) ? LED_TX_ON : LED_TX_OFF);
+#endif
+#ifdef USE_LED_RX
+            HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, (flashes & 1) ? LED_RX_ON : LED_RX_OFF);
+#endif
+#ifdef USE_LED_PAIR
+            HAL_GPIO_WritePin(LED_PAIR_GPIO_Port, LED_PAIR_Pin, (flashes & 1) ? LED_PAIR_ON : LED_PAIR_OFF);
+#endif
         }
         uint32_t elapsed = NoteTimeST() - beganSecs;
         uint32_t quartile = elapsed / (expireSecs/4);

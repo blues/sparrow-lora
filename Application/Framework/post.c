@@ -37,23 +37,35 @@ char *post(uint32_t whatToTest)
     char *failReason = postTest(whatToTest);
     if (failReason == NULL) {
         APP_PRINTF("{\"sensor\":\"%s\"}\r\n\r\n", ourAddressText);
-        HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_RESET);
+#ifdef USE_LED_TX
+        HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_OFF);
+#endif
+#ifdef USE_LED_PAIR
+        HAL_GPIO_WritePin(LED_PAIR_GPIO_Port, LED_PAIR_Pin, LED_PAIR_OFF);
+#endif
         for (;;) {
+#ifdef USE_LED_RX
             HAL_Delay(150);
-            HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, LED_RX_ON);
             HAL_Delay(150);
-            HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, LED_RX_OFF);
+#endif
         }
     } else {
         APP_PRINTF("{\"sensor\":\"%s\",\"err\":\"%s\"}\r\n\r\n", ourAddressText, failReason);
-        HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_RESET);
+#ifdef USE_LED_RX
+        HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, LED_RX_OFF);
+#endif
+#ifdef USE_LED_PAIR
+        HAL_GPIO_WritePin(LED_PAIR_GPIO_Port, LED_PAIR_Pin, LED_PAIR_OFF);
+#endif
         for (;;) {
+#ifdef USE_LED_TX
             HAL_Delay(150);
-            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_ON);
             HAL_Delay(150);
-            HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_OFF);
+#endif
         }
 
     }

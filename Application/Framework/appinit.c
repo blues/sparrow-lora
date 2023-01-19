@@ -193,20 +193,21 @@ void ioInit(void)
     uint32_t freq = RF_FREQ;
 #else
     uint32_t freq = 915000000;
-#ifdef USE_SPARROW
+#if defined(USE_SPARROW) && defined(USE_LED_TX)
     // Compute the RF frequency based on the region switch settings.  Note that
-    // we power these pins with LED_RED so that even if the user happens to select
-    // an invalid switch combination they aren't a constant current draw on the system.
-    // This switch design methodology allows for a selection of any of 9 unique
-    // frequency plans based on the switches.  We have chosen what we view to be the
-    // the most common plans globally, but the developer can feel free to reassign
-    // these as is appropriate for their product or market.
+    // we power these pins with LED_TX (LED_RED on the schematic) so that even
+    // if the user happens to select an invalid switch combination they aren't
+    // a constant current draw on the system. This switch design methodology
+    // allows for a selection of any of 9 unique frequency plans based on the
+    // switches.  We have chosen what we view to be the most common plans
+    // globally, but the developer can feel free to reassign these as is
+    // appropriate for their product or market.
     gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_init_structure.Pull = GPIO_NOPULL;
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_LOW;
-    gpio_init_structure.Pin = LED_RED_Pin;
-    HAL_GPIO_Init(LED_RED_GPIO_Port, &gpio_init_structure);
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+    gpio_init_structure.Pin = LED_TX_Pin;
+    HAL_GPIO_Init(LED_TX_GPIO_Port, &gpio_init_structure);
+    HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_ON);
     int gpio0 = pinstate(RFSEL_1_GPIO_Port, RFSEL_1_Pin);
     int gpio1 = pinstate(RFSEL_0_GPIO_Port, RFSEL_0_Pin);
     if (gpio0 == PINSTATE_FLOAT && gpio1 == PINSTATE_FLOAT) {
@@ -251,15 +252,21 @@ void ioInit(void)
     gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_init_structure.Pull = GPIO_NOPULL;
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_LOW;
-    gpio_init_structure.Pin = LED_BLUE_Pin;
-    HAL_GPIO_Init(LED_BLUE_GPIO_Port, &gpio_init_structure);
-    HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, GPIO_PIN_SET);
-    gpio_init_structure.Pin = LED_GREEN_Pin;
-    HAL_GPIO_Init(LED_GREEN_GPIO_Port, &gpio_init_structure);
-    HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
-    gpio_init_structure.Pin = LED_RED_Pin;
-    HAL_GPIO_Init(LED_RED_GPIO_Port, &gpio_init_structure);
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+#ifdef USE_LED_PAIR
+    gpio_init_structure.Pin = LED_PAIR_Pin;
+    HAL_GPIO_Init(LED_PAIR_GPIO_Port, &gpio_init_structure);
+    HAL_GPIO_WritePin(LED_PAIR_GPIO_Port, LED_PAIR_Pin, LED_PAIR_ON);
+#endif
+#ifdef USE_LED_RX
+    gpio_init_structure.Pin = LED_RX_Pin;
+    HAL_GPIO_Init(LED_RX_GPIO_Port, &gpio_init_structure);
+    HAL_GPIO_WritePin(LED_RX_GPIO_Port, LED_RX_Pin, LED_RX_ON);
+#endif
+#ifdef USE_LED_TX
+    gpio_init_structure.Pin = LED_TX_Pin;
+    HAL_GPIO_Init(LED_TX_GPIO_Port, &gpio_init_structure);
+    HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_ON);
+#endif
 
     // Init button, and determine whether or not it was held down at boot
     gpio_init_structure.Pin = BUTTON1_Pin;

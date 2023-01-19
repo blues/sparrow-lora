@@ -34,8 +34,8 @@
 #define PB6     4                   // USART1_TX (D1)
 #define PB7     5                   // USART1_RX (D0)
 #define PB8     6                   // FE_CTRL3
-#define PA0     7                   // LED_RED
-#define PA1     8                   // LED_BLUE
+#define PA0     7                   // LED_TX
+#define PA1     8                   // LED_PAIR
 #define PA2     9                   // LPUART1_TX
 #define PA3     10                  // LPUART1_RX
 #define PA4     12                  // SPI1_CS (D10)
@@ -45,7 +45,7 @@
 #define PA8     16                  // FE_CTRL1
 #define PA9     17                  // FE_CTRL2
 #define PB2     31                  // A1
-#define PB12    32                  // LED_GREEN
+#define PB12    32                  // LED_RX
 #define PA10    33                  // A2
 #define PA11    34                  // I2C2_SDA (D14)
 #define PA12    35                  // I2C2_SCL (D15)
@@ -233,26 +233,60 @@
 // LEDs
 
 #if (CURRENT_BOARD == BOARD_NUCLEO)
-#define LED_BLUE_Pin                    GPIO_PIN_15
-#define LED_BLUE_GPIO_Port              GPIOB
-#define LED_GREEN_Pin                   GPIO_PIN_9
-#define LED_GREEN_GPIO_Port             GPIOB
-#define LED_RED_Pin                     GPIO_PIN_11
-#define LED_RED_GPIO_Port               GPIOB
+#define LED_PAIR_Pin                    GPIO_PIN_15
+#define LED_PAIR_GPIO_Port              GPIOB
+#define USE_LED_PAIR
+#define LED_RX_Pin                      GPIO_PIN_9
+#define LED_RX_GPIO_Port                GPIOB
+#define USE_LED_RX
+#define LED_TX_Pin                      GPIO_PIN_11
+#define LED_TX_GPIO_Port                GPIOB
+#define USE_LED_TX
 #elif (CURRENT_BOARD == BOARD_WIO_E5)
-#define LED_BLUE_Pin                    GPIO_PIN_5
-#define LED_BLUE_GPIO_Port              GPIOB
-#define LED_GREEN_Pin                   GPIO_PIN_10
-#define LED_GREEN_GPIO_Port             GPIOB
-#define LED_RED_Pin                     GPIO_PIN_9
-#define LED_RED_GPIO_Port               GPIOA
+#define LED_PAIR_INVERTED
+#define LED_PAIR_Pin                    GPIO_PIN_5
+#define LED_PAIR_GPIO_Port              GPIOB
+#define USE_LED_PAIR
+#define LED_RX_Pin                      GPIO_PIN_10
+#define LED_RX_GPIO_Port                GPIOB
+#define USE_LED_RX
+#define LED_TX_Pin                      GPIO_PIN_9
+#define LED_TX_GPIO_Port                GPIOA
+#define USE_LED_TX
 #else
-#define LED_BLUE_Pin                    GPIO_PIN_1          // PA1
-#define LED_BLUE_GPIO_Port              GPIOA
-#define LED_GREEN_Pin                   GPIO_PIN_12         // PB12
-#define LED_GREEN_GPIO_Port             GPIOB
-#define LED_RED_Pin                     GPIO_PIN_0          // PA0
-#define LED_RED_GPIO_Port               GPIOA
+#define LED_PAIR_Pin                    GPIO_PIN_1          // PA1
+#define LED_PAIR_GPIO_Port              GPIOA
+#define USE_LED_PAIR
+#define LED_RX_Pin                      GPIO_PIN_12         // PB12
+#define LED_RX_GPIO_Port                GPIOB
+#define USE_LED_RX
+#define LED_TX_Pin                      GPIO_PIN_0          // PA0
+#define LED_TX_GPIO_Port                GPIOA
+#define USE_LED_TX
+#endif
+
+#ifdef LED_PAIR_INVERTED
+#define LED_PAIR_OFF GPIO_PIN_SET
+#define LED_PAIR_ON  GPIO_PIN_RESET
+#else
+#define LED_PAIR_OFF GPIO_PIN_RESET
+#define LED_PAIR_ON  GPIO_PIN_SET
+#endif
+
+#ifdef LED_RX_INVERTED
+#define LED_RX_OFF GPIO_PIN_SET
+#define LED_RX_ON  GPIO_PIN_RESET
+#else
+#define LED_RX_OFF GPIO_PIN_RESET
+#define LED_RX_ON  GPIO_PIN_SET
+#endif
+
+#ifdef LED_TX_INVERTED
+#define LED_TX_OFF GPIO_PIN_SET
+#define LED_TX_ON  GPIO_PIN_RESET
+#else
+#define LED_TX_OFF GPIO_PIN_RESET
+#define LED_TX_ON  GPIO_PIN_SET
 #endif
 
 // `PAIR` Button
