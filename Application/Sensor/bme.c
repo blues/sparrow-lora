@@ -234,7 +234,7 @@ static bool addNote()
                (int) lastBME.humidity, (int) (fabs(lastBME.humidity*100)) % 100);
 
     // Add the voltage, just for convenient reference
-#if SPARROW_HARDWARE
+#ifdef USE_SPARROW
     JAddNumberToObject(body, "voltage", MX_ADC_A0_Voltage());
 #endif
 

@@ -152,7 +152,7 @@ bool commonCharCmd(char ch)
     }
 
     // Display voltage
-#if SPARROW_HARDWARE
+#ifdef USE_SPARROW
     if (ch == '+') {
         MX_DBG_Enable();
         APP_PRINTF("bat: %d millivolts\r\r", (uint32_t) (MX_ADC_A0_Voltage() * 1000.0));

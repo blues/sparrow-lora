@@ -8,19 +8,23 @@
 #include "config_sys.h"
 #include "stm32wlxx_hal.h"
 #include "stm32wlxx_hal_exti.h"
-#include "board_radio.h"
 
-#define BOARD_NUCLEO        0           // NUCLEO-WL55JC1
-#define BOARD_SPARROW_V1_0  1           // v1.0 spin of board
-#define BOARD_SPARROW_V1_1  2           // v1.1 fixes switch pullups and adds i2c2 pullups to reference sensor
+#define BOARD_NUCLEO        0           // NUCLEO (STM32WL55JC1)
+#define BOARD_SPARROW_V1_0  1           // v1.0 first spin of board (STM32WL55)
+#define BOARD_SPARROW_V1_1  2           // v1.1 fixes switch pullups and adds i2c2 pullups to reference sensor (STM32WLE5CCU7)
+#define BOARD_WIO_E5        3           // Seeed Wio-E5 (STM32WLE5JC)
+
+// Establish a default value for `CURRENT_BOARD` when left unset by build system
 #ifndef CURRENT_BOARD
   #define CURRENT_BOARD     BOARD_SPARROW_V1_1
 #endif
 
 #if (CURRENT_BOARD == BOARD_SPARROW_V1_0 \
   || CURRENT_BOARD == BOARD_SPARROW_V1_1)
-#define SPARROW_HARDWARE    true        // Identify Sparrow Hardware
+#define USE_SPARROW                     // Identify Sparrow Hardware
 #endif
+
+#include "board_radio.h"
 
 // All pins on the STM32WLE5 UFQFPN48 package
 #ifdef STM32_PACKAGE_PIN_NUMBERS
@@ -227,6 +231,7 @@
 #define BME_POWER_GPIO_Port             GPIOA
 
 // LEDs
+
 #if (CURRENT_BOARD == BOARD_NUCLEO)
 #define LED_BLUE_Pin                    GPIO_PIN_15
 #define LED_BLUE_GPIO_Port              GPIOB
@@ -234,6 +239,13 @@
 #define LED_GREEN_GPIO_Port             GPIOB
 #define LED_RED_Pin                     GPIO_PIN_11
 #define LED_RED_GPIO_Port               GPIOB
+#elif (CURRENT_BOARD == BOARD_WIO_E5)
+#define LED_BLUE_Pin                    GPIO_PIN_5
+#define LED_BLUE_GPIO_Port              GPIOB
+#define LED_GREEN_Pin                   GPIO_PIN_10
+#define LED_GREEN_GPIO_Port             GPIOB
+#define LED_RED_Pin                     GPIO_PIN_9
+#define LED_RED_GPIO_Port               GPIOA
 #else
 #define LED_BLUE_Pin                    GPIO_PIN_1          // PA1
 #define LED_BLUE_GPIO_Port              GPIOA
@@ -245,6 +257,11 @@
 
 // `PAIR` Button
 #if (CURRENT_BOARD == BOARD_NUCLEO)
+#define BUTTON1_ACTIVE_HIGH             false
+#define BUTTON1_Pin                     GPIO_PIN_0          // PA0
+#define BUTTON1_GPIO_Port               GPIOA
+#define BUTTON1_EXTI_IRQn               EXTI0_IRQn
+#elif (CURRENT_BOARD == BOARD_WIO_E5)
 #define BUTTON1_ACTIVE_HIGH             false
 #define BUTTON1_Pin                     GPIO_PIN_0          // PA0
 #define BUTTON1_GPIO_Port               GPIOA
@@ -280,17 +297,30 @@
 #if (CURRENT_BOARD == BOARD_NUCLEO)
 #define FE_CTRL1_Pin                 GPIO_PIN_4
 #define FE_CTRL1_GPIO_Port           GPIOC
+#define USE_FE_CTRL1
 #define FE_CTRL2_Pin                 GPIO_PIN_5
 #define FE_CTRL2_GPIO_Port           GPIOC
+#define USE_FE_CTRL2
 #define FE_CTRL3_Pin                 GPIO_PIN_3
 #define FE_CTRL3_GPIO_Port           GPIOC
+#define USE_FE_CTRL3
+#elif (CURRENT_BOARD == BOARD_WIO_E5)
+#define FE_CTRL1_Pin                 GPIO_PIN_4
+#define FE_CTRL1_GPIO_Port           GPIOA
+#define USE_FE_CTRL1
+#define FE_CTRL2_Pin                 GPIO_PIN_5
+#define FE_CTRL2_GPIO_Port           GPIOA
+#define USE_FE_CTRL2
 #else
 #define FE_CTRL1_Pin                 GPIO_PIN_8             // PA8
 #define FE_CTRL1_GPIO_Port           GPIOA
+#define USE_FE_CTRL1
 #define FE_CTRL2_Pin                 GPIO_PIN_9             // PA9
 #define FE_CTRL2_GPIO_Port           GPIOA
+#define USE_FE_CTRL2
 #define FE_CTRL3_Pin                 GPIO_PIN_8             // PB8
 #define FE_CTRL3_GPIO_Port           GPIOB
+#define USE_FE_CTRL3
 #endif
 
 // TXCO control
@@ -318,6 +348,6 @@
 
 // Value of analog reference voltage connected to supply Vdda (mV)
 #define VDDA_APPLI          (3300U)
-#if SPARROW_HARDWARE
+#ifdef USE_SPARROW
 #define BATMON_ADJUSTMENT   3           // Multiplier for RP605Z333B used by Sparrow
 #endif
