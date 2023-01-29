@@ -331,30 +331,22 @@
 #if (CURRENT_BOARD == BOARD_NUCLEO)
 #define FE_CTRL1_Pin                 GPIO_PIN_4
 #define FE_CTRL1_GPIO_Port           GPIOC
-#define USE_FE_CTRL1
 #define FE_CTRL2_Pin                 GPIO_PIN_5
 #define FE_CTRL2_GPIO_Port           GPIOC
-#define USE_FE_CTRL2
 #define FE_CTRL3_Pin                 GPIO_PIN_3
 #define FE_CTRL3_GPIO_Port           GPIOC
-#define USE_FE_CTRL3
 #elif (CURRENT_BOARD == BOARD_WIO_E5)
 #define FE_CTRL1_Pin                 GPIO_PIN_4
 #define FE_CTRL1_GPIO_Port           GPIOA
-#define USE_FE_CTRL1
 #define FE_CTRL2_Pin                 GPIO_PIN_5
 #define FE_CTRL2_GPIO_Port           GPIOA
-#define USE_FE_CTRL2
 #else
 #define FE_CTRL1_Pin                 GPIO_PIN_8             // PA8
 #define FE_CTRL1_GPIO_Port           GPIOA
-#define USE_FE_CTRL1
 #define FE_CTRL2_Pin                 GPIO_PIN_9             // PA9
 #define FE_CTRL2_GPIO_Port           GPIOA
-#define USE_FE_CTRL2
 #define FE_CTRL3_Pin                 GPIO_PIN_8             // PB8
 #define FE_CTRL3_GPIO_Port           GPIOB
-#define USE_FE_CTRL3
 #endif
 
 // TXCO control

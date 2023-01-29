@@ -17,17 +17,17 @@ int32_t RBI_Init(void)
     gpio_init_structure.Pull  = GPIO_NOPULL;
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 
-#ifdef USE_FE_CTRL1
+#ifdef FE_CTRL1_Pin
     gpio_init_structure.Pin   = FE_CTRL1_Pin;
     HAL_GPIO_Init(FE_CTRL1_GPIO_Port, &gpio_init_structure);
     HAL_GPIO_WritePin(FE_CTRL1_GPIO_Port, FE_CTRL1_Pin, GPIO_PIN_RESET);
 #endif
-#ifdef USE_FE_CTRL2
+#ifdef FE_CTRL2_Pin
     gpio_init_structure.Pin = FE_CTRL2_Pin;
     HAL_GPIO_Init(FE_CTRL2_GPIO_Port, &gpio_init_structure);
     HAL_GPIO_WritePin(FE_CTRL2_GPIO_Port, FE_CTRL2_Pin, GPIO_PIN_RESET);
 #endif
-#ifdef USE_FE_CTRL3
+#ifdef FE_CTRL3_Pin
     gpio_init_structure.Pin = FE_CTRL3_Pin;
     HAL_GPIO_Init(FE_CTRL3_GPIO_Port, &gpio_init_structure);
     HAL_GPIO_WritePin(FE_CTRL3_GPIO_Port, FE_CTRL3_Pin, GPIO_PIN_RESET);
@@ -39,13 +39,13 @@ int32_t RBI_Init(void)
 int32_t RBI_DeInit(void)
 {
     // Turn off switch
-#ifdef USE_FE_CTRL1
+#ifdef FE_CTRL1_Pin
     HAL_GPIO_WritePin(FE_CTRL1_GPIO_Port, FE_CTRL1_Pin, GPIO_PIN_RESET);
 #endif
-#ifdef USE_FE_CTRL2
+#ifdef FE_CTRL2_Pin
     HAL_GPIO_WritePin(FE_CTRL2_GPIO_Port, FE_CTRL2_Pin, GPIO_PIN_RESET);
 #endif
-#ifdef USE_FE_CTRL3
+#ifdef FE_CTRL3_Pin
     HAL_GPIO_WritePin(FE_CTRL3_GPIO_Port, FE_CTRL3_Pin, GPIO_PIN_RESET);
 #endif
 
@@ -53,13 +53,13 @@ int32_t RBI_DeInit(void)
     // 2021-09-22 We do NOT want to deinit the gpio's, else the amplifiers
     // would possibly turn on (because of the floating FE_CTRL pins).
 #if 0
-#ifdef USE_FE_CTRL1
+#ifdef FE_CTRL1_Pin
     HAL_GPIO_DeInit(FE_CTRL1_GPIO_Port, FE_CTRL1_Pin);
 #endif
-#ifdef USE_FE_CTRL2
+#ifdef FE_CTRL2_Pin
     HAL_GPIO_DeInit(FE_CTRL2_GPIO_Port, FE_CTRL2_Pin);
 #endif
-#ifdef USE_FE_CTRL3
+#ifdef FE_CTRL3_Pin
     HAL_GPIO_DeInit(FE_CTRL3_GPIO_Port, FE_CTRL3_Pin);
 #endif
 #endif
@@ -71,52 +71,52 @@ int32_t RBI_ConfigRFSwitch(RBI_Switch_TypeDef Config)
     switch (Config) {
     case RBI_SWITCH_OFF: {
         // Turn off switch
-#ifdef USE_FE_CTRL1
+#ifdef FE_CTRL1_Pin
         HAL_GPIO_WritePin(FE_CTRL1_GPIO_Port, FE_CTRL1_Pin, GPIO_PIN_RESET);
 #endif
-#ifdef USE_FE_CTRL2
+#ifdef FE_CTRL2_Pin
         HAL_GPIO_WritePin(FE_CTRL2_GPIO_Port, FE_CTRL2_Pin, GPIO_PIN_RESET);
 #endif
-#ifdef USE_FE_CTRL3
+#ifdef FE_CTRL3_Pin
         HAL_GPIO_WritePin(FE_CTRL3_GPIO_Port, FE_CTRL3_Pin, GPIO_PIN_RESET);
 #endif
         break;
     }
     case RBI_SWITCH_RX: {
         // Turns On in Rx Mode the RF Switch
-#ifdef USE_FE_CTRL1
+#ifdef FE_CTRL1_Pin
         HAL_GPIO_WritePin(FE_CTRL1_GPIO_Port, FE_CTRL1_Pin, GPIO_PIN_SET);
 #endif
-#ifdef USE_FE_CTRL2
+#ifdef FE_CTRL2_Pin
         HAL_GPIO_WritePin(FE_CTRL2_GPIO_Port, FE_CTRL2_Pin, GPIO_PIN_RESET);
 #endif
-#ifdef USE_FE_CTRL3
+#ifdef FE_CTRL3_Pin
         HAL_GPIO_WritePin(FE_CTRL3_GPIO_Port, FE_CTRL3_Pin, GPIO_PIN_SET);
 #endif
         break;
     }
     case RBI_SWITCH_RFO_LP: {
         // Turns On in Tx Low Power the RF Switch
-#ifdef USE_FE_CTRL1
+#ifdef FE_CTRL1_Pin
         HAL_GPIO_WritePin(FE_CTRL1_GPIO_Port, FE_CTRL1_Pin, GPIO_PIN_SET);
 #endif
-#ifdef USE_FE_CTRL2
+#ifdef FE_CTRL2_Pin
         HAL_GPIO_WritePin(FE_CTRL2_GPIO_Port, FE_CTRL2_Pin, GPIO_PIN_SET);
 #endif
-#ifdef USE_FE_CTRL3
+#ifdef FE_CTRL3_Pin
         HAL_GPIO_WritePin(FE_CTRL3_GPIO_Port, FE_CTRL3_Pin, GPIO_PIN_SET);
 #endif
         break;
     }
     case RBI_SWITCH_RFO_HP: {
         // Turns On in Tx High Power the RF Switch
-#ifdef USE_FE_CTRL1
+#ifdef FE_CTRL1_Pin
         HAL_GPIO_WritePin(FE_CTRL1_GPIO_Port, FE_CTRL1_Pin, GPIO_PIN_RESET);
 #endif
-#ifdef USE_FE_CTRL2
+#ifdef FE_CTRL2_Pin
         HAL_GPIO_WritePin(FE_CTRL2_GPIO_Port, FE_CTRL2_Pin, GPIO_PIN_SET);
 #endif
-#ifdef USE_FE_CTRL3
+#ifdef FE_CTRL3_Pin
         HAL_GPIO_WritePin(FE_CTRL3_GPIO_Port, FE_CTRL3_Pin, GPIO_PIN_SET);
 #endif
         break;
