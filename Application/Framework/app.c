@@ -602,7 +602,7 @@ void sensorSendToGateway(bool responseRequested, uint8_t *message, uint32_t leng
 {
 
     // Update local voltage (which may be time-consuming so we do it before I/O)
-#if (CURRENT_BOARD != BOARD_NUCLEO)
+#ifdef USE_SPARROW
     batteryMillivolts = (uint16_t) (MX_ADC_A0_Voltage() * 1000.0);
 #endif
 

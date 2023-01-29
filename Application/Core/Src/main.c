@@ -383,7 +383,7 @@ void HAL_ADC_ErrorCallback(ADC_HandleTypeDef *hadc)
 //  2018-08-05 5.5v was measured as 5.39862984, and 2.5v was measured at 2.28016664
 double calibrateVoltage(double v)
 {
-#if (CURRENT_BOARD != BOARD_NUCLEO)
+#ifdef USE_SPARROW
 
     // If the dev supplies 3.3v directly to the QWIIC connector, it will work but
     // by bypassing the voltage regulator we can't read the voltage from the regulator's
@@ -408,15 +408,9 @@ double calibrateVoltage(double v)
 // Note that the BAT MON is powered by the red LED for current savings.
 double MX_ADC_A0_Voltage()
 {
-
-#if (CURRENT_BOARD == BOARD_NUCLEO)
-
-    return 0.0;
-
-#else
-
-    bool ledWasEnabled = HAL_GPIO_ReadPin(LED_RED_GPIO_Port, LED_RED_Pin);
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
+#if defined(USE_SPARROW) && defined(USE_LED_TX)
+    bool ledWasEnabled = (LED_TX_ON == HAL_GPIO_ReadPin(LED_TX_GPIO_Port, LED_TX_Pin));
+    HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_ON);
 
     // Measure the voltage
     double voltage = 0.0;
@@ -426,13 +420,13 @@ double MX_ADC_A0_Voltage()
     }
 
     if (!ledWasEnabled) {
-        HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_OFF);
     }
 
     return voltage;
-
+#else
+    return 0.0;
 #endif
-
 }
 
 // Init I2C2

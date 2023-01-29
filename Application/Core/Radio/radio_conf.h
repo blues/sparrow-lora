@@ -45,6 +45,8 @@
 // Voltage of TCXO's VDD supply
 #if (CURRENT_BOARD == BOARD_NUCLEO)
 #define TCXO_CTRL_VOLTAGE           TCXO_CTRL_1_7V        // NT2016SF-32M-END5875A
+#elif (CURRENT_BOARD == BOARD_WIO_E5)
+#define TCXO_CTRL_VOLTAGE           TCXO_CTRL_1_7V        // Voltage across Vss and Vdd_TCX0
 #else
 #define TCXO_CTRL_VOLTAGE           TCXO_CTRL_3_0V        // TYETBCSANF-32.000000
 #endif
