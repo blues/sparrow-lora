@@ -207,7 +207,7 @@ void ioInit(void)
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_LOW;
     gpio_init_structure.Pin = LED_TX_Pin;
     HAL_GPIO_Init(LED_TX_GPIO_Port, &gpio_init_structure);
-    HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, LED_TX_ON);
+    HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, GPIO_PIN_SET);
     int gpio0 = pinstate(RFSEL_1_GPIO_Port, RFSEL_1_Pin);
     int gpio1 = pinstate(RFSEL_0_GPIO_Port, RFSEL_0_Pin);
     if (gpio0 == PINSTATE_FLOAT && gpio1 == PINSTATE_FLOAT) {
