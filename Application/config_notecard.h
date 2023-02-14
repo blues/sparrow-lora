@@ -4,11 +4,25 @@
 
 #pragma once
 
+#ifndef NOTECARD_PRODUCT_UID
 #define NOTECARD_PRODUCT_UID                ""          // YOUR PRODUCT UID GOES HERE
+#endif
+
+#ifndef NOTECARD_CONNECTION_MODE
 #define NOTECARD_CONNECTION_MODE            "continuous"
+#endif
+
+#ifndef NOTECARD_CONTINUOUS_SYNC
 #define NOTECARD_CONTINUOUS_SYNC            true        // Allows gateway to respond immediately to env changes
+#endif
+
+#ifndef NOTECARD_OUTBOUND_PERIOD_MINS
 #define NOTECARD_OUTBOUND_PERIOD_MINS       (15)
+#endif
+
+#ifndef NOTECARD_INBOUND_PERIOD_MINS
 #define NOTECARD_INBOUND_PERIOD_MINS        (60*24)
+#endif
 
 // Configuration database
 #define CONFIGDB                            "config.db"
