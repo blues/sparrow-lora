@@ -13,7 +13,7 @@ bool noteI2CReset(uint16_t DevAddress);
 const char *noteI2CTransmit(uint16_t DevAddress, uint8_t* pBuffer, uint16_t Size);
 const char *noteI2CReceive(uint16_t DevAddress, uint8_t* pBuffer, uint16_t Size, uint32_t *available);
 void noteDelay(uint32_t ms);
-long unsigned int noteMillis(void);
+uint32_t noteMillis(void);
 void noteBeginTransaction(void);
 void noteEndTransaction(void);
 
@@ -137,9 +137,9 @@ void noteDelay(uint32_t ms)
 }
 
 // Arduino-like millis() function
-long unsigned int noteMillis()
+uint32_t noteMillis()
 {
-    return (long unsigned int) TIMER_IF_GetTimeMs();
+    return (uint32_t) TIMER_IF_GetTimeMs();
 }
 
 // I2C reset procedure, called before any I/O and called again upon I/O error

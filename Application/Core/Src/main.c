@@ -138,7 +138,10 @@ void SystemClock_Config(void)
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
     // Configure LSE Drive Capability
-    __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
+    // Changed to medium low 2.22.23 to meet the requirements of 
+    // AN2867 sections 3.3,3.4 and STM32WL55 DS13293
+    // Table 63. Low-speed external user clock characteristics
+    __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_MEDIUMLOW);
 
     // Configure the main internal regulator output voltage
     __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
