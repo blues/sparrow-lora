@@ -18,7 +18,7 @@ uint32_t SKU = SKU_UNKNOWN;
 
 // Forwards
 void registerApp(void);
-void ioInit(void);
+const char *ioInit(void);
 void unpack32(uint8_t *p, uint32_t value);
 
 // Get the version of the image
@@ -32,7 +32,7 @@ void MX_AppMain(void)
 {
 
     // Initialize GPIOs
-    ioInit();
+    const char *rfsel = ioInit();
 
     // Determine our own device address
     memset(ourAddress, 0, sizeof(ourAddress));
@@ -48,6 +48,7 @@ void MX_AppMain(void)
     APP_PRINTF("===================\r\n");
     APP_PRINTF("%s\r\n", appFirmwareVersion());
     APP_PRINTF("%s\r\n", ourAddressText);
+    APP_PRINTF("%s\r\n", rfsel);
     SKU = SKU_CORE;
 
     // Remember the time when we were booted
@@ -183,7 +184,7 @@ int pinstate(void *portv, uint16_t pin)
 }
 
 // Initialize app hardware I/O
-void ioInit(void)
+const char *ioInit(void)
 {
     GPIO_InitTypeDef  gpio_init_structure = {0};
 
@@ -210,33 +211,34 @@ void ioInit(void)
     HAL_GPIO_WritePin(LED_TX_GPIO_Port, LED_TX_Pin, GPIO_PIN_SET);
     int gpio0 = pinstate(RFSEL_1_GPIO_Port, RFSEL_1_Pin);
     int gpio1 = pinstate(RFSEL_0_GPIO_Port, RFSEL_0_Pin);
+    char *sw = "(unknown switch positions)";
     if (gpio0 == PINSTATE_FLOAT && gpio1 == PINSTATE_FLOAT) {
-        // 0 OFF OFF OFF OFF
+        sw = "0 OFF OFF OFF OFF US915";
         freq = 915000000;   // US915
     } else if (gpio0 == PINSTATE_HIGH && gpio1 == PINSTATE_FLOAT) {
-        // 1  ON OFF OFF OFF
+        sw = "1  ON OFF OFF OFF AS923";
         freq = 923000000;   // AS923
     } else if (gpio0 == PINSTATE_LOW && gpio1 == PINSTATE_FLOAT) {
-        // 2 OFF  ON OFF OFF
+        sw = "2 OFF  ON OFF OFF KR920";
         freq = 920000000;   // KR920
     } else if (gpio0 == PINSTATE_FLOAT && gpio1 == PINSTATE_HIGH) {
-        // 3 OFF OFF  ON OFF
+        sw = "3 OFF OFF  ON OFF IN865";
         freq = 865000000;   // IN865
     } else if (gpio0 == PINSTATE_HIGH && gpio1 == PINSTATE_HIGH) {
-        // 4 ON OFF  ON OFF
+        sw = "4 ON OFF  ON OFF EU868";
         freq = 868000000;   // EU868
     } else if (gpio0 == PINSTATE_LOW && gpio1 == PINSTATE_HIGH) {
-        // 5 OFF  ON  ON OFF
+        sw = "5 OFF  ON  ON OFF RU864";
         freq = 864000000;   // RU864
     } else if (gpio0 == PINSTATE_FLOAT && gpio1 == PINSTATE_LOW) {
-        // 6 OFF OFF OFF  ON
+        sw = "6 OFF OFF OFF  ON AU915";
         freq = 915000000;   // AU915
     } else if (gpio0 == PINSTATE_HIGH && gpio1 == PINSTATE_LOW) {
-        // 7 ON OFF OFF  ON
+        sw = "7 ON OFF OFF  ON CN470";
         freq = 470000000;   // CN470
 //        freq = 779000000;   // CN779
     } else if (gpio0 == PINSTATE_LOW && gpio1 == PINSTATE_LOW) {
-        // 8 OFF  ON OFF  ON
+        sw = "8 OFF  ON OFF  ON EU433";
         freq = 433000000;   // EU433
     }
 #ifdef DEBUG_RFSEL
@@ -283,6 +285,9 @@ void ioInit(void)
     }
     HAL_NVIC_SetPriority(BUTTON1_EXTI_IRQn, BUTTONx_IT_PRIORITY, 0x00);
     HAL_NVIC_EnableIRQ(BUTTON1_EXTI_IRQn);
+
+    // Return rfsel
+    return sw;
 
 }
 

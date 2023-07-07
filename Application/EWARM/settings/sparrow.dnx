@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <settings>
     <StLinkDriver>
-        <stlinkserialNo>002800155553500820393256</stlinkserialNo>
+        <stlinkserialNo>003900105553500B20393256</stlinkserialNo>
         <stlinkfoundProbes />
-        <stlinkResetStyle>0</stlinkResetStyle>
-        <stlinkResetStrategy>2</stlinkResetStrategy>
         <LeaveTargetRunning>_ 0</LeaveTargetRunning>
         <CStepIntDis>_ 0</CStepIntDis>
+        <stlinkResetStyle>0</stlinkResetStyle>
+        <stlinkResetStrategy>2</stlinkResetStrategy>
     </StLinkDriver>
     <DebugChecksum>
-        <Checksum>3108918406</Checksum>
+        <Checksum>4286134629</Checksum>
     </DebugChecksum>
     <Exceptions>
         <StopOnUncaught>_ 0</StopOnUncaught>
@@ -27,8 +27,8 @@
         <ByteLimit>50</ByteLimit>
     </Stack>
     <Disassembly>
-        <InstrCount>0</InstrCount>
         <MixedMode>0</MixedMode>
+        <InstrCount>0</InstrCount>
     </Disassembly>
     <CallStack>
         <ShowArgs>0</ShowArgs>
@@ -75,6 +75,14 @@
         <Probe0>I0</Probe0>
         <ProbeSetup0>2 1 1 2 0 0</ProbeSetup0>
     </PowerProbe>
+    <PlDriver>
+        <FirstRun>0</FirstRun>
+        <MemConfigValue>C:\Program Files\IAR Systems\Embedded Workbench 9.0\arm\config\debugger\ST\STM32WL55JC_M4.ddf</MemConfigValue>
+    </PlDriver>
+    <ArmDriver>
+        <EnableCache>0</EnableCache>
+        <EnforceMemoryConfiguration>1</EnforceMemoryConfiguration>
+    </ArmDriver>
     <Trace2>
         <Enabled>0</Enabled>
         <ShowSource>0</ShowSource>
@@ -90,21 +98,24 @@
         <EventSLEEP>0</EventSLEEP>
     </SWOTraceWindow>
     <DataLog>
-        <LogEnabled>0</LogEnabled>
         <GraphEnabled>0</GraphEnabled>
+        <LogEnabled>0</LogEnabled>
         <ShowTimeLog>1</ShowTimeLog>
         <SumEnabled>0</SumEnabled>
         <ShowTimeSum>1</ShowTimeSum>
     </DataLog>
     <InterruptLog>
-        <LogEnabled>0</LogEnabled>
         <GraphEnabled>0</GraphEnabled>
+        <LogEnabled>0</LogEnabled>
         <ShowTimeLog>1</ShowTimeLog>
         <SumEnabled>0</SumEnabled>
         <ShowTimeSum>1</ShowTimeSum>
         <SumSortOrder>0</SumSortOrder>
     </InterruptLog>
     <EventLog>
+        <GraphEnabled>0</GraphEnabled>
+        <LogEnabled>0</LogEnabled>
+        <ShowTimeLog>1</ShowTimeLog>
         <Title_0>Ch3</Title_0>
         <Symbol_0>0 0 1</Symbol_0>
         <Title_1>Ch2</Title_1>
@@ -113,9 +124,6 @@
         <Symbol_2>0 0 1</Symbol_2>
         <Title_3>Ch0</Title_3>
         <Symbol_3>0 0 1</Symbol_3>
-        <LogEnabled>0</LogEnabled>
-        <GraphEnabled>0</GraphEnabled>
-        <ShowTimeLog>1</ShowTimeLog>
         <SumEnabled>0</SumEnabled>
         <ShowTimeSum>1</ShowTimeSum>
         <SumSortOrder>0</SumSortOrder>
@@ -137,13 +145,6 @@
     <CallStackStripe>
         <ShowTiming>1</ShowTiming>
     </CallStackStripe>
-    <PlDriver>
-        <MemConfigValue>C:\Program Files\IAR Systems\Embedded Workbench 9.0\arm\config\debugger\ST\STM32WL55JC_M4.ddf</MemConfigValue>
-    </PlDriver>
-    <ArmDriver>
-        <EnableCache>0</EnableCache>
-        <EnforceMemoryConfiguration>1</EnforceMemoryConfiguration>
-    </ArmDriver>
     <LogFile>
         <LoggingEnabled>_ 0</LoggingEnabled>
         <LogFile>_ ""</LogFile>
