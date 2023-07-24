@@ -159,18 +159,25 @@ int pinstate(void *portv, uint16_t pin)
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_HIGH;
     gpio_init_structure.Pin = pin;
     HAL_GPIO_Init(port, &gpio_init_structure);
+    // Short delay because it was found on the STM32U5 @ 80MHz
+    // that reading the GPIO immediately after intialization
+    // could return incorrect values. The first delay is 2ms in
+    // case the 1ms interrupt is just about to occur.
+    HAL_Delay(2);
     bool pulledHigh = (GPIO_PIN_SET == HAL_GPIO_ReadPin(port, pin));
     gpio_init_structure.Mode = GPIO_MODE_INPUT;
     gpio_init_structure.Pull = GPIO_PULLDOWN;
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_HIGH;
     gpio_init_structure.Pin = pin;
     HAL_GPIO_Init(port, &gpio_init_structure);
+    HAL_Delay(1);
     bool pulledLow = (GPIO_PIN_RESET == HAL_GPIO_ReadPin(port, pin));
     gpio_init_structure.Mode = GPIO_MODE_INPUT;
     gpio_init_structure.Pull = GPIO_NOPULL;
     gpio_init_structure.Speed = GPIO_SPEED_FREQ_HIGH;
     gpio_init_structure.Pin = pin;
     HAL_GPIO_Init(port, &gpio_init_structure);
+    HAL_Delay(1);
     bool high = (GPIO_PIN_SET == HAL_GPIO_ReadPin(port, pin));
     gpio_init_structure.Mode = GPIO_MODE_ANALOG;
     gpio_init_structure.Pull = GPIO_NOPULL;
